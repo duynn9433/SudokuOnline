@@ -5,7 +5,6 @@
  */
 package server.controller;
 
-
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -127,7 +126,7 @@ public class Client implements Runnable {
                         break;
 
                     case LEAVE_ROOM:
-                        onReceiveLeaveRoom(received);
+                        onReceiveLeaveRoom();
                         break;
 
                     case GET_PROFILE:
@@ -145,6 +144,7 @@ public class Client implements Runnable {
                     case SUBMIT:
                         onReceiveSubmit(message);
                         break;
+
                     case EXIT:
                         running = false;
                 }
@@ -153,7 +153,7 @@ public class Client implements Runnable {
                 // System.out.println("Connection lost with " + s.getPort());
 
                 // leave room if needed
-                onReceiveLeaveRoom("");
+                onReceiveLeaveRoom();
                 break;
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -182,7 +182,7 @@ public class Client implements Runnable {
     }
 
     private void onReceiveLogin(Object message) {
-        LoginMessage msg =(LoginMessage) message;
+        LoginMessage msg = (LoginMessage) message;
         // get email / password from data
         String email = msg.getEmail();
         String password = msg.getPassword();
@@ -394,7 +394,8 @@ public class Client implements Runnable {
 
             // create new room
             Room newRoom = RunServer.roomManager.createRoom();
-            System.out.println("Room(receivedRequestPairMatch:"+newRoom.toString());
+
+            System.out.println("Room(receivedRequestPairMatch:" + newRoom.toString());
             String temp = DataCreateGame.getRandomData();
             newRoom.getSudoku1().setAnswer(temp);
             newRoom.getSudoku1().setBoard(DataCreateGame.createBoard(temp));
@@ -404,9 +405,9 @@ public class Client implements Runnable {
             // join room
             JoinRoomMessage send1 = this.joinRoom(newRoom);
             JoinRoomMessage send2 = cCompetitor.joinRoom(newRoom);
-            System.out.println("JoinRoomMsg1:"+send1);
-            System.out.println("JoinRoomMsg1:"+send2);
-            System.out.println("Room(receivedRequestPairMatch) after:"+newRoom.toString());
+            System.out.println("JoinRoomMsg1:" + send1);
+            System.out.println("JoinRoomMsg1:" + send2);
+            System.out.println("Room(receivedRequestPairMatch) after:" + newRoom.toString());
             // send join room status to client
             sendObject(send1);
             cCompetitor.sendObject(send2);
@@ -471,32 +472,37 @@ public class Client implements Runnable {
         }
     }
 
-    private void onReceiveLeaveRoom(String received) {
+    private void onReceiveLeaveRoom() {
+        System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
-            sendData(StreamData.Type.LEAVE_ROOM.name() + ";failed" + Code.CANT_LEAVE_ROOM);
+            LeaveRoomMessage send = new LeaveRoomMessage();
+            send.setStatus("failed");
+            send.setCodeMsg(Code.CANT_LEAVE_ROOM);
+            System.out.println("LeaveMsg:" + send);
+            sendObject(send);
             return;
         }
 
         // nếu là người chơi thì đóng room luôn
-        if (joinedRoom.getClient1().equals(this) || joinedRoom.getClient2().equals(this)) {
-            joinedRoom.close("Người chơi " + this.loginPlayer.getNameId() + " đã thoát phòng.");
-            return;
-        }
+        //            joinedRoom.close("Người chơi " + this.loginPlayer.getNameId() + " đã thoát phòng.");
+        joinedRoom.leaveRoom(this);
+        System.out.println("1");
 
         // broadcast to all clients in room
-        String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
-                + "SERVER" + ";"
-                + loginPlayer.getNameId() + " đã thoát";
-
-        joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";" + data);
-
+//        String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
+//                + "SERVER" + ";"
+//                + loginPlayer.getNameId() + " đã thoát";
+//
+//        joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";" + data);
         // delete refernce to room
 //        joinedRoom.removeClient(this);
         joinedRoom = null;
-
+        System.out.println("2");
         // TODO if this client is player -> close room
         // send result
-        sendData(StreamData.Type.LEAVE_ROOM.name() + ";success");
+        LeaveRoomMessage send = new LeaveRoomMessage();
+        send.setStatus("success");
+        sendObject(send);
     }
 
     // profile
@@ -576,6 +582,16 @@ public class Client implements Runnable {
     private void onReceiveSubmit(Object message) {
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
+        if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
+            //chien thang +3diem
+
+            //gui thong bao
+            SubmitMessage send1 = new SubmitMessage();
+            send1.setType(StreamData.Type.SUBMIT);
+            send1.setResult(loginPlayer.getEmail());
+            sendObject(send1);
+
+        }
         if (loginPlayer.getEmail().equals(joinedRoom.getClient1().getLoginPlayer().getEmail())) {
             joinedRoom.getSudoku1().setIsSubmit(true);
             joinedRoom.getSudoku1().setBoard(msg.getSubmit());

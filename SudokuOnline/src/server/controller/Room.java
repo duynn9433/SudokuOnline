@@ -105,17 +105,28 @@ public class Room {
         });
     }
 
+    public void leaveRoom(Client c){
+        if(c.equals(client1)){
+            client1=null;
+        }else if(c.equals(client2)){
+            client2=null;
+        }
+        if(client1 == null && client2==null){
+            RunServer.roomManager.remove(this);
+        }
+    }
     public void close(String reason) {
         // notify all client in room
         broadcast(StreamData.Type.CLOSE_ROOM.name() + ";" + reason);
 
-//        // remove reference
+        // remove reference
+//        client1.setJoinedRoom(null);
 //        clients.forEach((client) -> {
 //            client.setJoinedRoom(null);
 //        });
-//
-//        // remove all clients
-//        clients.clear();
+
+        // remove all clients
+        clients.clear();
 
         // remove room
         RunServer.roomManager.remove(this);

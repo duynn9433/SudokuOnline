@@ -206,8 +206,8 @@ public class SocketHandler {
 
         try {
             s.close();
-            dis.close();
-            dos.close();
+//            dis.close();
+        //    dos.close();
             ois.close();
             oos.close();
         } catch (IOException ex) {
@@ -437,21 +437,21 @@ public class SocketHandler {
     }
 
     private void onReceiveLeaveRoom(Object message) {
-        
-//        String[] splitted = received.split(";");
-//        String status = splitted[1];
-//
-//        if (status.equals("failed")) {
-//            String failedMsg = splitted[2];
-//            JOptionPane.showMessageDialog(RunClient.inGameScene, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
-//
-//        } else if (status.equals("success")) {
-//            RunClient.closeScene(RunClient.SceneName.INGAME);
-//            RunClient.openScene(RunClient.SceneName.MAINMENU);
-//
-//            // get list room again
-//            listRoom();
-//        }
+        LeaveRoomMessage msg = (LeaveRoomMessage) message;
+        String status = msg.getStatus();
+        System.out.println("status leave room:"+status);
+
+        if (status.equals("failed")) {
+            String failedMsg = msg.getCodeMsg();
+            JOptionPane.showMessageDialog(RunClient.inGameScene, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
+
+        } else if (status.equals("success")) {
+            RunClient.closeScene(RunClient.SceneName.INGAME);
+            RunClient.openScene(RunClient.SceneName.MAINMENU);
+
+            // get list room again
+            listRoom();
+        }
     }
 
     private void onReceiveCloseRoom(String received) {
@@ -595,7 +595,7 @@ public class SocketHandler {
 
     // main menu
     public void listRoom() {
-        sendData(StreamData.Type.LIST_ROOM.name()); //sua
+//        sendData(StreamData.Type.LIST_ROOM.name()); //sua
     }
 
     // pair match
@@ -637,7 +637,8 @@ public class SocketHandler {
     }
 
     public void leaveRoom() {
-        sendData(StreamData.Type.LEAVE_ROOM.name());
+        Message msg = new Message(StreamData.Type.LEAVE_ROOM);
+        sendObject(msg);
     }
 
     // profile
