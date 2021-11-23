@@ -395,6 +395,12 @@ public class Client implements Runnable {
             // create new room
             Room newRoom = RunServer.roomManager.createRoom();
             System.out.println("Room(receivedRequestPairMatch:"+newRoom.toString());
+            String temp = DataCreateGame.getRandomData();
+            newRoom.getSudoku1().setAnswer(temp);
+            newRoom.getSudoku1().setBoard(DataCreateGame.createBoard(temp));
+            temp = DataCreateGame.getRandomData();
+            newRoom.getSudoku2().setAnswer(temp);
+            newRoom.getSudoku2().setBoard(DataCreateGame.createBoard(temp));
             // join room
             JoinRoomMessage send1 = this.joinRoom(newRoom);
             JoinRoomMessage send2 = cCompetitor.joinRoom(newRoom);
@@ -575,12 +581,16 @@ public class Client implements Runnable {
             joinedRoom.getSudoku1().setBoard(msg.getSubmit());
             joinedRoom.getSudoku1().setSubmitTime(msg.getCurrentTick());
             isPlayer1 = true;
-            //gui da nhan cho kq doi thu
+            //gui da nhan kq 
+            LockSubmitMessage send = new LockSubmitMessage();
+            sendObject(send);
         } else {
             joinedRoom.getSudoku2().setIsSubmit(true);
             joinedRoom.getSudoku2().setBoard(msg.getSubmit());
             joinedRoom.getSudoku2().setSubmitTime(msg.getCurrentTick());
-            //gui da nhan cho kq doi thu
+            //gui da nhan kq 
+            LockSubmitMessage send = new LockSubmitMessage();
+            sendObject(send);
         }
 
         if (joinedRoom.getSudoku1().isIsSubmit() && joinedRoom.getSudoku2().isIsSubmit()) {

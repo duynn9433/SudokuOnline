@@ -166,7 +166,7 @@ public class SocketHandler {
                         break;
 
                     case LEAVE_ROOM:
-                        onReceiveLeaveRoom(received);
+                        onReceiveLeaveRoom(message);
                         break;
 
                     case CLOSE_ROOM:
@@ -188,6 +188,10 @@ public class SocketHandler {
                     case SUBMIT:
                         onReceiveSubmit(message);
                         break;
+                    case LOCK_SUBMIT:
+                        onReceiveLockSubmit(message);
+                        break;
+                        
                     case EXIT:
                         running = false;
                 }
@@ -432,21 +436,22 @@ public class SocketHandler {
         RunClient.inGameScene.addChat(c);
     }
 
-    private void onReceiveLeaveRoom(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
-
-        if (status.equals("failed")) {
-            String failedMsg = splitted[2];
-            JOptionPane.showMessageDialog(RunClient.inGameScene, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
-
-        } else if (status.equals("success")) {
-            RunClient.closeScene(RunClient.SceneName.INGAME);
-            RunClient.openScene(RunClient.SceneName.MAINMENU);
-
-            // get list room again
-            listRoom();
-        }
+    private void onReceiveLeaveRoom(Object message) {
+        
+//        String[] splitted = received.split(";");
+//        String status = splitted[1];
+//
+//        if (status.equals("failed")) {
+//            String failedMsg = splitted[2];
+//            JOptionPane.showMessageDialog(RunClient.inGameScene, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
+//
+//        } else if (status.equals("success")) {
+//            RunClient.closeScene(RunClient.SceneName.INGAME);
+//            RunClient.openScene(RunClient.SceneName.MAINMENU);
+//
+//            // get list room again
+//            listRoom();
+//        }
     }
 
     private void onReceiveCloseRoom(String received) {
@@ -548,7 +553,13 @@ public class SocketHandler {
         String result = msg.getResult();
         RunClient.inGameScene.setWin(result);
     }
-
+    private void onReceiveLockSubmit(Object message){
+        LockSubmitMessage msg = (LockSubmitMessage) message;
+        String status = msg.getStatus();
+        if(status.equals("success")){
+            RunClient.inGameScene.lockSubmit();
+        }
+    }
     // ============= functions ===============
     // auth
     private void initConnect() {

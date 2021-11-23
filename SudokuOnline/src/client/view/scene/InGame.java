@@ -38,6 +38,7 @@ public class InGame extends javax.swing.JFrame {
     JButton btnOnBoard[][];
     CountDownTimer matchTimer;
     SudokuGame sudokuGame;
+
     /**
      * Creates new form InGame
      */
@@ -141,7 +142,10 @@ public class InGame extends javax.swing.JFrame {
         matchTimer = new CountDownTimer(matchTimeLimit);
         matchTimer.setTimerCallBack(
                 // end match callback
-                null,
+                (Callable) () -> {
+                    endGameTimeout();
+                    return null;
+                },
                 // tick match callback
                 (Callable) () -> {
                     pgbMatchTimer.setValue(100 * matchTimer.getCurrentTick() / matchTimer.getTimeLimit());
@@ -153,7 +157,20 @@ public class InGame extends javax.swing.JFrame {
         );
     }
 
-
+    public void endGameTimeout() {
+        matchTimer.pause();
+        JOptionPane.showConfirmDialog(rootPane, "Hết thời gian");
+        int time = matchTimer.getCurrentTick();
+        SubmitMessage msg = new SubmitMessage();
+        msg.setType(StreamData.Type.SUBMIT);
+        msg.setSubmit(sudokuGame.getSubmit());
+        msg.setCurrentTick(time);
+        RunClient.socketHandler.sendObject(msg);
+    }
+    
+    public void lockSubmit(){
+        btnSubmit.setEnabled(false);
+    }
     public void setMatchTimerTick(int value) {
         matchTimer.setCurrentTick(value);
     }
@@ -183,7 +200,7 @@ public class InGame extends javax.swing.JFrame {
         lbVersus = new javax.swing.JLabel();
         lbAvatar2 = new javax.swing.JLabel();
         lbPlayerNameId2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSubmit = new javax.swing.JButton();
         plTimer = new javax.swing.JPanel();
         pgbMatchTimer = new javax.swing.JProgressBar();
         tpChatAndViewerContainer = new javax.swing.JTabbedPane();
@@ -266,11 +283,11 @@ public class InGame extends javax.swing.JFrame {
         lbPlayerNameId2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lbPlayerNameId2.setText("Hien");
 
-        jButton1.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        jButton1.setText("Kết thúc");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSubmit.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
+        btnSubmit.setText("Kết thúc");
+        btnSubmit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSubmitActionPerformed(evt);
             }
         });
 
@@ -286,7 +303,7 @@ public class InGame extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(plPlayerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(plPlayerLayout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnSubmit)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(plPlayerLayout.createSequentialGroup()
                         .addComponent(lbVersus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -311,7 +328,7 @@ public class InGame extends javax.swing.JFrame {
                         .addComponent(lbPlayerNameId2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lbVersus, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(btnSubmit)
                 .addContainerGap(13, Short.MAX_VALUE))
         );
 
@@ -469,7 +486,7 @@ public class InGame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnLeaveRoomActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         // TODO add your handling code here:
         matchTimer.pause();
         int time = matchTimer.getCurrentTick();
@@ -478,7 +495,7 @@ public class InGame extends javax.swing.JFrame {
         msg.setSubmit(sudokuGame.getSubmit());
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
         String chatMsg = txChatInput.getText();
@@ -552,8 +569,8 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JButton btnLeaveRoom;
     private javax.swing.JButton btnNewGame;
     private javax.swing.JButton btnSendMessage;
+    private javax.swing.JButton btnSubmit;
     private javax.swing.JButton btnUndo;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane3;
