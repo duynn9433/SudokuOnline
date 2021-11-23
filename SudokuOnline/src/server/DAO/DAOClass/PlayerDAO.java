@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.db.layers.DAL;
+package server.DAO.DAOClass;
 
-import server.db.layers.DBConnector.MysqlConnector;
-import server.db.layers.DTO.Player;
+import server.DAO.model.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,11 +17,11 @@ import java.util.logging.Logger;
  *
  * @author duynn
  */
-public class PlayerDAL {
+public class PlayerDAO {
 
     MysqlConnector connector;
 
-    public PlayerDAL() {
+    public PlayerDAO() {
 
     }
 
@@ -89,7 +88,7 @@ public class PlayerDAL {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(PlayerDAL.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -135,7 +134,7 @@ public class PlayerDAL {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(PlayerDAL.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -155,7 +154,7 @@ public class PlayerDAL {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(PlayerDAL.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PlayerDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return result;
     }

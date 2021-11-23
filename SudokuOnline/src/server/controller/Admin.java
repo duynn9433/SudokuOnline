@@ -10,10 +10,10 @@ import server.RunServer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.db.layers.BUS.GameMatchBUS;
-import server.db.layers.BUS.PlayerBUS;
-import server.db.layers.DTO.GameMatch;
-import server.db.layers.DTO.Player;
+import server.DAO.controller.GameMatchController;
+import server.DAO.controller.PlayerController;
+import server.DAO.model.GameMatch;
+import server.DAO.model.Player;
 
 /**
  *
@@ -21,8 +21,8 @@ import server.db.layers.DTO.Player;
  */
 public class Admin implements Runnable {
 
-    GameMatchBUS gameMatchBus;
-    PlayerBUS playerBus;
+    GameMatchController gameMatchBus;
+    PlayerController playerBus;
 
     @Override
     public void run() {
@@ -78,7 +78,7 @@ public class Admin implements Runnable {
     // Get player with the most win count
     private Player getBestUser() {
         Player bestPlayer = null;
-        playerBus = new PlayerBUS();
+        playerBus = new PlayerController();
         int max = 0;
         for (Player p : playerBus.getList()) {
             if (p.getWinCount() > max) {
@@ -97,7 +97,7 @@ public class Admin implements Runnable {
 
 //    // Get the match with the shortest play time
 //    public GameMatch getShortestMatch() {
-//        gameMatchBus = new GameMatchBUS();
+//        gameMatchBus = new GameMatchController();
 //        GameMatch shortestMatch = null;
 //        int min = gameMatchBus.getList().get(0).getTotalMove();
 //        for (GameMatch m : gameMatchBus.getList()) {
@@ -110,7 +110,7 @@ public class Admin implements Runnable {
 //    }
 
     private void showShortestMatch(GameMatch m) {
-        playerBus = new PlayerBUS();
+        playerBus = new PlayerController();
         Player p1 = new Player(playerBus.getById(m.getPlayerID1()));
         Player p2 = new Player(playerBus.getById(m.getPlayerID2()));
         System.out.println("The match with shortest play time: ");
@@ -121,7 +121,7 @@ public class Admin implements Runnable {
 
     // Block user with provided email
     private String blockUser(String email) {
-        playerBus = new PlayerBUS();
+        playerBus = new PlayerController();
         for (Player p : playerBus.getList()) {
             if (p.getEmail().equalsIgnoreCase(email)) {
                 p.setBlocked(true);
@@ -133,8 +133,8 @@ public class Admin implements Runnable {
 
     // Get Game match with provide id
     private void showGameMatchDetails(String id) {
-        gameMatchBus = new GameMatchBUS();
-        playerBus = new PlayerBUS();
+        gameMatchBus = new GameMatchController();
+        playerBus = new PlayerController();
         GameMatch m = gameMatchBus.getById(Integer.parseInt(id));
         System.out.println("Match id: " + m.getId());
         System.out.println("    + Player 1: " + playerBus.getById(m.getPlayerID1()).getName());

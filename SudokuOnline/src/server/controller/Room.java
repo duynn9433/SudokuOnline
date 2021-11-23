@@ -10,8 +10,8 @@ import shared.model.Sudoku;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import server.RunServer;
-import server.db.layers.BUS.GameMatchBUS;
-import server.db.layers.DTO.GameMatch;
+import server.DAO.controller.GameMatchController;
+import server.DAO.model.GameMatch;
 import shared.constant.StreamData;
 
 /**
@@ -50,7 +50,7 @@ public class Room {
 //                        (Callable) () -> {
 //
 //                            // tinh diem hoa
-//                            new GameMatchBUS().add(new GameMatch(
+//                            new GameMatchController().add(new GameMatch(
 //                                    client1.getLoginPlayer().getId(),
 //                                    client1.getLoginPlayer().getId(),
 //                                    -1,

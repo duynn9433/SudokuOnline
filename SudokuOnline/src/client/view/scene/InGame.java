@@ -193,9 +193,6 @@ public class InGame extends javax.swing.JFrame {
         btnSendMessage = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         txaChat = new javax.swing.JTextArea();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        lListUser = new javax.swing.JList<>();
         plBoardContainer = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -418,27 +415,6 @@ public class InGame extends javax.swing.JFrame {
 
         tpChatAndViewerContainer.addTab("Nhắn tin", jPanel3);
 
-        jScrollPane2.setViewportView(lListUser);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 316, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        tpChatAndViewerContainer.addTab("Người trong phòng", jPanel4);
-
         javax.swing.GroupLayout plRightContainerLayout = new javax.swing.GroupLayout(plRightContainer);
         plRightContainer.setLayout(plRightContainerLayout);
         plRightContainerLayout.setHorizontalGroup(
@@ -579,11 +555,8 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JButton btnUndo;
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList<PlayerInGame> lListUser;
     private javax.swing.JLabel lbAvatar1;
     private javax.swing.JLabel lbAvatar2;
     private javax.swing.JLabel lbPlayerNameId1;

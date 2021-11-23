@@ -12,8 +12,8 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.RunServer;
-import server.db.layers.BUS.PlayerBUS;
-import server.db.layers.DTO.Player;
+import server.DAO.controller.PlayerController;
+import server.DAO.model.Player;
 import shared.constant.*;
 import shared.helper.CustumDateTimeFormatter;
 import shared.message.*;
@@ -194,11 +194,11 @@ public class Client implements Runnable {
         }
 
         // check login
-        LoginMessage result = new PlayerBUS().checkLogin(email, password);
+        LoginMessage result = new PlayerController().checkLogin(email, password);
 
         if (result.getStatus().equals("success")) {
             // set login email
-            this.loginPlayer = new PlayerBUS().getByEmail(email);
+            this.loginPlayer = new PlayerController().getByEmail(email);
         }
 
         // send result
@@ -217,7 +217,7 @@ public class Client implements Runnable {
         int yearOfBirth = Integer.parseInt(splitted[6]);
 
         // sign up
-        String result = new PlayerBUS().signup(email, password, avatar, name, gender, yearOfBirth);
+        String result = new PlayerController().signup(email, password, avatar, name, gender, yearOfBirth);
 
         // send data
         sendData(StreamData.Type.SIGNUP.name() + ";" + result);
@@ -355,7 +355,7 @@ public class Client implements Runnable {
             System.out.println("no");
             // tru diem
             this.loginPlayer.setScore(this.loginPlayer.getScore() - 1);
-            new PlayerBUS().update(this.loginPlayer);
+            new PlayerController().update(this.loginPlayer);
 
             // send data
             ResultPairMatchMessage send1 = new ResultPairMatchMessage();
@@ -497,7 +497,7 @@ public class Client implements Runnable {
         String email = received.split(";")[1];
 
         // get player data
-        Player p = new PlayerBUS().getByEmail(email);
+        Player p = new PlayerController().getByEmail(email);
         if (p == null) {
             result = "failed;" + Code.ACCOUNT_NOT_FOUND;
         } else {
@@ -532,12 +532,12 @@ public class Client implements Runnable {
             String gender = splitted[5];
 
             // edit profile
-            String result = new PlayerBUS().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
+            String result = new PlayerController().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
 
             // lưu lại newEmail vào Client nếu cập nhật thành công
             String status = result.split(";")[0];
             if (status.equals("success")) {
-                loginPlayer = new PlayerBUS().getByEmail(newEmail);
+                loginPlayer = new PlayerController().getByEmail(newEmail);
             }
 
             // send result
@@ -556,7 +556,7 @@ public class Client implements Runnable {
         String newPassword = splitted[2];
 
         // check change pass
-        String result = new PlayerBUS().changePassword(loginPlayer.getEmail(), oldPassword, newPassword);
+        String result = new PlayerController().changePassword(loginPlayer.getEmail(), oldPassword, newPassword);
 
         // send result
         sendData(StreamData.Type.CHANGE_PASSWORD.name() + ";" + result);

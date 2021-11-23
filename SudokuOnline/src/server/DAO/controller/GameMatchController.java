@@ -3,22 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.db.layers.BUS;
+package server.DAO.controller;
 
-import server.db.layers.DAL.GameMatchDAL;
-import server.db.layers.DTO.GameMatch;
+import server.DAO.DAOClass.GameMatchDAO;
+import server.DAO.model.GameMatch;
 import java.util.ArrayList;
 
 /**
  *
  * @author duynn
  */
-public class GameMatchBUS {
+public class GameMatchController {
 
     ArrayList<GameMatch> listGameMatch = new ArrayList<>();
-    GameMatchDAL gameMatchDAL = new GameMatchDAL();
+    GameMatchDAO gameMatchDAL = new GameMatchDAO();
 
-    public GameMatchBUS() {
+    public GameMatchController() {
         readDB();
     }
 

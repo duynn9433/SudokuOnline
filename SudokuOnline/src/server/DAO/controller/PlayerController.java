@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package server.db.layers.BUS;
+package server.DAO.controller;
 
-import server.db.layers.DAL.PlayerDAL;
-import server.db.layers.DTO.Player;
+import server.DAO.DAOClass.PlayerDAO;
+import server.DAO.model.Player;
 import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;
@@ -16,12 +16,12 @@ import shared.message.LoginMessage;
  *
  * @author duynn
  */
-public class PlayerBUS {
+public class PlayerController {
 
     ArrayList<Player> listPlayer = new ArrayList<>();
-    PlayerDAL playerDAL = new PlayerDAL();
+    PlayerDAO playerDAL = new PlayerDAO();
 
-    public PlayerBUS() {
+    public PlayerController() {
         readDB();
     }
 
