@@ -5,7 +5,7 @@
  */
 package server.DAO.DAOClass;
 
-import server.DAO.model.Player;
+import shared.model.Player;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

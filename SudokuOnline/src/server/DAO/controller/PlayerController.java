@@ -6,7 +6,7 @@
 package server.DAO.controller;
 
 import server.DAO.DAOClass.PlayerDAO;
-import server.DAO.model.Player;
+import shared.model.Player;
 import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;

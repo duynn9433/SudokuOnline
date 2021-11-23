@@ -5,8 +5,9 @@
  */
 package client.controller;
 
+import shared.model.ProfileData;
+import shared.model.ChatItem;
 import client.RunClient;
-import client.model.*;
 import client.view.scene.MainMenu;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

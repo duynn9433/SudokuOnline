@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import server.RunServer;
 import server.DAO.controller.GameMatchController;
-import server.DAO.model.GameMatch;
+import shared.model.GameMatch;
 import shared.constant.StreamData;
 
 /**

@@ -6,7 +6,7 @@
 package server.DAO.controller;
 
 import server.DAO.DAOClass.GameMatchDAO;
-import server.DAO.model.GameMatch;
+import shared.model.GameMatch;
 import java.util.ArrayList;
 
 /**

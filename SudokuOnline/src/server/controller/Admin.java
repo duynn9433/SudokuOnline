@@ -12,8 +12,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.DAO.controller.GameMatchController;
 import server.DAO.controller.PlayerController;
-import server.DAO.model.GameMatch;
-import server.DAO.model.Player;
+import shared.model.GameMatch;
+import shared.model.Player;
 
 /**
  *

@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.RunServer;
 import server.DAO.controller.PlayerController;
-import server.DAO.model.Player;
+import shared.model.Player;
 import shared.constant.*;
 import shared.helper.CustumDateTimeFormatter;
 import shared.message.*;

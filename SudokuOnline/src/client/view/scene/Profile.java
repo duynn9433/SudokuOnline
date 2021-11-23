@@ -6,7 +6,7 @@
 package client.view.scene;
 
 import client.RunClient;
-import client.model.ProfileData;
+import shared.model.ProfileData;
 import client.view.helper.Validation;
 import java.util.HashMap;
 import javax.swing.ImageIcon;

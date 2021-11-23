@@ -5,7 +5,7 @@
  */
 package server.DAO.DAOClass;
 
-import server.DAO.model.GameMatch;
+import shared.model.GameMatch;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

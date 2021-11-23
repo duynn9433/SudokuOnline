@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package client.model;
+package shared.model;
 
+import shared.model.ProfileData;
 import java.util.ArrayList;
 
 /**

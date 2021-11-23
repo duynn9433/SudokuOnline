@@ -6,7 +6,7 @@
 package client.view.scene;
 
 import client.RunClient;
-import client.model.ChatItem;
+import shared.model.ChatItem;
 import shared.constant.Avatar;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
