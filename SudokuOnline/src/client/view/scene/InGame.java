@@ -54,7 +54,7 @@ public class InGame extends javax.swing.JFrame {
         plBoardContainer.setVisible(true);
 
         // https://stackoverflow.com/a/1627068
-        ((DefaultCaret) txaChat.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+        ((DefaultCaret) txtChatOutput.getCaret()).setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
         // close window event
         this.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -176,7 +176,12 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void addChat(ChatItem c) {
-        txaChat.append(c.toString() + "\n");
+        txtChatOutput.append(c.toString() + "\n");
+    }
+    @Override
+    public void dispose(){
+        matchTimer.cancel();
+        this.dispose();
     }
 
     /**
@@ -209,7 +214,7 @@ public class InGame extends javax.swing.JFrame {
         txChatInput = new javax.swing.JTextField();
         btnSendMessage = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        txaChat = new javax.swing.JTextArea();
+        txtChatOutput = new javax.swing.JTextArea();
         plBoardContainer = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -406,10 +411,10 @@ public class InGame extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        txaChat.setEditable(false);
-        txaChat.setColumns(20);
-        txaChat.setRows(5);
-        jScrollPane3.setViewportView(txaChat);
+        txtChatOutput.setEditable(false);
+        txtChatOutput.setColumns(20);
+        txtChatOutput.setRows(5);
+        jScrollPane3.setViewportView(txtChatOutput);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -588,6 +593,6 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JPanel plToolContainer;
     private javax.swing.JTabbedPane tpChatAndViewerContainer;
     private javax.swing.JTextField txChatInput;
-    private javax.swing.JTextArea txaChat;
+    private javax.swing.JTextArea txtChatOutput;
     // End of variables declaration//GEN-END:variables
 }
