@@ -118,11 +118,11 @@ public class SocketHandler {
                         break;
 
                     case SIGNUP:
-                        onReceiveSignup(received);  //chua sua
+                        onReceiveSignup(message);  //chua sua
                         break;
 
                     case LOGOUT:
-                        onReceiveLogout(received);  //chua sua
+                        onReceiveLogout(message);  //chua sua
                         break;
 
                     case LIST_ROOM:
@@ -251,17 +251,17 @@ public class SocketHandler {
         }
     }
 
-    private void onReceiveSignup(String received) {
+    private void onReceiveSignup(Object message) {
         // get status from data
-        String[] splitted = received.split(";");
-        String status = splitted[1];
+        SignupMessage msg = (SignupMessage) message;
+        String status = msg.getStatus();
 
         // turn off loading
         RunClient.signupScene.setLoading(false);
 
         // check status
         if (status.equals("failed")) {
-            String failedMsg = splitted[2];
+            String failedMsg = msg.getCodeMsg();
             JOptionPane.showMessageDialog(RunClient.signupScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
 
         } else if (status.equals("success")) {
@@ -271,8 +271,9 @@ public class SocketHandler {
         }
     }
 
-    private void onReceiveLogout(String received) {
-        // xóa email login
+    private void onReceiveLogout(Object message) {
+       // xóa email login
+        LogoutMessage msg = (LogoutMessage) message;
         this.loginEmail = null;
 
         // chuyển scene
@@ -559,7 +560,6 @@ public class SocketHandler {
 
     public void login(String email, String password) {
         // prepare data
-        //String data = StreamData.Type.LOGIN.name() + ";" + email + ";" + password;
         LoginMessage data = new LoginMessage(StreamData.Type.LOGIN, email, password);
 
         // send data
@@ -569,24 +569,17 @@ public class SocketHandler {
 
     public void signup(String email, String password, String name, String gender, int yearOfBirth, String avatar) {
         // prepare data
-        String data = StreamData.Type.SIGNUP.name() + ";"
-                + email + ";"
-                + password + ";"
-                + avatar + ";"
-                + name + ";"
-                + gender + ";"
-                + String.valueOf(yearOfBirth);
-
+        SignupMessage data = new SignupMessage(StreamData.Type.SIGNUP, email, password, name, gender, yearOfBirth, avatar);
         // send data
-        sendData(data);
+        sendObject(data);
     }
 
     public void logout() {
         // prepare data
-        String data = StreamData.Type.LOGOUT.name();
+        LogoutMessage data = new LogoutMessage(StreamData.Type.LOGOUT);
 
         // send data
-        sendData(data);
+        sendObject(data);
     }
 
     // main menu

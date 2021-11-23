@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;
 import shared.message.LoginMessage;
+import shared.message.SignupMessage;
 
 /**
  *
@@ -147,22 +148,34 @@ public class PlayerController {
         return "success";
     }
 
-    public String signup(String email, String password, String avatar, String name, String gender, int yearOfBirth) {
+    public SignupMessage signup(String email, String password, String avatar, String name, String gender, int yearOfBirth) {
 
         // check email 
+        SignupMessage msg = new SignupMessage();
         Player p = getByEmail(email);
         if (p != null) {
-            return "failed;" + Code.EMAIL_EXISTED;
+            msg.setStatus("failed");
+            msg.setCodeMsg(Code.EMAIL_EXISTED);
+            return msg;
         }
 
         // thêm vào db
         boolean status = add(new Player(email, password, avatar, name, gender, yearOfBirth));
         if (!status) {
             // lỗi ko xác định
-            return "failed;Lỗi khi đăng ký";
+            msg.setStatus("failed");
+            msg.setCodeMsg("Lỗi khi đăng ký");
+            return msg;
         }
 
-        return "success";
+//        return "success";
+        msg.setStatus("success");
+        msg.setEmail(email);
+        msg.setAvatar(avatar);
+        msg.setName(name);
+        msg.setGender(gender);
+        msg.setYearOfBirth(yearOfBirth);
+        return msg;
     }
 
     public String editProfile(String email, String newEmail, String name, String avatar, int yearOfBirth, String gender) {

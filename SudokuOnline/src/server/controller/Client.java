@@ -76,11 +76,11 @@ public class Client implements Runnable {
                         break;
 
                     case SIGNUP:
-                        onReceiveSignup(received);
+                        onReceiveSignup(message);
                         break;
 
                     case LOGOUT:
-                        onReceiveLogout(received);
+                        onReceiveLogout(message);
                         break;
 
                     case LIST_ROOM:
@@ -206,32 +206,36 @@ public class Client implements Runnable {
         sendObject(result);
     }
 
-    private void onReceiveSignup(String received) {
+    private void onReceiveSignup(Object message) {
         // get data from received
-        String[] splitted = received.split(";");
-        String email = splitted[1];
-        String password = splitted[2];
-        String avatar = splitted[3];
-        String name = splitted[4];
-        String gender = splitted[5];
-        int yearOfBirth = Integer.parseInt(splitted[6]);
+        SignupMessage msg = (SignupMessage) message;
+        String email = msg.getEmail();
+        String password = msg.getPassword();
+        String avatar = msg.getAvatar();
+        String name = msg.getName();
+        String gender = msg.getGender();
+        int yearOfBirth = msg.getYearOfBirth();
 
         // sign up
-        String result = new PlayerController().signup(email, password, avatar, name, gender, yearOfBirth);
+        SignupMessage result = new PlayerController().signup(email, password, avatar, name, gender, yearOfBirth);
 
         // send data
-        sendData(StreamData.Type.SIGNUP.name() + ";" + result);
+        result.setType(StreamData.Type.SIGNUP);
+        sendObject(result);
     }
 
-    private void onReceiveLogout(String received) {
+    private void onReceiveLogout(Object message) {
         // log out now
         this.loginPlayer = null;
         this.findingMatch = false;
 
+        LogoutMessage msg = (LogoutMessage) message;
+        msg.setStatus("success");
+        msg.setType(StreamData.Type.LOGOUT);
         // TODO leave room
         // TODO broadcast to all clients
         // send status
-        sendData(StreamData.Type.LOGOUT.name() + ";success");
+        sendObject(msg);
     }
 
     // main menu
