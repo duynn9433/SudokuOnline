@@ -17,6 +17,7 @@ public class StreamData {
         Tên type // mô tả / dữ liệu gửi đi từ client / dữ liệu trả về từ server
      */
     public enum Type {
+        LOCK_SUBMIT,
         SUBMIT,
         CONNECT,
         // auth

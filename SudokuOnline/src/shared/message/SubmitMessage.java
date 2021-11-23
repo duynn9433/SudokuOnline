@@ -10,6 +10,7 @@ package shared.message;
  * @author duynn
  */
 public class SubmitMessage extends Message{
+    public static final long serialVersionUID = 8L;
     private int[][] submit;
     private String status;
     private String result;//win / lose/ draw

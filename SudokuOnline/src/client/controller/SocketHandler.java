@@ -167,7 +167,7 @@ public class SocketHandler {
                         break;
 
                     case LEAVE_ROOM:
-                        onReceiveLeaveRoom(received);
+                        onReceiveLeaveRoom(message);
                         break;
 
                     case CLOSE_ROOM:
@@ -189,6 +189,10 @@ public class SocketHandler {
                     case SUBMIT:
                         onReceiveSubmit(message);
                         break;
+                    case LOCK_SUBMIT:
+                        onReceiveLockSubmit(message);
+                        break;
+                        
                     case EXIT:
                         running = false;
                 }
@@ -203,8 +207,8 @@ public class SocketHandler {
 
         try {
             s.close();
-            dis.close();
-            dos.close();
+//            dis.close();
+        //    dos.close();
             ois.close();
             oos.close();
         } catch (IOException ex) {
@@ -433,12 +437,13 @@ public class SocketHandler {
         RunClient.inGameScene.addChat(c);
     }
 
-    private void onReceiveLeaveRoom(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
+    private void onReceiveLeaveRoom(Object message) {
+        LeaveRoomMessage msg = (LeaveRoomMessage) message;
+        String status = msg.getStatus();
+        System.out.println("status leave room:"+status);
 
         if (status.equals("failed")) {
-            String failedMsg = splitted[2];
+            String failedMsg = msg.getCodeMsg();
             JOptionPane.showMessageDialog(RunClient.inGameScene, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
 
         } else if (status.equals("success")) {
@@ -549,7 +554,13 @@ public class SocketHandler {
         String result = msg.getResult();
         RunClient.inGameScene.setWin(result);
     }
-
+    private void onReceiveLockSubmit(Object message){
+        LockSubmitMessage msg = (LockSubmitMessage) message;
+        String status = msg.getStatus();
+        if(status.equals("success")){
+            RunClient.inGameScene.lockSubmit();
+        }
+    }
     // ============= functions ===============
     // auth
     private void initConnect() {
@@ -585,7 +596,7 @@ public class SocketHandler {
 
     // main menu
     public void listRoom() {
-        sendData(StreamData.Type.LIST_ROOM.name()); //sua
+//        sendData(StreamData.Type.LIST_ROOM.name()); //sua
     }
 
     // pair match
@@ -627,7 +638,8 @@ public class SocketHandler {
     }
 
     public void leaveRoom() {
-        sendData(StreamData.Type.LEAVE_ROOM.name());
+        Message msg = new Message(StreamData.Type.LEAVE_ROOM);
+        sendObject(msg);
     }
 
     // profile
