@@ -16,18 +16,18 @@ import java.util.ArrayList;
 public class GameMatchController {
 
     ArrayList<GameMatch> listGameMatch = new ArrayList<>();
-    GameMatchDAO gameMatchDAL = new GameMatchDAO();
+    GameMatchDAO gameMatchDAO = new GameMatchDAO();
 
     public GameMatchController() {
         readDB();
     }
 
     public void readDB() {
-        listGameMatch = gameMatchDAL.readDB();
+        listGameMatch = gameMatchDAO.readDB();
     }
 
     public boolean add(GameMatch g) {
-        boolean status = gameMatchDAL.add(g);
+        boolean status = gameMatchDAO.add(g);
 
         if (status == true) {
             listGameMatch.add(g);
@@ -37,7 +37,7 @@ public class GameMatchController {
     }
 
     public boolean delete(int id) {
-        boolean status = gameMatchDAL.delete(id);
+        boolean status = gameMatchDAO.delete(id);
 
         if (status == true) {
             for (int i = (listGameMatch.size() - 1); i >= 0; i--) {
@@ -51,7 +51,7 @@ public class GameMatchController {
     }
 
     public boolean update(GameMatch g) {
-        boolean status = gameMatchDAL.update(g);
+        boolean status = gameMatchDAO.update(g);
 
         if (status == true) {
             listGameMatch.forEach((gm) -> {

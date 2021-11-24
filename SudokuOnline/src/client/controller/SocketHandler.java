@@ -503,7 +503,7 @@ public class SocketHandler {
             p = msg.getProfileData();
 
             // show data to UI
-            RunClient.profileScene.setProfileData(p);
+           // RunClient.profileScene.setProfileData(p);
         }
     }
 
@@ -542,7 +542,7 @@ public class SocketHandler {
         } else if (status.equals("success")) {
             RunClient.closeScene(RunClient.SceneName.CHANGEPASSWORD);
             JOptionPane.showMessageDialog(RunClient.changePasswordScene, "Đổi mật khẩu thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-        }*/
+        }
     }
 
     // game events

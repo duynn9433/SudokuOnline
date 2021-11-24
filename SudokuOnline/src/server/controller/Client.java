@@ -542,7 +542,6 @@ public class Client implements Runnable {
             profileData.setWinCount(p.getWinCount());
             profileData.setTieCount(p.calculateTieCount());
             profileData.setLoseCount(p.getLoseCount());
-            profileData.setCurrentStreak(p.getCurrentStreak());
             profileData.setWinRate(p.calculateWinRate());
             send.setProfileData(profileData);
             send.setStatus("success");

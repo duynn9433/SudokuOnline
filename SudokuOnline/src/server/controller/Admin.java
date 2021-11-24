@@ -116,7 +116,6 @@ public class Admin implements Runnable {
         System.out.println("The match with shortest play time: ");
         System.out.println("Player 1: " + p1.getName());
         System.out.println("Player 1: " + p2.getName());
-        System.out.println("Play time: " + m.getPlayTime() + " second");
     }
 
     // Block user with provided email
@@ -140,7 +139,6 @@ public class Admin implements Runnable {
         System.out.println("    + Player 1: " + playerBus.getById(m.getPlayerID1()).getName());
         System.out.println("    + Player 2: " + playerBus.getById(m.getPlayerID2()).getName());
         System.out.println("    + Winner: " + playerBus.getById(m.getWinnerID()).getName());
-        System.out.println("    + Play time in second: " + m.getPlayTime());
         //System.out.println("    + Total move: " + m.getTotalMove());
     }
 

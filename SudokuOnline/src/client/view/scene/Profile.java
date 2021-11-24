@@ -15,6 +15,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import shared.constant.Avatar;
 import shared.message.GetProfileMessage;
+import shared.message.ProfileMessage;
 
 /**
  *

@@ -31,8 +31,8 @@ public class GameMatchDAO {
         connector = new MysqlConnector();
 
         try {
-            String qry = "SELECT * FROM gamematch;";
-            PreparedStatement stm = connector.getConnection().prepareStatement(qry);
+            String sql = "SELECT * FROM gamematch;";
+            PreparedStatement stm = connector.getConnection().prepareStatement(sql);
             ResultSet rs = connector.sqlQry(stm);
 
             if (rs != null) {
@@ -42,9 +42,7 @@ public class GameMatchDAO {
                             rs.getInt("PlayerID1"),
                             rs.getInt("PlayerID2"),
                             rs.getInt("WinnerID"),
-                            rs.getInt("PlayTime"),
-                            LocalDateTime.parse(rs.getString("StartedTime")),
-                            rs.getString("Chat")
+                            LocalDateTime.parse(rs.getString("StartedTime"))
                     );
 
                     result.add(g);
@@ -65,14 +63,13 @@ public class GameMatchDAO {
         connector = new MysqlConnector();
 
         try {
-            String sql = "INSERT INTO GameMatch(PlayerID1,PlayerID2,WinnerID,PlayTime,TotalMove,StartedTime) "
-                    + "VALUES(?,?,?,?,?,?)";
+            String sql = "INSERT INTO GameMatch(PlayerID1,PlayerID2,WinnerID,StartedTime) "
+                    + "VALUES(?,?,?,?)";
             PreparedStatement stm = connector.getConnection().prepareStatement(sql);
             stm.setInt(1, m.getPlayerID1());
             stm.setInt(2, m.getPlayerID2());
             stm.setInt(3, m.getWinnerID());
-            stm.setInt(4, m.getPlayTime());
-            stm.setString(6, m.getStartedTime().toString());
+            stm.setString(4, m.getStartedTime().toString());
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
@@ -93,8 +90,6 @@ public class GameMatchDAO {
                     + "PlayerID1=?,"
                     + "PlayerID2=?,"
                     + "WinnerID=?,"
-                    + "PlayTime=?,"
-                    + "TotalMove=?,"
                     + "StartedTime=?"
                     + " WHERE ID=?";
 
@@ -102,9 +97,8 @@ public class GameMatchDAO {
             stm.setInt(1, m.getPlayerID1());
             stm.setInt(2, m.getPlayerID2());
             stm.setInt(3, m.getWinnerID());
-            stm.setInt(4, m.getPlayTime());
-            stm.setString(6, m.getStartedTime().toString());
-            stm.setInt(7, m.getId());
+            stm.setString(4, m.getStartedTime().toString());
+            stm.setInt(5, m.getId());
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {

@@ -48,7 +48,6 @@ public class PlayerDAO {
                             rs.getInt("MatchCount"),
                             rs.getInt("WinCount"),
                             rs.getInt("LoseCount"),
-                            rs.getInt("CurrentStreak"),
                             rs.getBoolean("Blocked")
                     );
                     result.add(p);
@@ -69,8 +68,8 @@ public class PlayerDAO {
         connector = new MysqlConnector();
 
         try {
-            String qry = "INSERT INTO Player(Email,Password,Avatar,Name,Gender,YearOfBirth,Score,MatchCount,WinCount,LoseCount,CurrentStreak,Blocked) "
-                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+            String qry = "INSERT INTO Player(Email,Password,Avatar,Name,Gender,YearOfBirth,Score,MatchCount,WinCount,LoseCount,Blocked) "
+                    + "VALUES(?,?,?,?,?,?,?,?,?,?,?)";
 
             PreparedStatement stm = connector.getConnection().prepareStatement(qry);
             stm.setString(1, p.getEmail());
@@ -83,8 +82,7 @@ public class PlayerDAO {
             stm.setInt(8, p.getMatchCount());
             stm.setInt(9, p.getWinCount());
             stm.setInt(10, p.getLoseCount());
-            stm.setInt(11, p.getCurrentStreak());
-            stm.setBoolean(12, p.isBlocked());
+            stm.setBoolean(11, p.isBlocked());
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
@@ -112,7 +110,6 @@ public class PlayerDAO {
                     + "MatchCount=?,"
                     + "WinCount=?,"
                     + "LoseCount=?,"
-                    + "CurrentStreak=?,"
                     + "Blocked=?"
                     + " WHERE ID=?";
 
@@ -128,9 +125,8 @@ public class PlayerDAO {
             stm.setInt(8, p.getMatchCount());
             stm.setInt(9, p.getWinCount());
             stm.setInt(10, p.getLoseCount());
-            stm.setInt(11, p.getCurrentStreak());
-            stm.setBoolean(12, p.isBlocked());
-            stm.setInt(13, p.getId());
+            stm.setBoolean(11, p.isBlocked());
+            stm.setInt(12, p.getId());
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {

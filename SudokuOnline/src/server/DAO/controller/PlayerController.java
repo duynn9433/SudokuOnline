@@ -22,18 +22,18 @@ import shared.message.SignupMessage;
 public class PlayerController {
 
     ArrayList<Player> listPlayer = new ArrayList<>();
-    PlayerDAO playerDAL = new PlayerDAO();
+    PlayerDAO playerDAO = new PlayerDAO();
 
     public PlayerController() {
         readDB();
     }
 
     public void readDB() {
-        listPlayer = playerDAL.readDB();
+        listPlayer = playerDAO.readDB();
     }
 
     public boolean add(Player p) {
-        boolean status = playerDAL.add(p);
+        boolean status = playerDAO.add(p);
 
         if (status == true) {
             listPlayer.add(p);
@@ -43,7 +43,7 @@ public class PlayerController {
     }
 
     public boolean delete(int id) {
-        boolean status = playerDAL.delete(id);
+        boolean status = playerDAO.delete(id);
 
         if (status == true) {
             for (int i = (listPlayer.size() - 1); i >= 0; i--) {
@@ -57,7 +57,7 @@ public class PlayerController {
     }
 
     public boolean update(Player p) {
-        boolean status = playerDAL.update(p);
+        boolean status = playerDAO.update(p);
 
         if (status == true) {
             listPlayer.forEach((pl) -> {

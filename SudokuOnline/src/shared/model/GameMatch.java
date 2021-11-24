@@ -18,25 +18,13 @@ public class GameMatch implements Serializable{
     int playerID1;
     int playerID2;
     int winnerID;
-    int playTime;
     LocalDateTime startedTime;
-    String chat = "";
 
-    public GameMatch(int id, int playerID1, int playerID2, int winnerID, int playTime, LocalDateTime startedTime, String chat) {
+    public GameMatch(int id, int playerID1, int playerID2, int winnerID, LocalDateTime startedTime) {
         this.id = id;
         this.playerID1 = playerID1;
         this.playerID2 = playerID2;
         this.winnerID = winnerID;
-        this.playTime = playTime;
-        this.startedTime = startedTime;
-        this.chat = chat;
-    }
-
-    public GameMatch(int playerID1, int playerID2, int winnerID, int playTime, LocalDateTime startedTime) {
-        this.playerID1 = playerID1;
-        this.playerID2 = playerID2;
-        this.winnerID = winnerID;
-        this.playTime = playTime;
         this.startedTime = startedTime;
     }
 
@@ -45,9 +33,7 @@ public class GameMatch implements Serializable{
         this.playerID1 = g.playerID1;
         this.playerID2 = g.playerID2;
         this.winnerID = g.winnerID;
-        this.playTime = g.playTime;
         this.startedTime = g.startedTime;
-        this.chat = g.chat;
     }
 
     public int getId() {
@@ -82,28 +68,12 @@ public class GameMatch implements Serializable{
         this.winnerID = winnerID;
     }
 
-    public int getPlayTime() {
-        return playTime;
-    }
-
-    public void setPlayTime(int playTime) {
-        this.playTime = playTime;
-    }
-
     public LocalDateTime getStartedTime() {
         return startedTime;
     }
 
     public void setStartedTime(LocalDateTime startedTime) {
         this.startedTime = startedTime;
-    }
-
-    public String getChat() {
-        return chat;
-    }
-
-    public void setChat(String chat) {
-        this.chat = chat;
     }
 
 }

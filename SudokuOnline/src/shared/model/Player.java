@@ -25,7 +25,6 @@ public class Player implements Serializable{
     int matchCount = 0;
     int winCount = 0;
     int loseCount = 0;
-    int currentStreak = 0; // số âm là chuỗi thua, dương là chuỗi thắng
     boolean blocked = false;
 
     public Player() {
@@ -36,7 +35,7 @@ public class Player implements Serializable{
         this.score += toAdd;
     }
 
-    public Player(int id, String email, String password, String avatar, String name, String gender, int yearOfBirth, int score, int matchCount, int winCount, int loseCount, int currentStreak, boolean blocked) {
+    public Player(int id, String email, String password, String avatar, String name, String gender, int yearOfBirth, int score, int matchCount, int winCount, int loseCount, boolean blocked) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -48,7 +47,6 @@ public class Player implements Serializable{
         this.matchCount = matchCount;
         this.winCount = winCount;
         this.loseCount = loseCount;
-        this.currentStreak = currentStreak;
         this.blocked = blocked;
     }
 
@@ -73,7 +71,6 @@ public class Player implements Serializable{
         this.matchCount = p.matchCount;
         this.winCount = p.winCount;
         this.loseCount = p.loseCount;
-        this.currentStreak = p.currentStreak;
         this.blocked = p.blocked;
     }
 
@@ -183,14 +180,6 @@ public class Player implements Serializable{
 
     public void setLoseCount(int loseCount) {
         this.loseCount = loseCount;
-    }
-
-    public int getCurrentStreak() {
-        return currentStreak;
-    }
-
-    public void setCurrentStreak(int currentStreak) {
-        this.currentStreak = currentStreak;
     }
 
     public boolean isBlocked() {
