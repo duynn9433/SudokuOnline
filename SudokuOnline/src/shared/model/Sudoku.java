@@ -5,6 +5,7 @@
  */
 package shared.model;
 
+import java.io.Serializable;
 import server.controller.DataCreateGame;
 import shared.helper.CountDownTimer;
 
@@ -12,7 +13,7 @@ import shared.helper.CountDownTimer;
  *
  * @author duynn
  */
-public class Sudoku {
+public class Sudoku implements Serializable{
 
     public static final int ROW = 9, COL = 9;
     public static final int TURN_TIME_LIMIT = 30, MATCH_TIME_LIMIT = 10 * 60;

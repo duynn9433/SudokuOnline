@@ -44,9 +44,9 @@ public class ClientManager {
         return null;
     }
 
-    public void broadcast(String msg) {
+    public void broadcast(Object message) {
         clients.forEach((c) -> {
-            c.sendData(msg);
+            c.sendObject(message);
         });
     }
 

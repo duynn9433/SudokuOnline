@@ -5,13 +5,14 @@
  */
 package shared.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  *
  * @author duynn
  */
-public class GameMatch {
+public class GameMatch implements Serializable{
 
     int id;
     int playerID1;

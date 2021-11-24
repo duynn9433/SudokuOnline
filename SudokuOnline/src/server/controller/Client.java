@@ -5,6 +5,7 @@
  */
 package server.controller;
 
+import client.RunClient;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -14,8 +15,9 @@ import server.RunServer;
 import server.DAO.controller.PlayerController;
 import shared.model.Player;
 import shared.constant.*;
-import shared.helper.CustumDateTimeFormatter;
+import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
+import shared.model.ChatItem;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
 
@@ -123,7 +125,11 @@ public class Client implements Runnable {
                         break;
 
                     case CHAT_ROOM:
-                        onReceiveChatRoom(received);
+                        onReceiveChatRoom(message);
+                        break;
+                        
+                    case CHAT_ALL:
+                        onReceiveChatAll(message);
                         break;
 
                     case LEAVE_ROOM:
@@ -154,7 +160,7 @@ public class Client implements Runnable {
                 // System.out.println("Connection lost with " + s.getPort());
 
                 // leave room if needed
-                onReceiveLeaveRoom();
+                // onReceiveLeaveRoom();
                 break;
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -461,19 +467,19 @@ public class Client implements Runnable {
         room.startGame();
     }
 
-    private void onReceiveChatRoom(String received) {
-        String[] splitted = received.split(";");
-        String chatMsg = splitted[1];
+    private void onReceiveChatRoom(Object message) {
+        ChatMessage msg = (ChatMessage) message;
+        ChatItem chatItem = msg.getChatItem();
 
         if (joinedRoom != null) {
-            String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
-                    + loginPlayer.getNameId() + ";"
-                    + chatMsg;
-
-            joinedRoom.broadcast(StreamData.Type.CHAT_ROOM.name() + ";" + data);
+            joinedRoom.broadcast(msg);
         }
     }
-
+    private void  onReceiveChatAll(Object message){
+        ChatMessage msg = (ChatMessage) message;
+        RunServer.clientManager.broadcast(msg);
+    }
+    
     private void onReceiveLeaveRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
@@ -491,7 +497,7 @@ public class Client implements Runnable {
         System.out.println("1");
 
         // broadcast to all clients in room
-//        String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
+//        String data = CustomDateTimeFormatter.getCurrentTimeFormatted() + ";"
 //                + "SERVER" + ";"
 //                + loginPlayer.getNameId() + " đã thoát";
 //
@@ -598,6 +604,9 @@ public class Client implements Runnable {
     private void onReceiveSubmit(Object message) {
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
+        if(joinedRoom.getClient1() == null && joinedRoom.getClient2() == null){
+            return;
+        }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
             //chien thang +3diem
 
@@ -739,11 +748,10 @@ public class Client implements Runnable {
             this.joinedRoom = room;
 
             // thông báo với mọi người trong phòng
-            this.joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";"
-                    + CustumDateTimeFormatter.getCurrentTimeFormatted()
-                    + ";SERVER;"
-                    + loginPlayer.getNameId() + " đã vào phòng."
-            );
+//            ChatMessage sendChat = new ChatMessage(
+//                    new ChatItem(CustomDateTimeFormatter.getCurrentTimeFormatted(),
+//                            "SERVER", loginPlayer.getNameId()));
+//            this.joinedRoom.broadcast(sendChat);
 
             msg.setStatus("success");
             msg.setIdRoom(room.getId());

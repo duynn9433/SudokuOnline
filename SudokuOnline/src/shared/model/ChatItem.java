@@ -5,11 +5,13 @@
  */
 package shared.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author duynn
  */
-public class ChatItem {
+public class ChatItem implements Serializable{
 
     String time;
     String owner;

@@ -5,13 +5,14 @@
  */
 package shared.model;
 
+import java.io.Serializable;
 import shared.model.PlayerInGame;
 
 /**
  *
  * @author duynn
  */
-public class Player {
+public class Player implements Serializable{
 
     int id;
     String email;
@@ -78,6 +79,10 @@ public class Player {
 
     public int calculateTieCount() {
         return matchCount - winCount - loseCount;
+    }
+    public float calWinRate(){
+        if(matchCount==0) return 0;
+        return (float)(winCount/matchCount);
     }
 
     public float calculateWinRate() {
