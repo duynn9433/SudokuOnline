@@ -8,9 +8,11 @@ package server.controller;
 import client.RunClient;
 import java.io.*;
 import java.net.Socket;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import server.DAO.controller.GameMatchController;
 import server.RunServer;
 import server.DAO.controller.PlayerController;
 import shared.model.Player;
@@ -18,6 +20,7 @@ import shared.constant.*;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
 import shared.model.ChatItem;
+import shared.model.GameMatch;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
 
@@ -86,7 +89,7 @@ public class Client implements Runnable {
                         break;
 
                     case LIST_ROOM:
-                        onReceiveListRoom(message);
+                        onReceiveListRoom(received);
                         break;
 
                     case LIST_ONLINE:
@@ -127,7 +130,7 @@ public class Client implements Runnable {
                     case CHAT_ROOM:
                         onReceiveChatRoom(message);
                         break;
-                        
+
                     case CHAT_ALL:
                         onReceiveChatAll(message);
                         break;
@@ -146,7 +149,6 @@ public class Client implements Runnable {
                     case GET_LIST_RANK:
                         onReceiveGetRank();
                         break;
-                        
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(message);
                         break;
@@ -250,16 +252,13 @@ public class Client implements Runnable {
     }
 
     // main menu
-    private void onReceiveListRoom(Object message) {
+    private void onReceiveListRoom(String received) {
         // prepare data
-        ListRoomMessage msg = (ListRoomMessage) message;
-        msg.setStatus("success");
-//        String result = "success;";
+        String result = "success;";
         ArrayList<Room> listRoom = RunServer.roomManager.getRooms();
         int roomCount = listRoom.size();
 
-//        result += roomCount + ";";
-        msg.setRoomCount(roomCount);
+        result += roomCount + ";";
 
         for (Room r : listRoom) {
             String pairData
@@ -267,16 +266,13 @@ public class Client implements Runnable {
                     + " VS "
                     + ((r.getClient2() != null) ? r.getClient2().getLoginPlayer().getNameId() : "_");
 
-//            result += r.getId() + ";"
-//                    + pairData + ";";
-            msg.setPairData(pairData);
-            msg.setRoomID(r.getId());
+            result += r.getId() + ";"
+                    + pairData + ";"
+                    + r.clients.size() + ";";
         }
 
         // send data
-        msg.setType(StreamData.Type.LIST_ROOM);
-        sendObject(msg);
-//        sendData(StreamData.Type.LIST_ROOM.name() + ";" + result);
+        sendData(StreamData.Type.LIST_ROOM.name() + ";" + result);
     }
 
     private void onReceiveListOnline(String received) {
@@ -484,11 +480,12 @@ public class Client implements Runnable {
             joinedRoom.broadcast(msg);
         }
     }
-    private void  onReceiveChatAll(Object message){
+
+    private void onReceiveChatAll(Object message) {
         ChatMessage msg = (ChatMessage) message;
         RunServer.clientManager.broadcast(msg);
     }
-    
+
     private void onReceiveLeaveRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
@@ -525,7 +522,7 @@ public class Client implements Runnable {
     // profile
     private void onReceiveGetProfile(Object message) {
         SendEmailMessage msg = (SendEmailMessage) message;
-       Player p = new PlayerController().getByEmail(msg.getEmail());
+        Player p = new PlayerController().getByEmail(msg.getEmail());
         GetProfileMessage data = new GetProfileMessage(p, StreamData.Type.GET_PROFILE);
         sendObject(data);
     }
@@ -534,7 +531,7 @@ public class Client implements Runnable {
         EditProfileMessage msg = (EditProfileMessage) message;
         try {
             // get data from received
-            
+
             String newEmail = msg.getEmail();
             String name = msg.getName();
             String avatar = msg.getAvatar();
@@ -580,7 +577,7 @@ public class Client implements Runnable {
     private void onReceiveSubmit(Object message) {
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
-        if(joinedRoom.getClient1() == null && joinedRoom.getClient2() == null){
+        if (joinedRoom.getClient1() == null && joinedRoom.getClient2() == null) {
             return;
         }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
@@ -614,52 +611,122 @@ public class Client implements Runnable {
             boolean check1 = joinedRoom.getSudoku1().CheckWin();
             boolean check2 = joinedRoom.getSudoku2().CheckWin();
             SubmitMessage send1 = new SubmitMessage();
+            boolean isPlayer1Win = false;
+            boolean isPlayer2Win = false;
             if (check1 && !check2) {
                 //1win
                 send1.setType(StreamData.Type.SUBMIT);
                 send1.setResult(joinedRoom.getClient1().getLoginPlayer().getEmail());
-                //them 3 diem 1
+                //them 3 diem cho 1
+                firstWin();
+                isPlayer1Win = true;
+                isPlayer2Win = false;
             } else if (!check1 && check2) {
                 //2win
                 send1.setType(StreamData.Type.SUBMIT);
                 send1.setResult(joinedRoom.getClient2().getLoginPlayer().getEmail());
                 //them 3 diem cho 2
+                secondWin();
+                isPlayer1Win = false;
+                isPlayer2Win = true;
             } else if (!check1 && !check2) {
                 //hoa
                 send1.setType(StreamData.Type.SUBMIT);
 
                 //moi th 1 diem
+                draw();
+                isPlayer1Win=false;
+                isPlayer2Win = false;
             } else if (check1 && check2) {
                 if (joinedRoom.getSudoku1().getSubmitTime() > joinedRoom.getSudoku2().getSubmitTime()) {
                     //1win
                     send1.setType(StreamData.Type.SUBMIT);
                     send1.setResult(joinedRoom.getClient1().getLoginPlayer().getEmail());
                     //them 3 dierm cho 1
+                    firstWin();
+                    isPlayer1Win = true;
+                    isPlayer2Win = false;
                 } else if (joinedRoom.getSudoku1().getSubmitTime() < joinedRoom.getSudoku2().getSubmitTime()) {
                     //2win
                     send1.setType(StreamData.Type.SUBMIT);
                     send1.setResult(joinedRoom.getClient2().getLoginPlayer().getEmail());
 
                     //them 3 diem cho 2
+                    secondWin();
+                    isPlayer1Win = false;
+                    isPlayer2Win = true;
                 } else {
                     //hoa
                     send1.setType(StreamData.Type.SUBMIT);
 
                     //moi th them 1 diem
+                    draw();
+                    isPlayer1Win=false;
+                    isPlayer2Win = false;
                 }
             }
             sendObject(send1);
             cCompetitor.sendObject(send1);
             //TODO luu game match
-            //                        // TODO luu game match
-//                        new GameMatchBUS().add(new GameMatch(
-//                                winner.getId(),
-//                                loser.getId(),
-//                                winner.getId(),
-//                                Sudoku.MATCH_TIME_LIMIT - ((Sudoku) joinedRoom.getGamelogic()).getMatchTimer().getCurrentTick(),
-//                                joinedRoom.startedTime
-//                        ));
+            new GameMatchController().add(
+                    new GameMatch(0,joinedRoom.getClient1().getLoginPlayer().getId()
+                            ,joinedRoom.getClient2().getLoginPlayer().getId()
+                            ,getWinnerID(isPlayer1Win, isPlayer2Win), 
+                            joinedRoom.getStartedTime()));
         }
+    }
+
+    private int getWinnerID(boolean isPlayer1Win, boolean isPlayer2Win){
+        if(isPlayer1Win && !isPlayer2Win){
+            return joinedRoom.getClient1().getLoginPlayer().getId();
+        }
+        if(!isPlayer1Win && isPlayer2Win){
+            return joinedRoom.getClient2().getLoginPlayer().getId();
+        }
+        if(!isPlayer1Win && !isPlayer2Win){
+            return 0;
+        }
+        return 0;
+    }
+    private void firstWin() {
+        PlayerController playerController = new PlayerController();
+        Player p1 = joinedRoom.getClient1().getLoginPlayer();
+        p1.setMatchCount(p1.getMatchCount() + 1);
+        p1.setWinCount(p1.getWinCount() + 1);
+        p1.setScore(p1.getScore() + 3);
+        playerController.update(p1);
+
+        Player p2 = joinedRoom.getClient2().getLoginPlayer();
+        p2.setMatchCount(p2.getMatchCount() + 1);
+        p2.setLoseCount(p2.getLoseCount() + 1);
+        playerController.update(p2);
+    }
+
+    private void secondWin() {
+        PlayerController playerController = new PlayerController();
+        Player p2 = joinedRoom.getClient2().getLoginPlayer();
+        p2.setMatchCount(p2.getMatchCount() + 1);
+        p2.setWinCount(p2.getWinCount() + 1);
+        p2.setScore(p2.getScore() + 3);
+        playerController.update(p2);
+
+        Player p1 = joinedRoom.getClient1().getLoginPlayer();
+        p1.setMatchCount(p1.getMatchCount() + 1);
+        p1.setLoseCount(p1.getLoseCount() + 1);
+        playerController.update(p1);
+    }
+
+    private void draw() {
+        PlayerController playerController = new PlayerController();
+        Player p2 = joinedRoom.getClient2().getLoginPlayer();
+        p2.setMatchCount(p2.getMatchCount() + 1);
+        p2.setScore(p2.getScore() + 1);
+        playerController.update(p2);
+
+        Player p1 = joinedRoom.getClient1().getLoginPlayer();
+        p1.setMatchCount(p1.getMatchCount() + 1);
+        p1.setScore(p1.getScore() + 1);
+        playerController.update(p1);
     }
 
     // send data fucntions
@@ -728,7 +795,6 @@ public class Client implements Runnable {
 //                    new ChatItem(CustomDateTimeFormatter.getCurrentTimeFormatted(),
 //                            "SERVER", loginPlayer.getNameId()));
 //            this.joinedRoom.broadcast(sendChat);
-
             msg.setStatus("success");
             msg.setIdRoom(room.getId());
             return msg;
@@ -785,8 +851,8 @@ public class Client implements Runnable {
     }
 
     private void onReceiveGetRank() {
-     ArrayList<Player> listPlayer = new PlayerController().getList();
-     GetListRankMessage data = new GetListRankMessage(listPlayer, StreamData.Type.GET_LIST_RANK);
+        ArrayList<Player> listPlayer = new PlayerController().getList();
+        GetListRankMessage data = new GetListRankMessage(listPlayer, StreamData.Type.GET_LIST_RANK);
         sendObject(data);
     }
 
