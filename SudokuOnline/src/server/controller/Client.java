@@ -17,6 +17,7 @@ import shared.constant.*;
 import shared.helper.CustumDateTimeFormatter;
 import shared.message.*;
 import shared.model.PlayerInGame;
+import shared.model.ProfileData;
 
 /**
  *
@@ -130,15 +131,15 @@ public class Client implements Runnable {
                         break;
 
                     case GET_PROFILE:
-                        onReceiveGetProfile(received);
+                        onReceiveGetProfile(message);
                         break;
 
                     case EDIT_PROFILE:
-                        onReceiveEditProfile(received);
+                        onReceiveEditProfile(message);
                         break;
 
                     case CHANGE_PASSWORD:
-                        onReceiveChangePassword(received);
+                        onReceiveChangePassword(message);
                         break;
 
                     case SUBMIT:
@@ -189,7 +190,8 @@ public class Client implements Runnable {
 
         // check đã được đăng nhập ở nơi khác
         if (RunServer.clientManager.find(email) != null) {
-            sendObject(new LoginMessage(StreamData.Type.LOGIN, "failed", Code.ACCOUNT_LOGEDIN));
+//            sendObject(new LoginMessage(StreamData.Type.LOGIN, "failed", Code.ACCOUNT_LOGEDIN));
+            sendObject(new LoginMessage("failed", Code.ACCOUNT_LOGEDIN, StreamData.Type.LOGIN));
             return;
         }
 
@@ -506,76 +508,90 @@ public class Client implements Runnable {
     }
 
     // profile
-    private void onReceiveGetProfile(String received) {
-        String result;
+    private void onReceiveGetProfile(Object message) {
 
         // get email from data
-        String email = received.split(";")[1];
+        ProfileMessage msg = (ProfileMessage) message;
+        String email = msg.getEmail();
+        
 
         // get player data
         Player p = new PlayerController().getByEmail(email);
         if (p == null) {
-            result = "failed;" + Code.ACCOUNT_NOT_FOUND;
+            sendObject(new ProfileMessage(StreamData.Type.GET_PROFILE, "failed", Code.ACCOUNT_NOT_FOUND));
+            return;
         } else {
-            result = "success;"
-                    + p.getId() + ";"
-                    + p.getEmail() + ";"
-                    + p.getName() + ";"
-                    + p.getAvatar() + ";"
-                    + p.getGender() + ";"
-                    + p.getYearOfBirth() + ";"
-                    + p.getScore() + ";"
-                    + p.getMatchCount() + ";"
-                    + p.getWinCount() + ";"
-                    + p.calculateTieCount() + ";"
-                    + p.getLoseCount() + ";"
-                    + p.getCurrentStreak() + ";"
-                    + p.calculateWinRate();
+            System.out.println("player: " + p);
+            ProfileData profileData = new ProfileData();
+            ProfileMessage send = new ProfileMessage();
+            profileData.setId(p.getId());
+            profileData.setEmail(p.getEmail());
+            profileData.setName(p.getName());
+            profileData.setAvatar(p.getAvatar());
+            profileData.setGender(p.getGender());
+            profileData.setYearOfBirth(p.getYearOfBirth());
+            profileData.setScore(p.getScore());
+            profileData.setMatchCount(p.getMatchCount());
+            profileData.setWinCount(p.getWinCount());
+            profileData.setTieCount(p.calculateTieCount());
+            profileData.setLoseCount(p.getLoseCount());
+            profileData.setCurrentStreak(p.getCurrentStreak());
+            profileData.setWinRate(p.calculateWinRate());
+            send.setProfileData(profileData);
+            send.setStatus("success");
+            send.setType(StreamData.Type.GET_PROFILE);
+            System.out.println("send: " + send);
+            
+            sendObject(send);
+            return;
         }
 
-        // send result
-        sendData(StreamData.Type.GET_PROFILE.name() + ";" + result);
     }
 
-    private void onReceiveEditProfile(String received) {
+    private void onReceiveEditProfile(Object message) {
+        EditProfileMessage msg = (EditProfileMessage) message;
         try {
             // get data from received
-            String[] splitted = received.split(";");
-            String newEmail = splitted[1];
-            String name = splitted[2];
-            String avatar = splitted[3];
-            int yearOfBirth = Integer.parseInt(splitted[4]);
-            String gender = splitted[5];
+            
+            String newEmail = msg.getEmail();
+            String name = msg.getName();
+            String avatar = msg.getAvatar();
+            int yearOfBirth = Integer.parseInt(msg.getYearOfBirth());
+            String gender = msg.getGender();
 
             // edit profile
-            String result = new PlayerController().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
+            EditProfileMessage result = new PlayerController().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
 
             // lưu lại newEmail vào Client nếu cập nhật thành công
-            String status = result.split(";")[0];
+            String status = result.getStatus();
             if (status.equals("success")) {
                 loginPlayer = new PlayerController().getByEmail(newEmail);
             }
 
             // send result
-            sendData(StreamData.Type.EDIT_PROFILE + ";" + result);
+            result.setType(StreamData.Type.EDIT_PROFILE);
+            sendObject(result);
 
         } catch (NumberFormatException e) {
             // send failed format
-            sendData(StreamData.Type.EDIT_PROFILE + ";failed;Năm sinh phải là số nguyên");
+            msg.setType(StreamData.Type.EDIT_PROFILE);
+            msg.setStatus("failed");
+            msg.setCodeMsg("Năm sinh phải là số nguyên");
+            sendObject(msg);
         }
     }
 
-    private void onReceiveChangePassword(String received) {
+    private void onReceiveChangePassword(Object message) {
         // get old pass, new pass from data
-        String[] splitted = received.split(";");
-        String oldPassword = splitted[1];
-        String newPassword = splitted[2];
-
+        ChangePasswordMessage msg = (ChangePasswordMessage) message;
+        String oldPassword = msg.getOldPassword();
+        String newPassword = msg.getNewPassword();
         // check change pass
-        String result = new PlayerController().changePassword(loginPlayer.getEmail(), oldPassword, newPassword);
+        ChangePasswordMessage result = new PlayerController().changePassword(loginPlayer.getEmail(), oldPassword, newPassword);
 
         // send result
-        sendData(StreamData.Type.CHANGE_PASSWORD.name() + ";" + result);
+        result.setType(StreamData.Type.CHANGE_PASSWORD);
+        sendObject(result);
     }
 
     // game event

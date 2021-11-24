@@ -175,15 +175,15 @@ public class SocketHandler {
                         break;
 
                     case GET_PROFILE:
-                        onReceiveGetProfile(received);
+                        onReceiveGetProfile(message);
                         break;
 
                     case EDIT_PROFILE:
-                        onReceivedEditProfile(received);
+                        onReceivedEditProfile(message);
                         break;
 
                     case CHANGE_PASSWORD:
-                        onReceiveChangePassword(received);
+                        onReceiveChangePassword(message);
                         break;
 
                     case SUBMIT:
@@ -475,71 +475,56 @@ public class SocketHandler {
     }
 
     // profile
-    private void onReceiveGetProfile(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
-
+    private void onReceiveGetProfile(Object message) {
+        ProfileMessage msg = (ProfileMessage) message;
+        String status = msg.getStatus();
         // turn off loading
         RunClient.profileScene.setLoading(false);
 
         if (status.equals("failed")) {
-            String failedMsg = splitted[2];
+             String failedMsg = msg.getCodeMsg();
             JOptionPane.showMessageDialog(RunClient.profileScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
 
         } else if (status.equals("success")) {
             // get player data from received
-            ProfileData p = new ProfileData(
-                    Integer.parseInt(splitted[2]), // id
-                    splitted[3], // email
-                    splitted[4], // name
-                    splitted[5], // avatar
-                    splitted[6], // gender
-                    Integer.parseInt(splitted[7]), // year of birth
-                    Integer.parseInt(splitted[8]), // score
-                    Integer.parseInt(splitted[9]), // match count
-                    Integer.parseInt(splitted[10]), // win count
-                    Integer.parseInt(splitted[11]), // tie count
-                    Integer.parseInt(splitted[12]), // lose count
-                    Integer.parseInt(splitted[13]), // current streak
-                    Float.parseFloat(splitted[14])); // win rate
+            ProfileData p = new ProfileData();
+            p = msg.getProfileData();
 
             // show data to UI
             RunClient.profileScene.setProfileData(p);
         }
     }
 
-    private void onReceivedEditProfile(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
-
+    private void onReceivedEditProfile(Object message) {
+        EditProfileMessage msg = (EditProfileMessage) message;
+        String status = msg.getStatus();
         // turn off loading
         RunClient.profileScene.setProfileSaveLoading(false);
 
         if (status.equals("failed")) {
-            String failedMsg = splitted[2];
+            String failedMsg = msg.getCodeMsg();
             JOptionPane.showMessageDialog(RunClient.profileScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
 
         } else if (status.equals("success")) {
             JOptionPane.showMessageDialog(RunClient.profileScene, "Đổi thông tin thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
             // lưu lại email
-            this.loginEmail = splitted[2];
+            this.loginEmail = msg.getEmail();
 
             // load lại thông tin cá nhân mới - có thể ko cần! nhưng cứ load lại cho chắc
             getProfile(this.loginEmail);
         }
     }
 
-    private void onReceiveChangePassword(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
-
+    private void onReceiveChangePassword(Object message) {
+        ChangePasswordMessage msg = (ChangePasswordMessage) message;
+        String status = msg.getStatus();
         // turn off loading
         RunClient.changePasswordScene.setLoading(false);
 
         // check status
         if (status.equals("failed")) {
-            String failedMsg = splitted[2];
+            String failedMsg = msg.getCodeMsg();
             JOptionPane.showMessageDialog(RunClient.changePasswordScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
 
         } else if (status.equals("success")) {
@@ -645,35 +630,50 @@ public class SocketHandler {
     // profile
     public void changePassword(String oldPassword, String newPassword) {
         // hasing password
-        String oldPasswordHash = oldPassword;
-        String newPasswordHash = newPassword;
+        ChangePasswordMessage msg = new ChangePasswordMessage();
+        msg.setOldPassword(oldPassword);
+        msg.setNewPassword(newPassword);
+        msg.setType(StreamData.Type.CHANGE_PASSWORD);
 
         // prepare data
-        String data = StreamData.Type.CHANGE_PASSWORD.name() + ";" + oldPasswordHash + ";" + newPasswordHash;
+//        String data = StreamData.Type.CHANGE_PASSWORD.name() + ";" + oldPassword + ";" + newPassword;
 
         // send data
-        sendData(data);
+//        sendData(data);
+        sendObject(msg);
     }
 
     public void getProfile(String email) {
         // prepare data
-        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
+        ProfileMessage msg = new ProfileMessage();
+        msg.setType(StreamData.Type.GET_PROFILE);
+        msg.setEmail(email);
+//        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
 
         // send data
-        sendData(data);
+//        sendData(data);
+          sendObject(msg);
     }
 
     public void editProfile(String newEmail, String name, String avatar, String yearOfBirth, String gender) {
         // prepare data
-        String data = StreamData.Type.EDIT_PROFILE + ";"
-                + newEmail + ";"
-                + name + ";"
-                + avatar + ";"
-                + yearOfBirth + ";"
-                + gender;
+        EditProfileMessage msg = new EditProfileMessage();
+        msg.setEmail(newEmail);
+        msg.setName(name);
+        msg.setAvatar(avatar);
+        msg.setYearOfBirth(yearOfBirth);
+        msg.setGender(gender);
+        msg.setType(StreamData.Type.EDIT_PROFILE);
+//        String data = StreamData.Type.EDIT_PROFILE + ";"
+//                + newEmail + ";"
+//                + name + ";"
+//                + avatar + ";"
+//                + yearOfBirth + ";"
+//                + gender;
 
         // send data
-        sendData(data);
+//        sendData(data);
+        sendObject(msg);
     }
 
     // send data
