@@ -179,7 +179,7 @@ public class SocketHandler {
                         break;
 
                     case GET_PROFILE:
-                        onReceiveGetProfile(received);
+                        onReceiveGetProfile(message);
                         break;
 
                     case EDIT_PROFILE:
@@ -482,37 +482,15 @@ public class SocketHandler {
     }
 
     // profile
-    private void onReceiveGetProfile(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
+    private void onReceiveGetProfile(Object message) {
+       GetProfileMessage profileMessage = (GetProfileMessage) message;
 
         // turn off loading
         RunClient.profileScene.setLoading(false);
 
-        if (status.equals("failed")) {
-            String failedMsg = splitted[2];
-            JOptionPane.showMessageDialog(RunClient.profileScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
-
-        } else if (status.equals("success")) {
-            // get player data from received
-            ProfileData p = new ProfileData(
-                    Integer.parseInt(splitted[2]), // id
-                    splitted[3], // email
-                    splitted[4], // name
-                    splitted[5], // avatar
-                    splitted[6], // gender
-                    Integer.parseInt(splitted[7]), // year of birth
-                    Integer.parseInt(splitted[8]), // score
-                    Integer.parseInt(splitted[9]), // match count
-                    Integer.parseInt(splitted[10]), // win count
-                    Integer.parseInt(splitted[11]), // tie count
-                    Integer.parseInt(splitted[12]), // lose count
-                    Integer.parseInt(splitted[13]), // current streak
-                    Float.parseFloat(splitted[14])); // win rate
-
-            // show data to UI
-            RunClient.profileScene.setProfileData(p);
-        }
+        
+            RunClient.profileScene.setProfileData(profileMessage);
+        
     }
 
     private void onReceivedEditProfile(String received) {
@@ -663,11 +641,8 @@ public class SocketHandler {
     }
 
     public void getProfile(String email) {
-        // prepare data
-        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
-
-        // send data
-        sendData(data);
+       SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
+        sendObject(data);
     }
 
     public void editProfile(String newEmail, String name, String avatar, String yearOfBirth, String gender) {
