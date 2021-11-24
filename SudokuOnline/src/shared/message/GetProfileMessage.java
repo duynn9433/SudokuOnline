@@ -29,6 +29,22 @@ public class GetProfileMessage extends Message{
     public GetProfileMessage() {
     }
 
+    public GetProfileMessage(int id, String email, String name, String avatar, String gender, String yearOfBirth, int score, int matchCount, int win, int tie, int lose, int winRate, StreamData.Type type) {
+        super(type);
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.avatar = avatar;
+        this.gender = gender;
+        this.yearOfBirth = yearOfBirth;
+        this.score = score;
+        this.matchCount = matchCount;
+        this.win = win;
+        this.tie = tie;
+        this.lose = lose;
+        this.winRate = winRate;
+    }
+    
     public GetProfileMessage(int id, String email, String name, String avatar, String gender, String yearOfBirth, int score, int matchCount, int win, int tie, int lose, int winRate) {
         this.id = id;
         this.email = email;

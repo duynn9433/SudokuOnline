@@ -17,6 +17,11 @@ public class GetListRankMessage extends Message{
      public static final long serialVersionUID = 22L;
      private ArrayList<Player> listPalyer;
 
+    public GetListRankMessage(ArrayList<Player> listPalyer, StreamData.Type type) {
+        super(type);
+        this.listPalyer = listPalyer;
+    }
+     
     public GetListRankMessage(ArrayList<Player> listPalyer) {
         this.listPalyer = listPalyer;
     }
