@@ -5,13 +5,14 @@
  */
 package shared.model;
 
+import java.io.Serializable;
 import shared.model.PlayerInGame;
 
 /**
  *
  * @author duynn
  */
-public class Player {
+public class Player implements Serializable{
 
     int id;
     String email;

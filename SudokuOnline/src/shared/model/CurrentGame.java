@@ -5,6 +5,7 @@
  */
 package shared.model;
 
+import java.io.Serializable;
 import shared.model.ProfileData;
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  *
  * @author duynn
  */
-public class CurrentGame {
+public class CurrentGame implements Serializable{
 
     ArrayList<ProfileData> listViewer;
     ProfileData player1;

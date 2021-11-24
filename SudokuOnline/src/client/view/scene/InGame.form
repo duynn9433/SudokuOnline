@@ -384,7 +384,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="txChatInput" min="-2" pref="217" max="-2" attributes="0"/>
+                              <Component id="txtChatInput" min="-2" pref="217" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnSendMessage" pref="93" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -397,7 +397,7 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="btnSendMessage" max="32767" attributes="0"/>
-                                  <Component id="txChatInput" max="32767" attributes="0"/>
+                                  <Component id="txtChatInput" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -405,9 +405,9 @@
                     </DimensionLayout>
                   </Layout>
                   <SubComponents>
-                    <Component class="javax.swing.JTextField" name="txChatInput">
+                    <Component class="javax.swing.JTextField" name="txtChatInput">
                       <Events>
-                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txChatInputKeyPressed"/>
+                        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtChatInputKeyPressed"/>
                       </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="btnSendMessage">
@@ -419,6 +419,7 @@
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="btnSendMessageMouseClicked"/>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSendMessageActionPerformed"/>
                       </Events>
                     </Component>
                   </SubComponents>

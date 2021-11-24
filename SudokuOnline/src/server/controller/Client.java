@@ -16,6 +16,7 @@ import shared.model.Player;
 import shared.constant.*;
 import shared.helper.CustumDateTimeFormatter;
 import shared.message.*;
+import shared.model.ChatItem;
 import shared.model.PlayerInGame;
 
 /**
@@ -122,7 +123,7 @@ public class Client implements Runnable {
                         break;
 
                     case CHAT_ROOM:
-                        onReceiveChatRoom(received);
+                        onReceiveChatRoom(message);
                         break;
 
                     case LEAVE_ROOM:
@@ -153,7 +154,7 @@ public class Client implements Runnable {
                 // System.out.println("Connection lost with " + s.getPort());
 
                 // leave room if needed
-                onReceiveLeaveRoom();
+                // onReceiveLeaveRoom();
                 break;
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
@@ -459,16 +460,12 @@ public class Client implements Runnable {
         room.startGame();
     }
 
-    private void onReceiveChatRoom(String received) {
-        String[] splitted = received.split(";");
-        String chatMsg = splitted[1];
+    private void onReceiveChatRoom(Object message) {
+        ChatRoomMessage msg = (ChatRoomMessage) message;
+        ChatItem chatItem = msg.getChatItem();
 
         if (joinedRoom != null) {
-            String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
-                    + loginPlayer.getNameId() + ";"
-                    + chatMsg;
-
-            joinedRoom.broadcast(StreamData.Type.CHAT_ROOM.name() + ";" + data);
+            joinedRoom.broadcast(msg);
         }
     }
 
@@ -582,6 +579,9 @@ public class Client implements Runnable {
     private void onReceiveSubmit(Object message) {
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
+        if(joinedRoom.getClient1() == null && joinedRoom.getClient2() == null){
+            return;
+        }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
             //chien thang +3diem
 
@@ -723,11 +723,10 @@ public class Client implements Runnable {
             this.joinedRoom = room;
 
             // thông báo với mọi người trong phòng
-            this.joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";"
-                    + CustumDateTimeFormatter.getCurrentTimeFormatted()
-                    + ";SERVER;"
-                    + loginPlayer.getNameId() + " đã vào phòng."
-            );
+//            ChatRoomMessage sendChat = new ChatRoomMessage(
+//                    new ChatItem(CustumDateTimeFormatter.getCurrentTimeFormatted(),
+//                            "SERVER", loginPlayer.getNameId()));
+//            this.joinedRoom.broadcast(sendChat);
 
             msg.setStatus("success");
             msg.setIdRoom(room.getId());

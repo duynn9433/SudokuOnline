@@ -5,11 +5,13 @@
  */
 package shared.model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author duynn
  */
-public class ProfileData {
+public class ProfileData implements Serializable{
 
     int id;
     String email = "#"; // cài giá trị mặc định

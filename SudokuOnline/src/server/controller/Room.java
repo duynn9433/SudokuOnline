@@ -13,6 +13,7 @@ import server.RunServer;
 import server.DAO.controller.GameMatchController;
 import shared.model.GameMatch;
 import shared.constant.StreamData;
+import shared.message.ChatRoomMessage;
 
 /**
  *
@@ -99,10 +100,16 @@ public class Room {
 //    }
 
     // broadcast messages
-    public void broadcast(String msg) {
-        clients.forEach((c) -> {
-            c.sendData(msg);
-        });
+    public void broadcast(Object message) {
+        ChatRoomMessage msg = (ChatRoomMessage) message;
+        System.out.println("CHat1:"+msg);
+        
+        client1.sendObject(msg);
+        System.out.println("CHat2:"+msg);
+        client2.sendObject(msg);
+//        clients.forEach((c) -> {
+//            c.sendData(msg);
+//        });
     }
 
     public void leaveRoom(Client c){

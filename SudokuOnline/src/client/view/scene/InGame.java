@@ -18,6 +18,7 @@ import shared.model.Sudoku;
 import shared.constant.StreamData;
 import shared.helper.CountDownTimer;
 import shared.helper.CustumDateTimeFormatter;
+import shared.message.ChatRoomMessage;
 import shared.message.SubmitMessage;
 import shared.model.PlayerInGame;
 
@@ -167,10 +168,11 @@ public class InGame extends javax.swing.JFrame {
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
     }
-    
-    public void lockSubmit(){
+
+    public void lockSubmit() {
         btnSubmit.setEnabled(false);
     }
+
     public void setMatchTimerTick(int value) {
         matchTimer.setCurrentTick(value);
     }
@@ -178,11 +180,12 @@ public class InGame extends javax.swing.JFrame {
     public void addChat(ChatItem c) {
         txtChatOutput.append(c.toString() + "\n");
     }
-    @Override
-    public void dispose(){
-        matchTimer.cancel();
-        this.dispose();
-    }
+
+//    @Override
+//    public void dispose() {
+//       // matchTimer.cancel();
+//        this.dispose();
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -211,7 +214,7 @@ public class InGame extends javax.swing.JFrame {
         tpChatAndViewerContainer = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jPanel7 = new javax.swing.JPanel();
-        txChatInput = new javax.swing.JTextField();
+        txtChatInput = new javax.swing.JTextField();
         btnSendMessage = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtChatOutput = new javax.swing.JTextArea();
@@ -376,9 +379,9 @@ public class InGame extends javax.swing.JFrame {
                 .addComponent(plTimer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        txChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                txChatInputKeyPressed(evt);
+                txtChatInputKeyPressed(evt);
             }
         });
 
@@ -389,6 +392,11 @@ public class InGame extends javax.swing.JFrame {
                 btnSendMessageMouseClicked(evt);
             }
         });
+        btnSendMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendMessageActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
@@ -396,7 +404,7 @@ public class InGame extends javax.swing.JFrame {
             jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel7Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, 217, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSendMessage, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addContainerGap())
@@ -407,7 +415,7 @@ public class InGame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSendMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(txChatInput))
+                    .addComponent(txtChatInput))
                 .addContainerGap())
         );
 
@@ -503,19 +511,25 @@ public class InGame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
-        String chatMsg = txChatInput.getText();
-        txChatInput.setText("");
 
-        if (!chatMsg.equals("")) {
-            RunClient.socketHandler.chatRoom(chatMsg);
-        }
     }//GEN-LAST:event_btnSendMessageMouseClicked
 
-    private void txChatInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txChatInputKeyPressed
+    private void txtChatInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtChatInputKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             btnSendMessageMouseClicked(null);
         }
-    }//GEN-LAST:event_txChatInputKeyPressed
+    }//GEN-LAST:event_txtChatInputKeyPressed
+
+    private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
+        // TODO add your handling code here:
+        ChatItem chatItem = new ChatItem(
+                CustumDateTimeFormatter.getCurrentTimeFormatted(), 
+                RunClient.socketHandler.getLoginEmail(), 
+                txtChatInput.getText());
+        ChatRoomMessage msg = new ChatRoomMessage(chatItem);
+        RunClient.socketHandler.sendObject(msg);
+        txtChatInput.setText("");
+    }//GEN-LAST:event_btnSendMessageActionPerformed
     public int[][] getBoard() {
         return board;
     }
@@ -592,7 +606,7 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JPanel plTimer;
     private javax.swing.JPanel plToolContainer;
     private javax.swing.JTabbedPane tpChatAndViewerContainer;
-    private javax.swing.JTextField txChatInput;
+    private javax.swing.JTextField txtChatInput;
     private javax.swing.JTextArea txtChatOutput;
     // End of variables declaration//GEN-END:variables
 }
