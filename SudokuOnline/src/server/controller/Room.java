@@ -30,6 +30,14 @@ public class Room {
 
     public LocalDateTime startedTime;
 
+    public LocalDateTime getStartedTime() {
+        return startedTime;
+    }
+
+    public void setStartedTime(LocalDateTime startedTime) {
+        this.startedTime = startedTime;
+    }
+
     public Room(String id) {
         // room id
         this.id = id;
