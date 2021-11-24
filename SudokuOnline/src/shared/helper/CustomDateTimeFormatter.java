@@ -13,7 +13,7 @@ import java.util.Calendar;
  * @author duynn
  * Format để hiển thị thời gian đếm ngược
  */
-public class CustumDateTimeFormatter {
+public class CustomDateTimeFormatter {
 
     // https://stackoverflow.com/a/6953926
     public static String getCurrentTimeFormatted() {

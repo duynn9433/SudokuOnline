@@ -13,7 +13,7 @@ import server.RunServer;
 import server.DAO.controller.GameMatchController;
 import shared.model.GameMatch;
 import shared.constant.StreamData;
-import shared.message.ChatRoomMessage;
+import shared.message.ChatMessage;
 
 /**
  *
@@ -101,7 +101,7 @@ public class Room {
 
     // broadcast messages
     public void broadcast(Object message) {
-        ChatRoomMessage msg = (ChatRoomMessage) message;
+        ChatMessage msg = (ChatMessage) message;
         System.out.println("CHat1:"+msg);
         
         client1.sendObject(msg);

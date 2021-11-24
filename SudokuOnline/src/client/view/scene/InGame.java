@@ -17,8 +17,8 @@ import javax.swing.text.DefaultCaret;
 import shared.model.Sudoku;
 import shared.constant.StreamData;
 import shared.helper.CountDownTimer;
-import shared.helper.CustumDateTimeFormatter;
-import shared.message.ChatRoomMessage;
+import shared.helper.CustomDateTimeFormatter;
+import shared.message.ChatMessage;
 import shared.message.SubmitMessage;
 import shared.model.PlayerInGame;
 
@@ -141,8 +141,7 @@ public class InGame extends javax.swing.JFrame {
 
     public void startGame(int matchTimeLimit) {
         matchTimer = new CountDownTimer(matchTimeLimit);
-        matchTimer.setTimerCallBack(
-                // end match callback
+        matchTimer.setTimerCallBack(// end match callback
                 (Callable) () -> {
                     endGameTimeout();
                     return null;
@@ -150,7 +149,7 @@ public class InGame extends javax.swing.JFrame {
                 // tick match callback
                 (Callable) () -> {
                     pgbMatchTimer.setValue(100 * matchTimer.getCurrentTick() / matchTimer.getTimeLimit());
-                    pgbMatchTimer.setString("" + CustumDateTimeFormatter.secondsToMinutes(matchTimer.getCurrentTick()));
+                    pgbMatchTimer.setString("" + CustomDateTimeFormatter.secondsToMinutes(matchTimer.getCurrentTick()));
                     return null;
                 },
                 // tick interval
@@ -523,10 +522,10 @@ public class InGame extends javax.swing.JFrame {
     private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
         // TODO add your handling code here:
         ChatItem chatItem = new ChatItem(
-                CustumDateTimeFormatter.getCurrentTimeFormatted(), 
+                CustomDateTimeFormatter.getCurrentTimeFormatted(), 
                 RunClient.socketHandler.getLoginEmail(), 
                 txtChatInput.getText());
-        ChatRoomMessage msg = new ChatRoomMessage(chatItem);
+        ChatMessage msg = new ChatMessage(chatItem);
         RunClient.socketHandler.sendObject(msg);
         txtChatInput.setText("");
     }//GEN-LAST:event_btnSendMessageActionPerformed

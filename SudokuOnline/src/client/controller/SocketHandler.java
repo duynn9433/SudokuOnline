@@ -163,7 +163,11 @@ public class SocketHandler {
                         break;
 
                     case CHAT_ROOM:
-                        onReceiveChatRoom(message);    //tinh nang chat
+                        onReceiveChatRoom(message);    
+                        break;
+                        
+                    case CHAT_ALL:
+                        onReceiveChatAll(message);
                         break;
 
                     case LEAVE_ROOM:
@@ -432,11 +436,14 @@ public class SocketHandler {
     }
 
     private void onReceiveChatRoom(Object message) {
-        ChatRoomMessage msg = (ChatRoomMessage) message;
+        ChatMessage msg = (ChatMessage) message;
 
         RunClient.inGameScene.addChat(msg.getChatItem());
     }
-
+    private void onReceiveChatAll(Object message){
+        ChatMessage msg = (ChatMessage) message;
+        RunClient.mainMenuScene.addChat(msg.getChatItem());
+    }
     private void onReceiveLeaveRoom(Object message) {
         LeaveRoomMessage msg = (LeaveRoomMessage) message;
         String status = msg.getStatus();

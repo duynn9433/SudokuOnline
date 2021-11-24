@@ -5,6 +5,7 @@
  */
 package server.controller;
 
+import client.RunClient;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -14,7 +15,7 @@ import server.RunServer;
 import server.DAO.controller.PlayerController;
 import shared.model.Player;
 import shared.constant.*;
-import shared.helper.CustumDateTimeFormatter;
+import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
 import shared.model.ChatItem;
 import shared.model.PlayerInGame;
@@ -124,6 +125,10 @@ public class Client implements Runnable {
 
                     case CHAT_ROOM:
                         onReceiveChatRoom(message);
+                        break;
+                        
+                    case CHAT_ALL:
+                        onReceiveChatAll(message);
                         break;
 
                     case LEAVE_ROOM:
@@ -461,14 +466,18 @@ public class Client implements Runnable {
     }
 
     private void onReceiveChatRoom(Object message) {
-        ChatRoomMessage msg = (ChatRoomMessage) message;
+        ChatMessage msg = (ChatMessage) message;
         ChatItem chatItem = msg.getChatItem();
 
         if (joinedRoom != null) {
             joinedRoom.broadcast(msg);
         }
     }
-
+    private void  onReceiveChatAll(Object message){
+        ChatMessage msg = (ChatMessage) message;
+        RunServer.clientManager.broadcast(msg);
+    }
+    
     private void onReceiveLeaveRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
@@ -486,7 +495,7 @@ public class Client implements Runnable {
         System.out.println("1");
 
         // broadcast to all clients in room
-//        String data = CustumDateTimeFormatter.getCurrentTimeFormatted() + ";"
+//        String data = CustomDateTimeFormatter.getCurrentTimeFormatted() + ";"
 //                + "SERVER" + ";"
 //                + loginPlayer.getNameId() + " đã thoát";
 //
@@ -723,8 +732,8 @@ public class Client implements Runnable {
             this.joinedRoom = room;
 
             // thông báo với mọi người trong phòng
-//            ChatRoomMessage sendChat = new ChatRoomMessage(
-//                    new ChatItem(CustumDateTimeFormatter.getCurrentTimeFormatted(),
+//            ChatMessage sendChat = new ChatMessage(
+//                    new ChatItem(CustomDateTimeFormatter.getCurrentTimeFormatted(),
 //                            "SERVER", loginPlayer.getNameId()));
 //            this.joinedRoom.broadcast(sendChat);
 

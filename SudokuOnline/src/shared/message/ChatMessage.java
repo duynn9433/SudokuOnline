@@ -12,15 +12,15 @@ import shared.model.ChatItem;
  *
  * @author duynn
  */
-public class ChatRoomMessage extends Message{
+public class ChatMessage extends Message{
     public static final long serialVersionUID = 11L;
     private ChatItem chatItem;
 
-    public ChatRoomMessage() {
+    public ChatMessage() {
         super(StreamData.Type.CHAT_ROOM);
     }
 
-    public ChatRoomMessage(ChatItem chatItem) {
+    public ChatMessage(ChatItem chatItem) {
         super(StreamData.Type.CHAT_ROOM);
         this.chatItem = chatItem;
     }
