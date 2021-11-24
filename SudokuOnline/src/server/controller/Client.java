@@ -145,6 +145,7 @@ public class Client implements Runnable {
                         break;
                     case GET_LIST_RANK:
                         onReceiveGetRank();
+                        break;
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(message);
                         break;
