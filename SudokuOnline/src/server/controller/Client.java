@@ -89,7 +89,7 @@ public class Client implements Runnable {
                         break;
 
                     case LIST_ROOM:
-                        onReceiveListRoom(received);
+                        onReceiveListRoom(message);
                         break;
 
                     case LIST_ONLINE:
@@ -252,27 +252,27 @@ public class Client implements Runnable {
     }
 
     // main menu
-    private void onReceiveListRoom(String received) {
+    private void onReceiveListRoom(Object message) {
         // prepare data
-        String result = "success;";
+        ListRoomMessage msg = (ListRoomMessage) message;
+        msg.setStatus("success");
         ArrayList<Room> listRoom = RunServer.roomManager.getRooms();
-        int roomCount = listRoom.size();
 
-        result += roomCount + ";";
+        msg.setRoomCount(listRoom.size());
+
 
         for (Room r : listRoom) {
             String pairData
                     = ((r.getClient1() != null) ? r.getClient1().getLoginPlayer().getNameId() : "_")
                     + " VS "
                     + ((r.getClient2() != null) ? r.getClient2().getLoginPlayer().getNameId() : "_");
-
-            result += r.getId() + ";"
-                    + pairData + ";"
-                    + r.clients.size() + ";";
+            msg.setRoomID(r.getId());
+            msg.setPairData(pairData);
         }
 
         // send data
-        sendData(StreamData.Type.LIST_ROOM.name() + ";" + result);
+        msg.setType(StreamData.Type.LIST_ROOM);
+        sendObject(msg);
     }
 
     private void onReceiveListOnline(String received) {
