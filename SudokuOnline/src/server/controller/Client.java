@@ -142,7 +142,8 @@ public class Client implements Runnable {
                     case EDIT_PROFILE:
                         onReceiveEditProfile(received);
                         break;
-
+                    case GET_LIST_RANK:
+                        onReceiveGetRank();
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(received);
                         break;
@@ -769,6 +770,12 @@ public class Client implements Runnable {
 
     public void setAcceptPairMatchStatus(String acceptPairMatchStatus) {
         this.acceptPairMatchStatus = acceptPairMatchStatus;
+    }
+
+    private void onReceiveGetRank() {
+     ArrayList<Player> listPlayer = new PlayerController().getList();
+     GetListRankMessage data = new GetListRankMessage(listPlayer, StreamData.Type.GET_LIST_RANK);
+        sendObject(data);
     }
 
 }

@@ -17,6 +17,7 @@ import java.io.ObjectInputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import javax.swing.JOptionPane;
 import shared.model.Sudoku;
 import shared.constant.StreamData;
 import shared.message.*;
+import shared.model.Player;
 import shared.model.PlayerInGame;
 
 /**
@@ -185,6 +187,9 @@ public class SocketHandler {
                     case EDIT_PROFILE:
                         onReceivedEditProfile(received);
                         break;
+                        
+                    case GET_LIST_RANK:
+                        onReceiveGetRank(message);
 
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(received);
@@ -516,7 +521,7 @@ public class SocketHandler {
     }
 
     private void onReceiveChangePassword(String received) {
-        String[] splitted = received.split(";");
+      /*  String[] splitted = received.split(";");
         String status = splitted[1];
 
         // turn off loading
@@ -530,7 +535,7 @@ public class SocketHandler {
         } else if (status.equals("success")) {
             RunClient.closeScene(RunClient.SceneName.CHANGEPASSWORD);
             JOptionPane.showMessageDialog(RunClient.changePasswordScene, "Đổi mật khẩu thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-        }
+        }*/
     }
 
     // game events
@@ -695,5 +700,16 @@ public class SocketHandler {
 
     public void setLoginEmail(String email) {
         this.loginEmail = email;
+    }
+
+    public void sendMsgRank() {
+       Message data = new Message(StreamData.Type.GET_LIST_RANK);
+        sendObject(data);
+    }
+
+    private void onReceiveGetRank(Object message) {
+      GetListRankMessage msg = (GetListRankMessage) message;
+      ArrayList<Player> listPlayer = msg.getListPalyer();
+      RunClient.rankview.setListRank(listPlayer);
     }
 }
