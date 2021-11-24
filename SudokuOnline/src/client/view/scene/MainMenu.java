@@ -42,7 +42,7 @@ public class MainMenu extends javax.swing.JFrame {
     public MainMenu() {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.setTitle("Caro Game - " + RunClient.socketHandler.getLoginEmail());
+        this.setTitle("Sudoku Game - " + RunClient.socketHandler.getLoginEmail());
 
         // default to hidden
         setDisplayState(State.DEFAULT);
