@@ -28,7 +28,8 @@ public class RunClient {
         MAINMENU,
         CHANGEPASSWORD,
         INGAME,
-        PROFILE
+        PROFILE,
+        RANK
     }
 
     // scenes

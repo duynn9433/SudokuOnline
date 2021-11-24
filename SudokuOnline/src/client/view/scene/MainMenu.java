@@ -174,6 +174,7 @@ public class MainMenu extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         btnLogout = new javax.swing.JButton();
         btnProfile = new javax.swing.JButton();
+        btnRank = new javax.swing.JButton();
         plFindingMatch = new javax.swing.JPanel();
         jProgressBar1 = new javax.swing.JProgressBar();
         lbFindMatch = new javax.swing.JLabel();
@@ -287,6 +288,14 @@ public class MainMenu extends javax.swing.JFrame {
             }
         });
 
+        btnRank.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/crown (1).png"))); // NOI18N
+        btnRank.setText("Bảng xếp hạng");
+        btnRank.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRankActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -296,6 +305,8 @@ public class MainMenu extends javax.swing.JFrame {
                 .addComponent(btnLogout)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnProfile)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnRank)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -304,7 +315,8 @@ public class MainMenu extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLogout)
-                    .addComponent(btnProfile))
+                    .addComponent(btnProfile)
+                    .addComponent(btnRank, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -587,6 +599,11 @@ public class MainMenu extends javax.swing.JFrame {
         RunClient.socketHandler.listRoom();
     }//GEN-LAST:event_btnRefreshListRoomActionPerformed
 
+    private void btnRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRankActionPerformed
+        // TODO add your handling code here:
+         RunClient.openScene(RunClient.SceneName.RANK);
+    }//GEN-LAST:event_btnRankActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -632,6 +649,7 @@ public class MainMenu extends javax.swing.JFrame {
     private javax.swing.JButton btnJoin;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnProfile;
+    private javax.swing.JButton btnRank;
     private javax.swing.JButton btnRefreshListRoom;
     private javax.swing.JButton btnWatch;
     private javax.swing.JButton jButton1;
