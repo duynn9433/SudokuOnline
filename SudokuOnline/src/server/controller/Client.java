@@ -86,7 +86,7 @@ public class Client implements Runnable {
                         break;
 
                     case LIST_ROOM:
-                        onReceiveListRoom(received);
+                        onReceiveListRoom(message);
                         break;
 
                     case LIST_ONLINE:
@@ -145,6 +145,8 @@ public class Client implements Runnable {
                         break;
                     case GET_LIST_RANK:
                         onReceiveGetRank();
+                        break;
+                        
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(message);
                         break;
@@ -248,13 +250,16 @@ public class Client implements Runnable {
     }
 
     // main menu
-    private void onReceiveListRoom(String received) {
+    private void onReceiveListRoom(Object message) {
         // prepare data
-        String result = "success;";
+        ListRoomMessage msg = (ListRoomMessage) message;
+        msg.setStatus("success");
+//        String result = "success;";
         ArrayList<Room> listRoom = RunServer.roomManager.getRooms();
         int roomCount = listRoom.size();
 
-        result += roomCount + ";";
+//        result += roomCount + ";";
+        msg.setRoomCount(roomCount);
 
         for (Room r : listRoom) {
             String pairData
@@ -262,13 +267,16 @@ public class Client implements Runnable {
                     + " VS "
                     + ((r.getClient2() != null) ? r.getClient2().getLoginPlayer().getNameId() : "_");
 
-            result += r.getId() + ";"
-                    + pairData + ";"
-                    + r.clients.size() + ";";
+//            result += r.getId() + ";"
+//                    + pairData + ";";
+            msg.setPairData(pairData);
+            msg.setRoomID(r.getId());
         }
 
         // send data
-        sendData(StreamData.Type.LIST_ROOM.name() + ";" + result);
+        msg.setType(StreamData.Type.LIST_ROOM);
+        sendObject(msg);
+//        sendData(StreamData.Type.LIST_ROOM.name() + ";" + result);
     }
 
     private void onReceiveListOnline(String received) {

@@ -22,7 +22,7 @@ public class MysqlConnector {
     String server = "localhost:3306";
     String db = "carodb";
     String user = "root";
-    String pass = "123456";
+    String pass = "quangdamdk20";
 
     public MysqlConnector() {
         checkDriver();

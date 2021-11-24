@@ -25,7 +25,7 @@ public class Room {
     Sudoku sudoku1;
     Sudoku sudoku2;
     Client client1 = null, client2 = null;
-    ArrayList<Client> clients = new ArrayList<>();
+    //ArrayList<Client> clients = new ArrayList<>();
     boolean gameStarted = false;
 
     public LocalDateTime startedTime;
@@ -133,7 +133,7 @@ public class Room {
 //        });
 
         // remove all clients
-        clients.clear();
+//        clients.clear();
 
         // remove room
         RunServer.roomManager.remove(this);
@@ -238,17 +238,9 @@ public class Room {
         this.client2 = client2;
     }
 
-    public ArrayList<Client> getClients() {
-        return clients;
-    }
-
-    public void setClients(ArrayList<Client> clients) {
-        this.clients = clients;
-    }
-
     @Override
     public String toString() {
-        return "Room{" + "id=" + id + ", sudoku1=" + sudoku1 + ", sudoku2=" + sudoku2 + ", client1=" + client1 + ", client2=" + client2 + ", clients=" + clients + ", gameStarted=" + gameStarted + ", startedTime=" + startedTime + '}';
+        return "Room{" + "id=" + id + ", sudoku1=" + sudoku1 + ", sudoku2=" + sudoku2 + ", client1=" + client1 + ", client2=" + client2 + ", gameStarted=" + gameStarted + ", startedTime=" + startedTime + '}';
     }
 
     

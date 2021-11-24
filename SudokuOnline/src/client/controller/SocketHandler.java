@@ -129,7 +129,7 @@ public class SocketHandler {
                         break;
 
                     case LIST_ROOM:
-                        onReceiveListRoom(received);    //can lien quan den phong
+                        onReceiveListRoom(message);    //can lien quan den phong
                         break;
 
                     case LIST_ONLINE:
@@ -165,9 +165,9 @@ public class SocketHandler {
                         break;
 
                     case CHAT_ROOM:
-                        onReceiveChatRoom(message);    
+                        onReceiveChatRoom(message);
                         break;
-                        
+
                     case CHAT_ALL:
                         onReceiveChatAll(message);
                         break;
@@ -187,9 +187,10 @@ public class SocketHandler {
                     case EDIT_PROFILE:
                         onReceivedEditProfile(message);
                         break;
-                        
+
                     case GET_LIST_RANK:
                         onReceiveGetRank(message);
+                        break;
 
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(message);
@@ -198,10 +199,11 @@ public class SocketHandler {
                     case SUBMIT:
                         onReceiveSubmit(message);
                         break;
+
                     case LOCK_SUBMIT:
                         onReceiveLockSubmit(message);
                         break;
-                        
+
                     case EXIT:
                         running = false;
                 }
@@ -217,7 +219,7 @@ public class SocketHandler {
         try {
             s.close();
 //            dis.close();
-        //    dos.close();
+            //    dos.close();
             ois.close();
             oos.close();
         } catch (IOException ex) {
@@ -261,7 +263,7 @@ public class SocketHandler {
             RunClient.openScene(RunClient.SceneName.MAINMENU);
 
             // tự động lấy danh sách phòng
-//            listRoom();
+            listRoom();
         }
     }
 
@@ -286,7 +288,7 @@ public class SocketHandler {
     }
 
     private void onReceiveLogout(Object message) {
-       // xóa email login
+        // xóa email login
         LogoutMessage msg = (LogoutMessage) message;
         this.loginEmail = null;
 
@@ -296,20 +298,21 @@ public class SocketHandler {
     }
 
     // main menu
-    private void onReceiveListRoom(String received) {
-        String[] splitted = received.split(";");
-        String status = splitted[1];
+    private void onReceiveListRoom(Object message) {
+//        String[] splitted = received.split(";");
+        ListRoomMessage msg = (ListRoomMessage) message;
+        String status = msg.getStatus();
 
         if (status.equals("failed")) {
 
         } else if (status.equals("success")) {
-            int roomCount = Integer.parseInt(splitted[2]);
+//            int roomCount = Integer.parseInt(splitted[2]);
+            int roomCount = msg.getRoomCount();
 
-            // https://niithanoi.edu.vn/huong-dan-thao-tac-voi-jtable-lap-trinh-java-swing.html
+            
             Vector vheader = new Vector();
             vheader.add("Mã");
             vheader.add("Cặp đấu");
-            vheader.add("Số người");
 
             Vector vdata = new Vector();
 
@@ -317,14 +320,16 @@ public class SocketHandler {
             // i = 3; i < roomCount + 3: dữ liệu phòng bắt đầu từ index 3 trong mảng splitted
             for (int i = 3; i < roomCount + 3; i += 3) {
 
-                String roomId = splitted[i];
-                String title = splitted[i + 1];
-                String clientCount = splitted[i + 2];
-
+//                String roomId = splitted[i];
+//                String title = splitted[i + 1];
+//                String clientCount = splitted[i + 2];
+                String roomId = msg.getRoomID();
+                String title = msg.getPairData();
+                
                 Vector vrow = new Vector();
                 vrow.add(roomId);
                 vrow.add(title);
-                vrow.add(clientCount);
+//                vrow.add(clientCount);
 
                 vdata.add(vrow);
             }
@@ -348,7 +353,7 @@ public class SocketHandler {
 
         // save room id
         this.roomId = roomId;
-        System.out.println("Room id JOIN_ROOM:" +roomId);
+        System.out.println("Room id JOIN_ROOM:" + roomId);
 
         // change scene
         RunClient.closeScene(RunClient.SceneName.MAINMENU);
@@ -417,7 +422,7 @@ public class SocketHandler {
     // in game
     private void onReceiveDataRoom(Object message) {
         DataRoomMessage msg = (DataRoomMessage) message;
-        System.out.println("DataRoom:"+msg.toString());
+        System.out.println("DataRoom:" + msg.toString());
         String status = msg.getStatus();
 
         if (status.equals("failed")) {
@@ -445,14 +450,16 @@ public class SocketHandler {
 
         RunClient.inGameScene.addChat(msg.getChatItem());
     }
-    private void onReceiveChatAll(Object message){
+
+    private void onReceiveChatAll(Object message) {
         ChatMessage msg = (ChatMessage) message;
         RunClient.mainMenuScene.addChat(msg.getChatItem());
     }
+
     private void onReceiveLeaveRoom(Object message) {
         LeaveRoomMessage msg = (LeaveRoomMessage) message;
         String status = msg.getStatus();
-        System.out.println("status leave room:"+status);
+        System.out.println("status leave room:" + status);
 
         if (status.equals("failed")) {
             String failedMsg = msg.getCodeMsg();
@@ -489,15 +496,13 @@ public class SocketHandler {
     // profile
     private void onReceiveGetProfile(Object message) {
         GetProfileMessage p = (GetProfileMessage) message;
-        
+
         // turn off loading
         RunClient.profileScene.setLoading(false);
 
-        
+        // show data to UI
+        RunClient.profileScene.setProfileData(p);
 
-            // show data to UI
-           RunClient.profileScene.setProfileData(p);
-        
     }
 
     private void onReceivedEditProfile(Object message) {
@@ -544,13 +549,15 @@ public class SocketHandler {
         String result = msg.getResult();
         RunClient.inGameScene.setWin(result);
     }
-    private void onReceiveLockSubmit(Object message){
+
+    private void onReceiveLockSubmit(Object message) {
         LockSubmitMessage msg = (LockSubmitMessage) message;
         String status = msg.getStatus();
-        if(status.equals("success")){
+        if (status.equals("success")) {
             RunClient.inGameScene.lockSubmit();
         }
     }
+
     // ============= functions ===============
     // auth
     private void initConnect() {
@@ -587,6 +594,8 @@ public class SocketHandler {
     // main menu
     public void listRoom() {
 //        sendData(StreamData.Type.LIST_ROOM.name()); //sua
+        ListRoomMessage msg = new ListRoomMessage(StreamData.Type.LIST_ROOM);
+        sendObject(msg);
     }
 
     // pair match
@@ -642,7 +651,6 @@ public class SocketHandler {
 
         // prepare data
 //        String data = StreamData.Type.CHANGE_PASSWORD.name() + ";" + oldPassword + ";" + newPassword;
-
         // send data
 //        sendData(data);
         sendObject(msg);
@@ -650,7 +658,7 @@ public class SocketHandler {
 
     public void getProfile(String email) {
         // prepare data
-      /*  ProfileMessage msg = new ProfileMessage();
+        /*  ProfileMessage msg = new ProfileMessage();
         msg.setType(StreamData.Type.GET_PROFILE);
         msg.setEmail(email);
 //        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
@@ -658,7 +666,7 @@ public class SocketHandler {
         // send data
 //        sendData(data);
           sendObject(msg);*/
-      SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
+        SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
         sendObject(data);
     }
 
@@ -723,13 +731,13 @@ public class SocketHandler {
     }
 
     public void sendMsgRank() {
-       Message data = new Message(StreamData.Type.GET_LIST_RANK);
+        Message data = new Message(StreamData.Type.GET_LIST_RANK);
         sendObject(data);
     }
 
     private void onReceiveGetRank(Object message) {
-      GetListRankMessage msg = (GetListRankMessage) message;
-      ArrayList<Player> listPlayer = msg.getListPalyer();
-      RunClient.rankview.setListRank(listPlayer);
+        GetListRankMessage msg = (GetListRankMessage) message;
+        ArrayList<Player> listPlayer = msg.getListPalyer();
+        RunClient.rankview.setListRank(listPlayer);
     }
 }
