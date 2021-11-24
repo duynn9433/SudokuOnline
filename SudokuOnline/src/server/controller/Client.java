@@ -516,42 +516,10 @@ public class Client implements Runnable {
 
     // profile
     private void onReceiveGetProfile(Object message) {
-
-        // get email from data
-        ProfileMessage msg = (ProfileMessage) message;
-        String email = msg.getEmail();
-        
-
-        // get player data
-        Player p = new PlayerController().getByEmail(email);
-        if (p == null) {
-            sendObject(new ProfileMessage(StreamData.Type.GET_PROFILE, "failed", Code.ACCOUNT_NOT_FOUND));
-            return;
-        } else {
-            System.out.println("player: " + p);
-            ProfileData profileData = new ProfileData();
-            ProfileMessage send = new ProfileMessage();
-            profileData.setId(p.getId());
-            profileData.setEmail(p.getEmail());
-            profileData.setName(p.getName());
-            profileData.setAvatar(p.getAvatar());
-            profileData.setGender(p.getGender());
-            profileData.setYearOfBirth(p.getYearOfBirth());
-            profileData.setScore(p.getScore());
-            profileData.setMatchCount(p.getMatchCount());
-            profileData.setWinCount(p.getWinCount());
-            profileData.setTieCount(p.calculateTieCount());
-            profileData.setLoseCount(p.getLoseCount());
-            profileData.setWinRate(p.calculateWinRate());
-            send.setProfileData(profileData);
-            send.setStatus("success");
-            send.setType(StreamData.Type.GET_PROFILE);
-            System.out.println("send: " + send);
-            
-            sendObject(send);
-            return;
-        }
-
+        SendEmailMessage msg = (SendEmailMessage) message;
+       Player p = new PlayerController().getByEmail(msg.getEmail());
+        GetProfileMessage data = new GetProfileMessage(p, StreamData.Type.GET_PROFILE);
+        sendObject(data);
     }
 
     private void onReceiveEditProfile(Object message) {
