@@ -488,23 +488,16 @@ public class SocketHandler {
 
     // profile
     private void onReceiveGetProfile(Object message) {
-        ProfileMessage msg = (ProfileMessage) message;
-        String status = msg.getStatus();
+        GetProfileMessage p = (GetProfileMessage) message;
+        
         // turn off loading
         RunClient.profileScene.setLoading(false);
 
-        if (status.equals("failed")) {
-             String failedMsg = msg.getCodeMsg();
-            JOptionPane.showMessageDialog(RunClient.profileScene, failedMsg, "Lỗi", JOptionPane.ERROR_MESSAGE);
-
-        } else if (status.equals("success")) {
-            // get player data from received
-            ProfileData p = new ProfileData();
-            p = msg.getProfileData();
+        
 
             // show data to UI
-           // RunClient.profileScene.setProfileData(p);
-        }
+           RunClient.profileScene.setProfileData(p);
+        
     }
 
     private void onReceivedEditProfile(Object message) {
@@ -657,14 +650,16 @@ public class SocketHandler {
 
     public void getProfile(String email) {
         // prepare data
-        ProfileMessage msg = new ProfileMessage();
+      /*  ProfileMessage msg = new ProfileMessage();
         msg.setType(StreamData.Type.GET_PROFILE);
         msg.setEmail(email);
 //        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
 
         // send data
 //        sendData(data);
-          sendObject(msg);
+          sendObject(msg);*/
+      SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
+        sendObject(data);
     }
 
     public void editProfile(String newEmail, String name, String avatar, String yearOfBirth, String gender) {
