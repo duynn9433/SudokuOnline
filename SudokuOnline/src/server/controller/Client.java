@@ -136,7 +136,7 @@ public class Client implements Runnable {
                         break;
 
                     case GET_PROFILE:
-                        onReceiveGetProfile(received);
+                        onReceiveGetProfile(message);
                         break;
 
                     case EDIT_PROFILE:
@@ -512,35 +512,14 @@ public class Client implements Runnable {
     }
 
     // profile
-    private void onReceiveGetProfile(String received) {
-        String result;
-
-        // get email from data
-        String email = received.split(";")[1];
+    private void onReceiveGetProfile(Object received) {
+        SendEmailMessage msg = (SendEmailMessage) received;
 
         // get player data
-        Player p = new PlayerController().getByEmail(email);
-        if (p == null) {
-            result = "failed;" + Code.ACCOUNT_NOT_FOUND;
-        } else {
-            result = "success;"
-                    + p.getId() + ";"
-                    + p.getEmail() + ";"
-                    + p.getName() + ";"
-                    + p.getAvatar() + ";"
-                    + p.getGender() + ";"
-                    + p.getYearOfBirth() + ";"
-                    + p.getScore() + ";"
-                    + p.getMatchCount() + ";"
-                    + p.getWinCount() + ";"
-                    + p.calculateTieCount() + ";"
-                    + p.getLoseCount() + ";"
-                    + p.getCurrentStreak() + ";"
-                    + p.calculateWinRate();
-        }
-
-        // send result
-        sendData(StreamData.Type.GET_PROFILE.name() + ";" + result);
+        Player p = new PlayerController().getByEmail(msg.getEmail());
+        
+        GetProfileMessage data = new GetProfileMessage(p, StreamData.Type.GET_PROFILE);
+        sendObject(data);
     }
 
     private void onReceiveEditProfile(String received) {
