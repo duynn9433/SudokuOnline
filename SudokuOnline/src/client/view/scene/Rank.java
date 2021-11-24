@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import javax.swing.table.DefaultTableModel;
+import shared.model.Player;
 
 /**
  *
@@ -28,8 +29,16 @@ public class Rank extends javax.swing.JFrame {
         this.setLocation(350,50);
         tmRank = (DefaultTableModel) tblRank.getModel();
     }
-    public void setListRank(String rs){
-       
+    public void setListRank(ArrayList<Player> listPlayer){
+       Collections.sort(listPlayer,new cmp_player());
+       tmRank.setRowCount(0);
+       int stt=1;
+       int rank=1;
+       for(Player p: listPlayer){
+           tmRank.addRow(new Object[]{
+               stt++,p.getName(),p.getWinCount(),p.calculateTieCount(),p.getLoseCount(),p.getScore(),rank++
+           });
+       }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -157,15 +166,14 @@ public class Rank extends javax.swing.JFrame {
     private javax.swing.JLabel txtYourRank;
     // End of variables declaration//GEN-END:variables
 
-    public  class cmp_player implements Comparator<ProfileData>{
+    public  class cmp_player implements Comparator<Player>{
 
         @Override
-        public int compare(ProfileData o1, ProfileData o2) {
-            int k=o1.getScore()-o2.getScore();
-            if(k>0) return -1;
-            if(k<0) return 1;
-            return 0;
+        public int compare(Player o1, Player o2) {
+         int k=o1.getScore()-o2.getScore();
+         if(k>0) return -1;
+         if(k<0) return 1;
+         return 0;
         }
-
     }
 }

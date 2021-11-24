@@ -10,6 +10,8 @@ import shared.model.Player;
 import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;
+import shared.message.ChangePasswordMessage;
+import shared.message.EditProfileMessage;
 import shared.message.LoginMessage;
 import shared.message.SignupMessage;
 
@@ -89,18 +91,12 @@ public class PlayerController {
     }
 
     public LoginMessage checkLogin(String email, String password) {
-        // code vòng for như getByEmail là được, nhưng netbeans nó hiện bóng đèn sáng ấn vào thì ra code này
-        // thấy "ngầu" nên để lại :))
-        // return listPlayer.stream().anyMatch((p) -> (p.getEmail().equals(email) && p.getPassword().equals(password)));
-        // nhưng chợt nhận ra có block player nữa, nên phải trả về String chứ ko được boolean :(
-
         // check email
         LoginMessage msg = new LoginMessage();
         Player p = getByEmail(email);
         if (p == null) {
             msg.setStatus("failed");
             msg.setCodeMsg(Code.ACCOUNT_NOT_FOUND);
-            //return "failed;" + Code.ACCOUNT_NOT_FOUND;
             return msg;
         }
 
@@ -108,7 +104,6 @@ public class PlayerController {
         if (!p.getPassword().equals(password)) {
             msg.setStatus("failed");
             msg.setCodeMsg(Code.WRONG_PASSWORD);
-            //return "failed;" + Code.WRONG_PASSWORD;
             return msg;
         }
 
@@ -116,7 +111,6 @@ public class PlayerController {
         if (p.isBlocked()) {
             msg.setStatus("failed");
             msg.setCodeMsg(Code.ACCOUNT_BLOCKED);
-//            return "failed;" + Code.ACCOUNT_BLOCKED;
             return msg;
         }
 
@@ -125,16 +119,21 @@ public class PlayerController {
         return msg;
     }
 
-    public String changePassword(String email, String oldPassword, String newPassword) {
+    public ChangePasswordMessage changePassword(String email, String oldPassword, String newPassword) {
         // check email
+        ChangePasswordMessage msg = new ChangePasswordMessage();
         Player p = getByEmail(email);
         if (p == null) {
-            return "failed;" + Code.ACCOUNT_NOT_FOUND;
+            msg.setStatus("failed");
+            msg.setCodeMsg(Code.ACCOUNT_NOT_FOUND);
+            return msg;
         }
 
         // check password
         if (!p.getPassword().equals(oldPassword)) {
-            return "failed;" + Code.WRONG_PASSWORD;
+            msg.setStatus("failed");
+            msg.setCodeMsg(Code.WRONG_PASSWORD);
+            return msg;
         }
 
         // đặt pass mới
@@ -142,10 +141,12 @@ public class PlayerController {
         boolean status = update(p);
         if (!status) {
             // lỗi không xác định
-            return "failed;Lỗi khi đổi mật khẩu";
+            msg.setStatus("failed");
+            msg.setCodeMsg("Lỗi khi đổi mật khẩu");
         }
 
-        return "success";
+        msg.setStatus("success");
+        return msg;
     }
 
     public SignupMessage signup(String email, String password, String avatar, String name, String gender, int yearOfBirth) {
@@ -178,16 +179,21 @@ public class PlayerController {
         return msg;
     }
 
-    public String editProfile(String email, String newEmail, String name, String avatar, int yearOfBirth, String gender) {
+    public EditProfileMessage editProfile(String email, String newEmail, String name, String avatar, int yearOfBirth, String gender) {
         // check trung email
+        EditProfileMessage msg = new EditProfileMessage();
         if (!newEmail.equals(email) && getByEmail(newEmail) != null) {
-            return "failed;" + Code.EMAIL_EXISTED;
+            msg.setStatus("failed");
+            msg.setCodeMsg(Code.EMAIL_EXISTED);
+            return msg;
         }
 
         // check email
         Player p = getByEmail(email);
         if (p == null) {
-            return "failed;" + Code.ACCOUNT_NOT_FOUND;
+            msg.setStatus("failed");
+            msg.setCodeMsg(Code.ACCOUNT_NOT_FOUND);
+            return msg;
         }
 
         // set data
@@ -201,9 +207,14 @@ public class PlayerController {
         boolean status = update(p);
 
         if (!status) {
-            return "failed;Lỗi khi cập nhật thông tin cá nhân";
+            msg.setStatus("failed");
+            msg.setCodeMsg("Lỗi khi cập nhật thông tin cá nhân");
+            return msg;
+
         }
 
-        return "success;" + newEmail;
+        msg.setStatus("success");
+        msg.setEmail(newEmail);
+        return msg;
     }
 }

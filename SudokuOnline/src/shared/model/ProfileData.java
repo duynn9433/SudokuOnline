@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @author duynn
  */
-public class ProfileData implements Serializable{
+public class ProfileData implements Serializable {
 
     int id;
     String email = "#"; // cài giá trị mặc định

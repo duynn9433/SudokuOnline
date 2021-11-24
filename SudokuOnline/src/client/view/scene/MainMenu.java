@@ -597,6 +597,7 @@ public class MainMenu extends javax.swing.JFrame {
     private void btnRankActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRankActionPerformed
         // TODO add your handling code here:
          RunClient.openScene(RunClient.SceneName.RANK);
+         RunClient.socketHandler.sendMsgRank();
     }//GEN-LAST:event_btnRankActionPerformed
 
     private void btnChatAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatAllActionPerformed

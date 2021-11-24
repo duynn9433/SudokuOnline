@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import shared.constant.Avatar;
+import shared.message.GetProfileMessage;
 
 /**
  *
@@ -83,28 +84,28 @@ public class Profile extends javax.swing.JFrame {
         RunClient.socketHandler.getProfile(email);
     }
 
-    public void setProfileData(ProfileData p) {
+    public void setProfileData(GetProfileMessage p) {
 
         // save current profile
-        currentProfile = p;
-        boolean isMe = p.getEmail().equals(RunClient.socketHandler.getLoginEmail());
+    //    currentProfile = p;
+        boolean isMe = p.getPlayer().getEmail().equals(RunClient.socketHandler.getLoginEmail());
 
         // put data to form
-        lbWinCount.setText("" + p.getWinCount());
-        lbTieCount.setText("" + p.getTieCount());
-        lbLoseCount.setText("" + p.getLoseCount());
+        lbWinCount.setText("" + p.getPlayer().getWinCount());
+        lbTieCount.setText("" + p.getPlayer().calculateTieCount());
+        lbLoseCount.setText("" + p.getPlayer().getLoseCount());
 
-        plContainer.setBorder(javax.swing.BorderFactory.createTitledBorder(null, p.getName() + " #" + p.getId(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 1, 16))); // NOI18N
-        txEmail.setText(p.getEmail());
-        txName.setText(p.getName());
-        txYearOfBirth.setText("" + p.getYearOfBirth());
-        cbGender.setSelectedItem(p.getGender());
-        cbAvatar.setSelectedItem(hAvatar.get(p.getAvatar()));
+        plContainer.setBorder(javax.swing.BorderFactory.createTitledBorder(null, p.getPlayer().getName() + " #" + p.getPlayer().getId(), javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Consolas", 1, 16))); // NOI18N
+        txEmail.setText(p.getPlayer().getEmail());
+        txName.setText(p.getPlayer().getName());
+        txYearOfBirth.setText("" + p.getPlayer().getYearOfBirth());
+        cbGender.setSelectedItem(p.getPlayer().getGender());
+        cbAvatar.setSelectedItem(hAvatar.get(p.getPlayer().getAvatar()));
 
-        lbScore.setText(String.valueOf(p.getScore()));
-        lbMatchCount.setText("" + p.getMatchCount());
-        lbCurrentStreak.setText(getCurrentStreakStr(p.getCurrentStreak()));
-        lbWinRate.setText(p.getWinRate() + "%");
+        lbScore.setText(String.valueOf(p.getPlayer().getScore()));
+        lbMatchCount.setText("" + p.getPlayer().getMatchCount());
+     //   lbCurrentStreak.setText(getCurrentStreakStr(p.getCurrentStreak()));
+        lbWinRate.setText(p.getPlayer().calWinRate() + "%");
 
         // editable chỉ khi là tài khoản của mình
         txEmail.setEditable(isMe);

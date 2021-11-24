@@ -80,6 +80,10 @@ public class Player implements Serializable{
     public int calculateTieCount() {
         return matchCount - winCount - loseCount;
     }
+    public float calWinRate(){
+        if(matchCount==0) return 0;
+        return (float)(winCount/matchCount)*100;
+    }
 
     public float calculateWinRate() {
         if (this.matchCount == 0) {
