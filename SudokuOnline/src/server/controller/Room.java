@@ -61,36 +61,6 @@ public class Room {
     public void startGame() {
         startedTime = LocalDateTime.now();
         gameStarted = true;
-//        sudoku1.getMatchTimer()
-//                .setTimerCallBack(// end match callback
-//                        (Callable) () -> {
-//
-//                            // tinh diem hoa
-//                            new GameMatchController().add(new GameMatch(
-//                                    client1.getLoginPlayer().getId(),
-//                                    client1.getLoginPlayer().getId(),
-//                                    -1,
-//                                    sudoku1.getMatchTimer().getCurrentTick(),
-//                                    startedTime
-//                            ));
-//
-//                            broadcast(
-//                                    StreamData.Type.GAME_EVENT + ";"
-//                                    + StreamData.Type.MATCH_TIMER_END.name()
-//                            );
-//                            return null;
-//                        },
-//                        // tick match callback
-//                        (Callable) () -> {
-//                            broadcast(StreamData.Type.GAME_EVENT + ";"
-//                                    + StreamData.Type.MATCH_TICK.name() + ";"
-//                                    + sudoku1.getMatchTimer().getCurrentTick()
-//                            );
-//                            return null;
-//                        },
-//                        // tick interval
-//                        Sudoku.MATCH_TIME_LIMIT / 10
-//                );
     }
 
     // add/remove client

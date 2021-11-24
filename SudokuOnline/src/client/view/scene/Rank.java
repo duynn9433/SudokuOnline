@@ -26,7 +26,8 @@ public class Rank extends javax.swing.JFrame {
     DefaultTableModel tmRank;
     public Rank() {
         initComponents();
-        this.setLocation(350,50);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         tmRank = (DefaultTableModel) tblRank.getModel();
     }
     public void setListRank(ArrayList<Player> listPlayer){

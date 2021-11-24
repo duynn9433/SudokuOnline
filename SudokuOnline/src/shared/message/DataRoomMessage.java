@@ -18,7 +18,6 @@ public class DataRoomMessage extends Message{
     public static final long serialVersionUID = 7L;
 
     private String idRoom;
-    private Room room;
     private String status;
     private String codeMsg;
     
@@ -81,14 +80,6 @@ public class DataRoomMessage extends Message{
         this.idRoom = idRoom;
     }
 
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
     public String getStatus() {
         return status;
     }
@@ -107,7 +98,7 @@ public class DataRoomMessage extends Message{
 
     @Override
     public String toString() {
-        return "DataRoomMessage{" + "idRoom=" + idRoom + ", room=" + room + ", status=" + status + ", codeMsg=" + codeMsg + ", sudokuBoard=" + sudokuBoard + ", currentTick=" + currentTick + ", player1=" + player1 + ", player2=" + player2 + '}';
+        return "DataRoomMessage{" + "idRoom=" + idRoom + ", status=" + status + ", codeMsg=" + codeMsg + ", sudokuBoard=" + sudokuBoard + ", currentTick=" + currentTick + ", player1=" + player1 + ", player2=" + player2 + '}';
     }
     
     

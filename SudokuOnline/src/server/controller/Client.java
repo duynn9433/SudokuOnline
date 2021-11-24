@@ -42,6 +42,7 @@ public class Client implements Runnable {
 
     boolean findingMatch = false;
     String acceptPairMatchStatus = "_"; // yes/no/_
+    boolean isReady = false; //san sang de vào phòng
 
     public Client(Socket s) throws IOException {
         this.s = s;
@@ -92,10 +93,6 @@ public class Client implements Runnable {
                         onReceiveListRoom(message);
                         break;
 
-                    case LIST_ONLINE:
-                        onReceiveListOnline(received);
-                        break;
-
                     case CREATE_ROOM:
                         onReceiveCreateRoom();
                         break;
@@ -135,8 +132,19 @@ public class Client implements Runnable {
                         onReceiveChatAll(message);
                         break;
 
+                    case CHAT_WAITING_ROOM:
+                        onReceiveChatWaitingRoom(message);
+                        break;
+
                     case LEAVE_ROOM:
                         onReceiveLeaveRoom();
+                        break;
+                    case LEAVE_WAITING_ROOM:
+                        onReceiveLeaveWaitingRoom();
+                        break;
+
+                    case READY:
+                        onReceiveReady();
                         break;
 
                     case GET_PROFILE:
@@ -274,10 +282,6 @@ public class Client implements Runnable {
         sendObject(msg);
     }
 
-    private void onReceiveListOnline(String received) {
-
-    }
-
     private void onReceiveCreateRoom() {
         Room newRoom = RunServer.roomManager.createRoom();
         JoinRoomMessage msg = this.joinRoom(newRoom);
@@ -293,6 +297,8 @@ public class Client implements Runnable {
         if (room != null) {
             if (!room.isFull()) {
                 JoinRoomMessage send = this.joinRoom(room);
+                joinedRoom.getClient1().setcCompetitor(joinedRoom.getClient2());
+                joinedRoom.getClient2().setcCompetitor(joinedRoom.getClient1());
                 send.setType(StreamData.Type.CREATE_ROOM);
                 sendObject(send);
             } else {
@@ -511,6 +517,12 @@ public class Client implements Runnable {
         RunServer.clientManager.broadcast(msg);
     }
 
+    private void onReceiveChatWaitingRoom(Object message) {
+        ChatMessage msg = (ChatMessage) message;
+        msg.setType(StreamData.Type.CHAT_WAITING_ROOM);
+        joinedRoom.broadcast(msg);
+    }
+
     private void onReceiveLeaveRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
@@ -542,6 +554,111 @@ public class Client implements Runnable {
         LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
+    }
+
+    private void onReceiveLeaveWaitingRoom() {
+        System.out.println("joinedRoom:" + joinedRoom);
+        if (joinedRoom == null) {
+            LeaveRoomMessage send = new LeaveRoomMessage();
+            send.setStatus("failed");
+            send.setCodeMsg(Code.CANT_LEAVE_ROOM);
+            System.out.println("LeaveMsg:" + send);
+            sendObject(send);
+            return;
+        }
+
+        // nếu là người chơi thì đóng room luôn
+        //            joinedRoom.close("Người chơi " + this.loginPlayer.getNameId() + " đã thoát phòng.");
+        joinedRoom.leaveRoom(this);
+        System.out.println("1");
+
+        // broadcast to all clients in room
+//        String data = CustomDateTimeFormatter.getCurrentTimeFormatted() + ";"
+//                + "SERVER" + ";"
+//                + loginPlayer.getNameId() + " đã thoát";
+//
+//        joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";" + data);
+        // delete refernce to room
+//        joinedRoom.removeClient(this);
+        joinedRoom = null;
+        System.out.println("2");
+        // TODO if this client is player -> close room
+        // send result
+        LeaveRoomMessage send = new LeaveRoomMessage();
+        send.setType(StreamData.Type.LEAVE_WAITING_ROOM);
+        send.setStatus("success");
+        sendObject(send);
+    }
+
+    private void onReceiveReady() {
+        if (!isReady) {
+            isReady = true;
+            //send msg da san sang -> chuyen trang thai thanh huy san sang
+            ReadyMessage send = new ReadyMessage();
+            send.setIsReady(isReady);
+            send.setStatus("success");
+            sendObject(send);
+            //check xem 2 th da san sang chua
+            if (joinedRoom != null) {
+                boolean is1Ready = false;
+                if (joinedRoom.getClient1() != null) {
+                    is1Ready = joinedRoom.getClient1().isIsReady();
+                }
+                boolean is2Ready = false;
+                if (joinedRoom.getClient2() != null) {
+                    is2Ready = joinedRoom.getClient2().isIsReady();
+                }
+                if (is1Ready && is2Ready) {
+                    //bat dau game
+                    joinedRoom.getClient1().setIsReady(false);
+                    joinedRoom.getClient2().setIsReady(false);
+                    String s = DataCreateGame.getRandomData();
+                    joinedRoom.getSudoku1().setAnswer(s);
+                    joinedRoom.getSudoku1().setBoard(DataCreateGame.createBoard(s));
+                    s = DataCreateGame.getRandomData();
+                    joinedRoom.getSudoku2().setAnswer(s);
+                    joinedRoom.getSudoku2().setBoard(DataCreateGame.createBoard(s));
+                    //gui de
+                    DataRoomMessage sendRoom = new DataRoomMessage();
+                    sendRoom.setType(StreamData.Type.START_GAME_FROM_ROOM);
+                    sendRoom.setStatus("success");
+                    sendRoom.setIdRoom(joinedRoom.getId());
+                    sendRoom.setPlayer1(joinedRoom.getClient1().getLoginPlayer().toPlayerInGame());
+                    sendRoom.setPlayer2(joinedRoom.getClient2().getLoginPlayer().toPlayerInGame());
+
+                    boolean amIPlayer1 = false;
+                    if (joinedRoom.getClient1().getLoginPlayer().getEmail().equals(loginPlayer.getEmail())) {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+                        System.out.println("sudoku:");
+                        sendRoom.printBoard();
+                        amIPlayer1 = true;
+                        sendObject(sendRoom);
+                    } else {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+                        System.out.println("sudoku:");
+                        sendRoom.printBoard();
+                        sendObject(sendRoom);
+                    }
+                    //gui de cho doi thu
+                    if (amIPlayer1) {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+                        cCompetitor.sendObject(sendRoom);
+                    } else {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+                        cCompetitor.sendObject(sendRoom);
+                    }
+                    joinedRoom.startGame();
+                }
+            }
+
+        } else {
+            isReady = false;
+            //send msg huy san sang -> chuyen thanh nut san sang
+            ReadyMessage send = new ReadyMessage();
+            send.setIsReady(isReady);
+            send.setStatus("success");
+            sendObject(send);
+        }
     }
 
     // profile
@@ -695,8 +812,8 @@ public class Client implements Runnable {
             //TODO luu game match
             new GameMatchController().add(
                     new GameMatch(0, joinedRoom.getClient1().getLoginPlayer().getId(),
-                             joinedRoom.getClient2().getLoginPlayer().getId(),
-                             getWinnerID(isPlayer1Win, isPlayer2Win),
+                            joinedRoom.getClient2().getLoginPlayer().getId(),
+                            getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));
         }
     }
@@ -866,6 +983,14 @@ public class Client implements Runnable {
 
     public void setJoinedRoom(Room room) {
         this.joinedRoom = room;
+    }
+
+    public boolean isIsReady() {
+        return isReady;
+    }
+
+    public void setIsReady(boolean isReady) {
+        this.isReady = isReady;
     }
 
     public String getAcceptPairMatchStatus() {

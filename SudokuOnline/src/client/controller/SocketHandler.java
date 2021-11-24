@@ -132,10 +132,6 @@ public class SocketHandler {
                         onReceiveListRoom(message);    //can lien quan den phong
                         break;
 
-                    case LIST_ONLINE:
-                        onReceiveListOnline(received);
-                        break;
-
                     case CREATE_ROOM:
                         onReceiveCreateRoom(message);  //can lien quan den phong
                         break;
@@ -171,11 +167,21 @@ public class SocketHandler {
                     case CHAT_ALL:
                         onReceiveChatAll(message);
                         break;
-
+                    case CHAT_WAITING_ROOM:
+                        onReceiveChatWaitingRoom(message);
+                        break;
                     case LEAVE_ROOM:
                         onReceiveLeaveRoom(message);
                         break;
-
+                    case LEAVE_WAITING_ROOM:
+                        onReceiveLeaveWaitingRoom(message);
+                        break;
+                    case READY:
+                        onReceiveReady(message);
+                        break;
+                    case START_GAME_FROM_ROOM:
+                        onReceiveStartGame(message);
+                        break;
                     case CLOSE_ROOM:
                         onReceiveCloseRoom(received);
                         break;
@@ -326,10 +332,6 @@ public class SocketHandler {
         }
     }
 
-    private void onReceiveListOnline(String received) {
-
-    }
-
     private void onReceiveCreateRoom(Object message) {
         JoinRoomMessage msg = (JoinRoomMessage) message;
         String status = msg.getStatus();
@@ -452,13 +454,18 @@ public class SocketHandler {
 
     private void onReceiveChatRoom(Object message) {
         ChatMessage msg = (ChatMessage) message;
-
         RunClient.inGameScene.addChat(msg.getChatItem());
     }
 
     private void onReceiveChatAll(Object message) {
         ChatMessage msg = (ChatMessage) message;
         RunClient.mainMenuScene.addChat(msg.getChatItem());
+        RunClient.waitingRoom.addChatServer(msg.getChatItem());
+    }
+
+    private void onReceiveChatWaitingRoom(Object message) {
+        ChatMessage msg = (ChatMessage) message;
+        RunClient.waitingRoom.addChatRoom(msg.getChatItem());
     }
 
     private void onReceiveLeaveRoom(Object message) {
@@ -477,6 +484,48 @@ public class SocketHandler {
             // get list room again
             listRoom();
         }
+    }
+
+    private void onReceiveLeaveWaitingRoom(Object message) {
+        LeaveRoomMessage msg = (LeaveRoomMessage) message;
+        String status = msg.getStatus();
+        System.out.println("status leave room:" + status);
+
+        if (status.equals("failed")) {
+            String failedMsg = msg.getCodeMsg();
+            JOptionPane.showMessageDialog(RunClient.waitingRoom, failedMsg, "Không thể thoát phòng", JOptionPane.ERROR_MESSAGE);
+
+        } else if (status.equals("success")) {
+            RunClient.closeScene(RunClient.SceneName.WAITINGROOM);
+            RunClient.openScene(RunClient.SceneName.MAINMENU);
+            // get list room again
+            listRoom();
+        }
+    }
+
+    private void onReceiveReady(Object message) {
+        ReadyMessage msg = (ReadyMessage) message;
+        boolean isReady = msg.isIsReady();
+        RunClient.waitingRoom.ready(isReady);
+    }
+
+    private void onReceiveStartGame(Object message) {
+        DataRoomMessage msg = (DataRoomMessage) message;
+        String status = msg.getStatus();
+        if (status.equals("success")) {
+            RunClient.closeScene(RunClient.SceneName.WAITINGROOM);
+            RunClient.openScene(RunClient.SceneName.INGAME);
+            // player
+            PlayerInGame p1 = msg.getPlayer1();
+            PlayerInGame p2 = msg.getPlayer2();
+            RunClient.inGameScene.setPlayerInGame(p1, p2);
+            RunClient.inGameScene.setBoard(msg.getSudokuBoard());
+            msg.printBoard();
+            // timer data
+            int matchTimerLimit = Sudoku.MATCH_TIME_LIMIT;
+            RunClient.inGameScene.startGame(matchTimerLimit);
+        }
+
     }
 
     private void onReceiveCloseRoom(String received) {
@@ -743,5 +792,11 @@ public class SocketHandler {
         GetListRankMessage msg = (GetListRankMessage) message;
         ArrayList<Player> listPlayer = msg.getListPalyer();
         RunClient.rankview.setListRank(listPlayer);
+    }
+
+    public void leaveWaitingRoom() {
+        LeaveRoomMessage msg = new LeaveRoomMessage();
+        msg.setType(StreamData.Type.LEAVE_WAITING_ROOM);
+        sendObject(msg);
     }
 }
