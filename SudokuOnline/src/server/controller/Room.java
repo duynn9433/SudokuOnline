@@ -39,6 +39,14 @@ public class Room {
         sudoku2 = new Sudoku();
     }
 
+    public LocalDateTime getStartedTime() {
+        return startedTime;
+    }
+
+    public void setStartedTime(LocalDateTime startedTime) {
+        this.startedTime = startedTime;
+    }
+
     public boolean isGameStarted() {
         return gameStarted;
     }
