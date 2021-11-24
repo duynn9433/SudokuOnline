@@ -15,6 +15,8 @@ import shared.constant.StreamData;
 import shared.helper.CountDownTimer;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.ChatMessage;
+import shared.message.JoinRoomMessage;
+import shared.message.Message;
 import shared.model.ChatItem;
 
 /**
@@ -230,6 +232,11 @@ public class MainMenu extends javax.swing.JFrame {
 
         btnCreateRoom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_add_24px.png"))); // NOI18N
         btnCreateRoom.setText("Tạo phòng");
+        btnCreateRoom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateRoomActionPerformed(evt);
+            }
+        });
 
         btnFindMatch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_circled_play_24px.png"))); // NOI18N
         btnFindMatch.setText("Tìm trận");
@@ -241,6 +248,11 @@ public class MainMenu extends javax.swing.JFrame {
 
         btnJoin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_open_door_24px.png"))); // NOI18N
         btnJoin.setText("Vào phòng");
+        btnJoin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnJoinActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout plBtnsLayout = new javax.swing.GroupLayout(plBtns);
         plBtns.setLayout(plBtnsLayout);
@@ -611,6 +623,27 @@ public class MainMenu extends javax.swing.JFrame {
         RunClient.socketHandler.sendObject(msg);
         txtChatAllInput.setText("");
     }//GEN-LAST:event_btnChatAllActionPerformed
+
+    private void btnCreateRoomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateRoomActionPerformed
+        // TODO add your handling code here:
+        Message msg = new Message(StreamData.Type.CREATE_ROOM);
+        RunClient.socketHandler.sendObject(msg);
+    }//GEN-LAST:event_btnCreateRoomActionPerformed
+
+    private void btnJoinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnJoinActionPerformed
+        // TODO add your handling code here:
+        if(tbListRoom.getSelectedRow()==-1){
+            JOptionPane.showConfirmDialog(rootPane, "Chọn 1 phòng trước khi vào phòng");
+        }else{
+            //lay dc room id
+            String roomID = tbListRoom.getValueAt(tbListRoom.getSelectedRow(), 0).toString();
+            //gưi mes xin vao phong
+            JoinRoomMessage send = new JoinRoomMessage();
+            send.setIdRoom(roomID);
+            RunClient.socketHandler.sendObject(send);
+        }
+ 
+    }//GEN-LAST:event_btnJoinActionPerformed
 
     public void addChat(ChatItem c) {
         txtChatAllOutput.append(c.toString() + "\n");

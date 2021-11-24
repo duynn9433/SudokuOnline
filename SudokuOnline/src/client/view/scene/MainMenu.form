@@ -156,6 +156,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="T&#x1ea1;o ph&#xf2;ng"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateRoomActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btnFindMatch">
               <Properties>
@@ -175,6 +178,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="V&#xe0;o ph&#xf2;ng"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnJoinActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

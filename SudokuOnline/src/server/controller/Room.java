@@ -39,6 +39,13 @@ public class Room {
         sudoku2 = new Sudoku();
     }
 
+    public boolean isFull(){
+        if(client1!=null && client2!=null){
+            return true;
+        }
+        return false;
+    }
+    
     public LocalDateTime getStartedTime() {
         return startedTime;
     }
@@ -111,10 +118,15 @@ public class Room {
     public void broadcast(Object message) {
         ChatMessage msg = (ChatMessage) message;
         System.out.println("CHat1:"+msg);
+        if(client1 != null){
+            client1.sendObject(msg);
+        }
         
-        client1.sendObject(msg);
         System.out.println("CHat2:"+msg);
-        client2.sendObject(msg);
+        if(client2 != null){
+            client2.sendObject(msg);
+        }
+        
 //        clients.forEach((c) -> {
 //            c.sendData(msg);
 //        });
@@ -130,78 +142,15 @@ public class Room {
             RunServer.roomManager.remove(this);
         }
     }
-    public void close(String reason) {
-        // notify all client in room
-        broadcast(StreamData.Type.CLOSE_ROOM.name() + ";" + reason);
-
+    public void close() {
         // remove reference
-//        client1.setJoinedRoom(null);
-//        clients.forEach((client) -> {
-//            client.setJoinedRoom(null);
-//        });
-
-        // remove all clients
-//        clients.clear();
-
+        client1.setJoinedRoom(null);
+        client2.setJoinedRoom(null);
+        client1=null;
+        client2=null;
         // remove room
         RunServer.roomManager.remove(this);
     }
-
-    // get room data
-//    public String getFullData() {
-//        String data = "";
-//
-//        // player data
-//        data += getClient12InGameData() + ";";
-//        data += getListClientData() + ";";
-//        // timer
-//       // data += getTimerData() + ";";
-//        // board
-////        data += getBoardData();
-//
-//        return data;
-//    }
-
-//    public String getTimerData() {
-//        String data = "";
-//
-//        data += Sudoku.MATCH_TIME_LIMIT + ";" + sudoku1.getMatchTimer().getCurrentTick() + ";";
-//        data += Sudoku.TURN_TIME_LIMIT + ";" + sudoku1.getTurnTimer().getCurrentTick();
-//
-//        return data;
-//    }
-
-//    public String getBoardData() {
-//        ArrayList<History> history = sudoku1.getHistory();
-//
-//        String data = history.size() + ";";
-//        for (History his : history) {
-//            data += his.getRow() + ";" + his.getColumn() + ";" + his.getPlayerEmail() + ";";
-//        }
-//
-//        return data.substring(0, data.length() - 1); // bỏ dấu ; ở cuối
-//    }
-
-//    public String getClient12InGameData() {
-//        String data = "";
-//
-//        data += (client1 == null ? Client.getEmptyInGameData() : client1.getInGameData() + ";");
-//        data += (client2 == null ? Client.getEmptyInGameData() : client2.getInGameData());
-//
-//        return data;
-//    }
-//
-//    public String getListClientData() {
-//        // kết quả trả về có dạng playerCount;player1_data;player2_data;...;playerN_data
-//
-//        String data = clients.size() + ";";
-//
-//        for (Client c : clients) {
-//            data += c.getInGameData() + ";";
-//        }
-//
-//        return data.substring(0, data.length() - 1); // bỏ dấu ; ở cuối
-//    }
 
     // gets sets
     public String getId() {

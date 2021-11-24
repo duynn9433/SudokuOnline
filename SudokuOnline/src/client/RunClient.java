@@ -15,6 +15,7 @@ import client.view.scene.MainMenu;
 import client.view.scene.Profile;
 import client.view.scene.Rank;
 import client.view.scene.Signup;
+import client.view.scene.WaitingRoom;
 
 /**
  *
@@ -30,7 +31,8 @@ public class RunClient {
         CHANGEPASSWORD,
         INGAME,
         PROFILE,
-        RANK
+        RANK,
+        WAITINGROOM
     }
 
     // scenes
@@ -42,6 +44,7 @@ public class RunClient {
     public static InGame inGameScene;
     public static Profile profileScene;
     public static Rank rankview;
+    public static WaitingRoom waitingRoom;
     // controller 
     public static SocketHandler socketHandler;
 
@@ -59,6 +62,7 @@ public class RunClient {
         changePasswordScene = new ChangePassword();
         inGameScene = new InGame();
         profileScene = new Profile();
+        waitingRoom = new WaitingRoom();
     }
 
     public static void openScene(SceneName sceneName) {
@@ -98,6 +102,12 @@ public class RunClient {
                     rankview = new Rank();
                     rankview.setVisible(true);
                     break;
+                    
+                case WAITINGROOM:
+                    waitingRoom = new WaitingRoom();
+                    waitingRoom.setVisible(true);
+                    break;
+                    
                 default:
                     break;
             }
@@ -131,6 +141,9 @@ public class RunClient {
                 case RANK:
                     rankview.dispose();
                     break;
+                case WAITINGROOM:
+                    waitingRoom.dispose();
+                    break;
                 default:
                     break;
             }
@@ -145,6 +158,7 @@ public class RunClient {
         changePasswordScene.dispose();
         inGameScene.dispose();
         profileScene.dispose();
+        waitingRoom.dispose();
     }
 
     public static void main(String[] args) {

@@ -97,11 +97,11 @@ public class Client implements Runnable {
                         break;
 
                     case CREATE_ROOM:
-                        onReceiveCreateRoom(received);
+                        onReceiveCreateRoom();
                         break;
 
                     case JOIN_ROOM:
-                        onReceiveJoinRoom(received);
+                        onReceiveJoinRoom(message);
                         break;
 
                     case FIND_MATCH:
@@ -260,7 +260,6 @@ public class Client implements Runnable {
 
         msg.setRoomCount(listRoom.size());
 
-
         for (Room r : listRoom) {
             String pairData
                     = ((r.getClient1() != null) ? r.getClient1().getLoginPlayer().getNameId() : "_")
@@ -279,11 +278,37 @@ public class Client implements Runnable {
 
     }
 
-    private void onReceiveCreateRoom(String received) {
+    private void onReceiveCreateRoom() {
+        Room newRoom = RunServer.roomManager.createRoom();
+        JoinRoomMessage msg = this.joinRoom(newRoom);
+        msg.setType(StreamData.Type.CREATE_ROOM);
+        sendObject(msg);
 
     }
 
-    private void onReceiveJoinRoom(String received) {
+    private void onReceiveJoinRoom(Object message) {
+        JoinRoomMessage msg = (JoinRoomMessage) message;
+        String roomID = msg.getIdRoom();
+        Room room = RunServer.roomManager.find(roomID);
+        if (room != null) {
+            if (!room.isFull()) {
+                JoinRoomMessage send = this.joinRoom(room);
+                send.setType(StreamData.Type.CREATE_ROOM);
+                sendObject(send);
+            } else {
+                JoinRoomMessage send = new JoinRoomMessage();
+                send.setType(StreamData.Type.CREATE_ROOM);
+                send.setStatus("failed");
+                send.setCodeMsg("Phòng đã đầy");
+                sendObject(send);
+            }
+        } else {
+            JoinRoomMessage send = new JoinRoomMessage();
+            send.setType(StreamData.Type.CREATE_ROOM);
+            send.setStatus("failed");
+            send.setCodeMsg("Phòng không tồn tại");
+            sendObject(send);
+        }
 
     }
 
@@ -635,7 +660,7 @@ public class Client implements Runnable {
 
                 //moi th 1 diem
                 draw();
-                isPlayer1Win=false;
+                isPlayer1Win = false;
                 isPlayer2Win = false;
             } else if (check1 && check2) {
                 if (joinedRoom.getSudoku1().getSubmitTime() > joinedRoom.getSudoku2().getSubmitTime()) {
@@ -661,7 +686,7 @@ public class Client implements Runnable {
 
                     //moi th them 1 diem
                     draw();
-                    isPlayer1Win=false;
+                    isPlayer1Win = false;
                     isPlayer2Win = false;
                 }
             }
@@ -669,25 +694,26 @@ public class Client implements Runnable {
             cCompetitor.sendObject(send1);
             //TODO luu game match
             new GameMatchController().add(
-                    new GameMatch(0,joinedRoom.getClient1().getLoginPlayer().getId()
-                            ,joinedRoom.getClient2().getLoginPlayer().getId()
-                            ,getWinnerID(isPlayer1Win, isPlayer2Win), 
+                    new GameMatch(0, joinedRoom.getClient1().getLoginPlayer().getId(),
+                             joinedRoom.getClient2().getLoginPlayer().getId(),
+                             getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));
         }
     }
 
-    private int getWinnerID(boolean isPlayer1Win, boolean isPlayer2Win){
-        if(isPlayer1Win && !isPlayer2Win){
+    private int getWinnerID(boolean isPlayer1Win, boolean isPlayer2Win) {
+        if (isPlayer1Win && !isPlayer2Win) {
             return joinedRoom.getClient1().getLoginPlayer().getId();
         }
-        if(!isPlayer1Win && isPlayer2Win){
+        if (!isPlayer1Win && isPlayer2Win) {
             return joinedRoom.getClient2().getLoginPlayer().getId();
         }
-        if(!isPlayer1Win && !isPlayer2Win){
+        if (!isPlayer1Win && !isPlayer2Win) {
             return 0;
         }
         return 0;
     }
+
     private void firstWin() {
         PlayerController playerController = new PlayerController();
         Player p1 = joinedRoom.getClient1().getLoginPlayer();

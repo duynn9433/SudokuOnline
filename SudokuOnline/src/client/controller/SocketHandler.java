@@ -137,7 +137,7 @@ public class SocketHandler {
                         break;
 
                     case CREATE_ROOM:
-                        onReceiveCreateRoom(received);  //can lien quan den phong
+                        onReceiveCreateRoom(message);  //can lien quan den phong
                         break;
 
                     case JOIN_ROOM:
@@ -330,13 +330,30 @@ public class SocketHandler {
 
     }
 
-    private void onReceiveCreateRoom(String received) {
+    private void onReceiveCreateRoom(Object message) {
+        JoinRoomMessage msg = (JoinRoomMessage) message;
+        String status = msg.getStatus();
+        if (status.equals("success")) {
+            String roomId = msg.getIdRoom();
+
+            // save room id
+            this.roomId = roomId;
+            System.out.println("Room id JOIN_ROOM:" + roomId);
+
+            // change scene
+            RunClient.closeScene(RunClient.SceneName.MAINMENU);
+            RunClient.openScene(RunClient.SceneName.WAITINGROOM);
+            RunClient.waitingRoom.setTitle("Phòng #" + roomId);
+        } else if (status.equals("failed")) {
+            String codeMsg = msg.getCodeMsg();
+            JOptionPane.showMessageDialog(RunClient.mainMenuScene, codeMsg,
+                    "Vào phòng không thành công", JOptionPane.ERROR_MESSAGE);
+        }
 
     }
 
     private void onReceiveJoinRoom(Object message) {
         JoinRoomMessage msg = (JoinRoomMessage) message;
-        msg.toString();
         String roomId = msg.getIdRoom();
 
         // save room id
