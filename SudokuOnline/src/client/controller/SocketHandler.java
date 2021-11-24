@@ -190,7 +190,7 @@ public class SocketHandler {
                         
                     case GET_LIST_RANK:
                         onReceiveGetRank(message);
-
+                        break;
                     case CHANGE_PASSWORD:
                         onReceiveChangePassword(message);
                         break;
