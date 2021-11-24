@@ -88,7 +88,7 @@ public class Profile extends javax.swing.JFrame {
     public void setProfileData(GetProfileMessage p) {
 
         // save current profile
-    //    currentProfile = p;
+        currentProfile.setEmail(p.getPlayer().getEmail());
         boolean isMe = p.getPlayer().getEmail().equals(RunClient.socketHandler.getLoginEmail());
 
         // put data to form
