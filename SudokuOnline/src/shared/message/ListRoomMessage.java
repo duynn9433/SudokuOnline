@@ -5,6 +5,7 @@
  */
 package shared.message;
 
+import java.util.ArrayList;
 import shared.constant.StreamData;
 
 /**
@@ -13,8 +14,8 @@ import shared.constant.StreamData;
  */
 public class ListRoomMessage extends Message{
     private int roomCount;
-    private String pairData;
-    private String roomID;
+    private ArrayList pairData;
+    private ArrayList roomID;
     private String status;
 
     public ListRoomMessage(StreamData.Type type) {
@@ -24,13 +25,14 @@ public class ListRoomMessage extends Message{
     public ListRoomMessage() {
     }
 
-    public ListRoomMessage(int roomCount, String pairData, String roomID, String status, StreamData.Type type) {
+    public ListRoomMessage(int roomCount, ArrayList pairData, ArrayList roomID, String status, StreamData.Type type) {
         super(type);
         this.roomCount = roomCount;
         this.pairData = pairData;
         this.roomID = roomID;
         this.status = status;
     }
+
 
     public int getRoomCount() {
         return roomCount;
@@ -40,22 +42,22 @@ public class ListRoomMessage extends Message{
         this.roomCount = roomCount;
     }
 
-    public String getPairData() {
+    public ArrayList getPairData() {
         return pairData;
     }
 
-    public void setPairData(String pairData) {
+    public void setPairData(ArrayList pairData) {
         this.pairData = pairData;
     }
 
-    public String getRoomID() {
+    public ArrayList getRoomID() {
         return roomID;
     }
 
-    public void setRoomID(String roomID) {
+    public void setRoomID(ArrayList roomID) {
         this.roomID = roomID;
     }
-
+  
     public String getStatus() {
         return status;
     }
@@ -71,7 +73,5 @@ public class ListRoomMessage extends Message{
     public void setType(StreamData.Type type) {
         this.type = type;
     }
-    
-    
     
 }

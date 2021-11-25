@@ -305,7 +305,7 @@ public class SocketHandler {
     private void onReceiveListRoom(Object message) {
         ListRoomMessage msg = (ListRoomMessage) message;
         String status = msg.getStatus();
-
+        
         if (status.equals("failed")) {
 
         } else if (status.equals("success")) {
@@ -316,12 +316,12 @@ public class SocketHandler {
             vheader.add("Cặp đấu");
 
             Vector vdata = new Vector();
+            
+            for (int i = 0; i < roomCount; i ++) {
 
-            for (int i = 3; i < roomCount + 3; i += 3) {
-
-                String roomId = msg.getRoomID();
-                String title = msg.getPairData();
-
+                String roomId = (String) msg.getRoomID().get(i);
+                String title = (String) msg.getPairData().get(i);
+                
                 Vector vrow = new Vector();
                 vrow.add(roomId);
                 vrow.add(title);
@@ -647,7 +647,6 @@ public class SocketHandler {
 
     // main menu
     public void listRoom() {
-//        sendData(StreamData.Type.LIST_ROOM.name()); //sua
         sendObject(new ListRoomMessage(StreamData.Type.LIST_ROOM));
     }
 
