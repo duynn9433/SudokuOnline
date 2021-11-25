@@ -60,7 +60,6 @@ public class CountDownTimer {
     // https://stackoverflow.com/a/4685606
     public void setTimerCallBack(Callable endCallback, Callable tickCallback, int _tickInterval) {
         tickInterval = _tickInterval;
-
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -79,7 +78,8 @@ public class CountDownTimer {
                     }
 
                     // khi đếm ngược tới 0 sẽ gọi end-callback
-                    if (currentTick <= 0) {
+                    if (currentTick == 0) {
+                        currentTick--;
                         try {
                             if (endCallback != null && !executor.isShutdown()) {
                                 executor.submit(endCallback);

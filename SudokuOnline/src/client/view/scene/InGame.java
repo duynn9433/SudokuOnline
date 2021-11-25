@@ -10,6 +10,7 @@ import shared.model.ChatItem;
 import shared.constant.Avatar;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -95,11 +96,11 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void setWin(String winEmail) {
-        if(matchTimer !=null){
-            matchTimer.pause();
-            matchTimer.cancel();
-        }
-            
+//        if (matchTimer != null) {
+//            matchTimer.pause();
+//            matchTimer.cancel();
+//        }
+
         // tie
         if (winEmail == null) {
             addChat(new ChatItem("[]", "KẾT QUẢ", "HÒA"));
@@ -126,6 +127,7 @@ public class InGame extends javax.swing.JFrame {
         matchTimer = new CountDownTimer(matchTimeLimit);
         matchTimer.setTimerCallBack(// end match callback
                 (Callable) () -> {
+                    
                     if (matchTimer != null) {
                         endGameTimeout();
                     }
@@ -142,19 +144,22 @@ public class InGame extends javax.swing.JFrame {
         );
     }
 
-    public void endGameTimeout() {
-        System.out.println("Timeout");
-        matchTimer.pause();
-        JOptionPane.showMessageDialog(this, "Hết thời gian");
-        int time = matchTimer.getCurrentTick();
-        matchTimer.cancel();
-        matchTimer = null;
-        SubmitMessage msg = new SubmitMessage();
-        msg.setType(StreamData.Type.SUBMIT);
-        msg.setSubmit(sudokuGame.getSubmit());
-        msg.setCurrentTick(time);
-        RunClient.socketHandler.sendObject(msg);
-
+    public void endGameTimeout() throws InterruptedException {
+        if (matchTimer != null) {
+            btnSubmit.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Hết thời gian");
+            System.out.println("Timeout");
+            matchTimer.pause();
+            int time = matchTimer.getCurrentTick();
+         //   matchTimer.cancel();
+           // matchTimer = null;
+            SubmitMessage msg = new SubmitMessage();
+            msg.setType(StreamData.Type.SUBMIT);
+            msg.setSubmit(sudokuGame.getSubmit());
+            msg.setCurrentTick(time);
+            RunClient.socketHandler.sendObject(msg);
+        }
+//        TimeUnit.SECONDS.sleep(10);
     }
 
     public void lockSubmit() {
@@ -176,7 +181,6 @@ public class InGame extends javax.swing.JFrame {
 //        }
 //        dispose();
 //    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -503,6 +507,8 @@ public class InGame extends javax.swing.JFrame {
         msg.setSubmit(sudokuGame.getSubmit());
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
+        matchTimer.cancel();
+      //  matchTimer = null;
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked

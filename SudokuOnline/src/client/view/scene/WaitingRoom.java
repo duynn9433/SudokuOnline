@@ -82,6 +82,7 @@ public class WaitingRoom extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Phòng chờ");
 
+        txtRoomChatOutput.setEditable(false);
         txtRoomChatOutput.setColumns(20);
         txtRoomChatOutput.setRows(5);
         jScrollPane4.setViewportView(txtRoomChatOutput);
@@ -122,6 +123,7 @@ public class WaitingRoom extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Room chat", jPanel1);
 
+        txtServerChatOutput.setEditable(false);
         txtServerChatOutput.setColumns(20);
         txtServerChatOutput.setRows(5);
         jScrollPane3.setViewportView(txtServerChatOutput);
