@@ -265,25 +265,19 @@ public class Client implements Runnable {
         ListRoomMessage msg = (ListRoomMessage) message;
         msg.setStatus("success");
         ArrayList<Room> listRoom = RunServer.roomManager.getRooms();
-        msg.setRoomCount(listRoom.size());
-        
-        ArrayList listId = new ArrayList();
-        ArrayList listData =  new ArrayList();
 
-        listRoom.forEach(r -> {
+        msg.setRoomCount(listRoom.size());
+
+        for (Room r : listRoom) {
             String pairData
                     = ((r.getClient1() != null) ? r.getClient1().getLoginPlayer().getNameId() : "_")
                     + " VS "
                     + ((r.getClient2() != null) ? r.getClient2().getLoginPlayer().getNameId() : "_");
-            listId.add(r.getId());
-            listData.add(pairData);
-            
-            msg.setRoomID(listId);
-            msg.setPairData(listData);
-        });
+            msg.setRoomID(r.getId());
+            msg.setPairData(pairData);
+        }
 
         // send data
-        System.out.println(msg);
         msg.setType(StreamData.Type.LIST_ROOM);
         sendObject(msg);
     }
@@ -560,6 +554,14 @@ public class Client implements Runnable {
         LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
+        if (joinedRoom.gameStarted == true) {
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setLoseCount(p1.getLoseCount() + 1);
+            p1.setScore(p1.getScore() - 1);
+            new PlayerController().update(p1);
+        }
+
     }
 
     private void onReceiveLeaveWaitingRoom() {
@@ -730,7 +732,11 @@ public class Client implements Runnable {
         }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
             //chien thang +3diem
-
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setWinCount(p1.getWinCount() + 1);
+            p1.setScore(p1.getScore() + 3);
+            new PlayerController().update(p1);
             //gui thong bao
             SubmitMessage send1 = new SubmitMessage();
             send1.setType(StreamData.Type.SUBMIT);
@@ -756,6 +762,7 @@ public class Client implements Runnable {
         }
 
         if (joinedRoom.getSudoku1().isIsSubmit() && joinedRoom.getSudoku2().isIsSubmit()) {
+            joinedRoom.gameStarted = false;
             boolean check1 = joinedRoom.getSudoku1().CheckWin();
             boolean check2 = joinedRoom.getSudoku2().CheckWin();
             SubmitMessage send1 = new SubmitMessage();
