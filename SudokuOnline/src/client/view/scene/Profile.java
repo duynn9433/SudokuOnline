@@ -106,6 +106,7 @@ public class Profile extends javax.swing.JFrame {
         lbScore.setText(String.valueOf(p.getPlayer().getScore()));
         lbMatchCount.setText("" + p.getPlayer().getMatchCount());
      //   lbCurrentStreak.setText(getCurrentStreakStr(p.getCurrentStreak()));
+        
         lbWinRate.setText(p.getPlayer().calWinRate() + "%");
 
         // editable chỉ khi là tài khoản của mình
