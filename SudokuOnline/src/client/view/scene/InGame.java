@@ -228,6 +228,11 @@ public class InGame extends javax.swing.JFrame {
         btnNewGame.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnNewGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_new_file_24px.png"))); // NOI18N
         btnNewGame.setText("Ván mới");
+        btnNewGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewGameActionPerformed(evt);
+            }
+        });
 
         btnUndo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_undo_24px.png"))); // NOI18N
@@ -529,6 +534,11 @@ public class InGame extends javax.swing.JFrame {
         RunClient.socketHandler.sendObject(msg);
         txtChatInput.setText("");
     }//GEN-LAST:event_btnSendMessageActionPerformed
+
+    private void btnNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGameActionPerformed
+        // TODO add your handling code here:
+        RunClient.socketHandler.invitePlayAgain();
+    }//GEN-LAST:event_btnNewGameActionPerformed
     public int[][] getBoard() {
         return board;
     }
@@ -608,4 +618,18 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JTextField txtChatInput;
     private javax.swing.JTextArea txtChatOutput;
     // End of variables declaration//GEN-END:variables
+
+    public void dialogInvitePlayAgian() {
+        if(JOptionPane.showConfirmDialog(this,
+            "Đối thủ muốn mời bạn chơi tiếp?", "Warning",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE) ==JOptionPane.YES_OPTION){
+         } else{
+             RunClient.socketHandler.refusePlayAgain();
+         }
+    }
+
+    public void dialogRefusePlayAgain() {
+        JOptionPane.showMessageDialog(this,"Đối thủ từ chối chơi lại với bạn");
+    }
 }

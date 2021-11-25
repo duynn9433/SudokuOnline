@@ -163,7 +163,12 @@ public class SocketHandler {
                     case CHAT_ROOM:
                         onReceiveChatRoom(message);
                         break;
-
+                    case PLAY_AGAIN:
+                        onReceivePlayAgian();
+                        break;
+                    case REFUSE_PLAY_AGAIN:
+                        onReceiveRefusePlayAgain();
+                        break;
                     case CHAT_ALL:
                         onReceiveChatAll(message);
                         break;
@@ -797,5 +802,23 @@ public class SocketHandler {
         LeaveRoomMessage msg = new LeaveRoomMessage();
         msg.setType(StreamData.Type.LEAVE_WAITING_ROOM);
         sendObject(msg);
+    }
+
+    public void invitePlayAgain() {
+       Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+        sendObject(msg);
+    }
+    private void onReceivePlayAgian() {
+         RunClient.inGameScene.dialogInvitePlayAgian();
+         
+    }
+
+    public void refusePlayAgain() {
+        Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
+        sendObject(msg);
+    }
+
+    private void onReceiveRefusePlayAgain() {
+       RunClient.inGameScene.dialogRefusePlayAgain();
     }
 }
