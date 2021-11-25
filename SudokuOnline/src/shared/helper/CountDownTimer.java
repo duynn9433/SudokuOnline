@@ -10,14 +10,14 @@ import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shared.model.Sudoku;
 
 /**
  *
- * @author duynn
- * Đồng hồ đếm ngược
+ * @author duynn Đồng hồ đếm ngược
  */
 public class CountDownTimer {
 
@@ -51,6 +51,7 @@ public class CountDownTimer {
     }
 
     public void cancel() {
+        isPaused = true;
         timer.cancel();
         timer.purge();
         executor.shutdownNow();
@@ -65,11 +66,13 @@ public class CountDownTimer {
             public void run() {
                 if (!isPaused) {
                     currentTick--;
-
+                    System.out.println(currentTick);
                     // sau tickInterval giây, sẽ gọi 1 lần tick-callback
                     if (tickCallback != null && (timeLimit - currentTick) % tickInterval == 0) {
                         try {
-                            executor.submit(tickCallback);
+                            if (!executor.isShutdown()) {
+                                executor.submit(tickCallback);
+                            }
                         } catch (Exception ex) {
                             Logger.getLogger(Sudoku.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -78,7 +81,7 @@ public class CountDownTimer {
                     // khi đếm ngược tới 0 sẽ gọi end-callback
                     if (currentTick <= 0) {
                         try {
-                            if (endCallback != null) {
+                            if (endCallback != null && !executor.isShutdown()) {
                                 executor.submit(endCallback);
                             }
                             executor.shutdown();
@@ -125,7 +128,8 @@ public class CountDownTimer {
         this.timer = timer;
     }
 
-    public boolean isCancel(){
-        return executor.isShutdown();
+    public boolean isTerminated() {
+        //System.out.println(executor);
+        return executor.isTerminated();
     }
 }

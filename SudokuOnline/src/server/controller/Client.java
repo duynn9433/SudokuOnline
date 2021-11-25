@@ -135,7 +135,7 @@ public class Client implements Runnable {
                     case PLAY_AGAIN:
                         onReceicePlayAgian();
                         break;
-                      
+
                     case REFUSE_PLAY_AGAIN:
                         onReceiveRefusePlayAgain();
                         break;
@@ -735,6 +735,10 @@ public class Client implements Runnable {
 
     // game event
     private void onReceiveSubmit(Object message) {
+        if (joinedRoom == null) {
+            return;
+        }
+
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
         if (joinedRoom.getClient1() == null && joinedRoom.getClient2() == null) {
@@ -753,6 +757,7 @@ public class Client implements Runnable {
             send1.setType(StreamData.Type.SUBMIT);
             send1.setResult(loginPlayer.getEmail());
             sendObject(send1);
+            return;
 
         }
         if (loginPlayer.getEmail().equals(joinedRoom.getClient1().getLoginPlayer().getEmail())) {
@@ -839,6 +844,7 @@ public class Client implements Runnable {
                             joinedRoom.getClient2().getLoginPlayer().getId(),
                             getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));
+            return;
         }
     }
 
@@ -1032,7 +1038,7 @@ public class Client implements Runnable {
     }
 
     private void onReceicePlayAgian() {
-         joinedRoom.invitePlayAgain(this.loginPlayer.getNameId());
+        joinedRoom.invitePlayAgain(this.loginPlayer.getNameId());
     }
 
     private void onReceiveRefusePlayAgain() {
