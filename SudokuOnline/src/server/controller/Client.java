@@ -267,14 +267,18 @@ public class Client implements Runnable {
         ArrayList<Room> listRoom = RunServer.roomManager.getRooms();
 
         msg.setRoomCount(listRoom.size());
-
+        ArrayList listID = new ArrayList();
+        ArrayList listData = new ArrayList();
         for (Room r : listRoom) {
             String pairData
                     = ((r.getClient1() != null) ? r.getClient1().getLoginPlayer().getNameId() : "_")
                     + " VS "
                     + ((r.getClient2() != null) ? r.getClient2().getLoginPlayer().getNameId() : "_");
-            msg.setRoomID(r.getId());
-            msg.setPairData(pairData);
+
+            listID.add(r.getId());
+            listData.add(pairData);
+            msg.setRoomID(listID);
+            msg.setPairData(listData);
         }
 
         // send data
