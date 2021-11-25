@@ -5,8 +5,6 @@
  */
 package client.controller;
 
-import shared.model.ProfileData;
-import shared.model.ChatItem;
 import client.RunClient;
 import client.view.scene.MainMenu;
 import java.io.DataInputStream;
@@ -46,6 +44,7 @@ public class SocketHandler {
     Thread listener = null;
 
     public String connect(String addr, int port) {
+        System.out.println("");
         try {
             // getting ip 
             InetAddress ip = InetAddress.getByName(addr);
