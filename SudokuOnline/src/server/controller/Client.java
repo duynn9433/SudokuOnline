@@ -554,6 +554,14 @@ public class Client implements Runnable {
         LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
+        if (joinedRoom.gameStarted == true) {
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setLoseCount(p1.getLoseCount() + 1);
+            p1.setScore(p1.getScore() - 1);
+            new PlayerController().update(p1);
+        }
+
     }
 
     private void onReceiveLeaveWaitingRoom() {
@@ -724,7 +732,11 @@ public class Client implements Runnable {
         }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
             //chien thang +3diem
-
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setWinCount(p1.getWinCount() + 1);
+            p1.setScore(p1.getScore() + 3);
+            new PlayerController().update(p1);
             //gui thong bao
             SubmitMessage send1 = new SubmitMessage();
             send1.setType(StreamData.Type.SUBMIT);
@@ -750,6 +762,7 @@ public class Client implements Runnable {
         }
 
         if (joinedRoom.getSudoku1().isIsSubmit() && joinedRoom.getSudoku2().isIsSubmit()) {
+            joinedRoom.gameStarted = false;
             boolean check1 = joinedRoom.getSudoku1().CheckWin();
             boolean check2 = joinedRoom.getSudoku2().CheckWin();
             SubmitMessage send1 = new SubmitMessage();
