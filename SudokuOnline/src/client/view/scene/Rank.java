@@ -37,7 +37,8 @@ public class Rank extends javax.swing.JFrame {
        int rank=1;
        for(Player p: listPlayer){
            tmRank.addRow(new Object[]{
-               stt++,p.getName(),p.getWinCount(),p.calculateTieCount(),p.getLoseCount(),p.getScore(),rank++
+               stt++,p.getName(),p.getWinCount(),p.calculateTieCount(),p.getLoseCount(),
+               p.getWinCount()*3+p.calculateTieCount(),rank++
            });
        }
     }
@@ -171,7 +172,7 @@ public class Rank extends javax.swing.JFrame {
 
         @Override
         public int compare(Player o1, Player o2) {
-         int k=o1.getScore()-o2.getScore();
+         int k=(o1.getWinCount()*3+o1.calculateTieCount())-(o2.getWinCount()*3+o2.calculateTieCount());
          if(k>0) return -1;
          if(k<0) return 1;
          return 0;

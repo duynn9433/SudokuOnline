@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.DAO.controller.GameMatchController;
+import server.DAO.controller.RoomController;
 import server.RunServer;
 import server.DAO.controller.PlayerController;
 import shared.model.Player;
@@ -20,7 +20,7 @@ import shared.constant.*;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
 import shared.model.ChatItem;
-import shared.model.GameMatch;
+import shared.model.RoomInDB;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
 
@@ -132,6 +132,16 @@ public class Client implements Runnable {
                         onReceiveChatAll(message);
                         break;
 
+                    case PLAY_AGAIN:
+                        onReceicePlayAgian();
+                        break;
+
+                    case REFUSE_PLAY_AGAIN:
+                        onReceiveRefusePlayAgain();
+                        break;
+                    case ACCEPT_PALY_AGAIN:
+                        onReceiveAceptPlayAgian();
+                        break;
                     case CHAT_WAITING_ROOM:
                         onReceiveChatWaitingRoom(message);
                         break;
@@ -303,7 +313,6 @@ public class Client implements Runnable {
                 JoinRoomMessage send = this.joinRoom(room);
                 joinedRoom.getClient1().setcCompetitor(joinedRoom.getClient2());
                 joinedRoom.getClient2().setcCompetitor(joinedRoom.getClient1());
-                send.setStatus("success");
                 send.setType(StreamData.Type.CREATE_ROOM);
                 sendObject(send);
             } else {
@@ -538,7 +547,13 @@ public class Client implements Runnable {
             sendObject(send);
             return;
         }
-
+        if (joinedRoom.gameStarted == true) {
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setLoseCount(p1.getLoseCount() + 1);
+            p1.setScore(p1.getScore() - 1);
+            new PlayerController().update(p1);
+        }
         // nếu là người chơi thì đóng room luôn
         //            joinedRoom.close("Người chơi " + this.loginPlayer.getNameId() + " đã thoát phòng.");
         joinedRoom.leaveRoom(this);
@@ -559,13 +574,6 @@ public class Client implements Runnable {
         LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
-        if (joinedRoom.gameStarted == true) {
-            Player p1 = loginPlayer;
-            p1.setMatchCount(p1.getMatchCount() + 1);
-            p1.setLoseCount(p1.getLoseCount() + 1);
-            p1.setScore(p1.getScore() - 1);
-            new PlayerController().update(p1);
-        }
 
     }
 
@@ -730,12 +738,17 @@ public class Client implements Runnable {
 
     // game event
     private void onReceiveSubmit(Object message) {
+        if (joinedRoom == null) {
+            return;
+        }
+
         SubmitMessage msg = (SubmitMessage) message;
         boolean isPlayer1 = false;
         if (joinedRoom.getClient1() == null && joinedRoom.getClient2() == null) {
             return;
         }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
+            joinedRoom.gameStarted = false;
             //chien thang +3diem
             Player p1 = loginPlayer;
             p1.setMatchCount(p1.getMatchCount() + 1);
@@ -747,6 +760,7 @@ public class Client implements Runnable {
             send1.setType(StreamData.Type.SUBMIT);
             send1.setResult(loginPlayer.getEmail());
             sendObject(send1);
+            return;
 
         }
         if (loginPlayer.getEmail().equals(joinedRoom.getClient1().getLoginPlayer().getEmail())) {
@@ -828,11 +842,11 @@ public class Client implements Runnable {
             sendObject(send1);
             cCompetitor.sendObject(send1);
             //TODO luu game match
-            new GameMatchController().add(
-                    new GameMatch(0, joinedRoom.getClient1().getLoginPlayer().getId(),
+            new RoomController().add(new RoomInDB(0, joinedRoom.getClient1().getLoginPlayer().getId(),
                             joinedRoom.getClient2().getLoginPlayer().getId(),
                             getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));
+            return;
         }
     }
 
@@ -1023,6 +1037,55 @@ public class Client implements Runnable {
         ArrayList<Player> listPlayer = new PlayerController().getList();
         GetListRankMessage data = new GetListRankMessage(listPlayer, StreamData.Type.GET_LIST_RANK);
         sendObject(data);
+    }
+
+    private void onReceicePlayAgian() {
+        joinedRoom.invitePlayAgain(this.loginPlayer.getNameId());
+    }
+
+    private void onReceiveRefusePlayAgain() {
+        joinedRoom.refusePlayAgian(this.loginPlayer.getNameId());
+    }
+
+    private void onReceiveAceptPlayAgian() {
+                   // joinedRoom.getClient1().setIsReady(false);
+                   // joinedRoom.getClient2().setIsReady(false);
+                    String s = DataCreateGame.getRandomData();
+                    joinedRoom.getSudoku1().setAnswer(s);
+                    joinedRoom.getSudoku1().setBoard(DataCreateGame.createBoard(s));
+                    s = DataCreateGame.getRandomData();
+                    joinedRoom.getSudoku2().setAnswer(s);
+                    joinedRoom.getSudoku2().setBoard(DataCreateGame.createBoard(s));
+                    //gui de
+                    DataRoomMessage sendRoom = new DataRoomMessage();
+                    sendRoom.setType(StreamData.Type.START_GAME_AGAIN);
+                    sendRoom.setStatus("success");
+                    sendRoom.setIdRoom(joinedRoom.getId());
+                    sendRoom.setPlayer1(joinedRoom.getClient1().getLoginPlayer().toPlayerInGame());
+                    sendRoom.setPlayer2(joinedRoom.getClient2().getLoginPlayer().toPlayerInGame());
+
+                    boolean amIPlayer1 = false;
+                    if (joinedRoom.getClient1().getLoginPlayer().getEmail().equals(loginPlayer.getEmail())) {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+                        System.out.println("sudoku:");
+                        sendRoom.printBoard();
+                        amIPlayer1 = true;
+                        sendObject(sendRoom);
+                    } else {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+                        System.out.println("sudoku:");
+                        sendRoom.printBoard();
+                        sendObject(sendRoom);
+                    }
+                    //gui de cho doi thu
+                    if (amIPlayer1) {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+                        cCompetitor.sendObject(sendRoom);
+                    } else {
+                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+                        cCompetitor.sendObject(sendRoom);
+                    }
+                    joinedRoom.startGame();
     }
 
 }

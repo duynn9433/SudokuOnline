@@ -163,7 +163,15 @@ public class SocketHandler {
                     case CHAT_ROOM:
                         onReceiveChatRoom(message);
                         break;
-
+                    case PLAY_AGAIN:
+                        onReceivePlayAgian();
+                        break;
+                    case REFUSE_PLAY_AGAIN:
+                        onReceiveRefusePlayAgain();
+                        break;
+                    case START_GAME_AGAIN:
+                        onReceiveStatGameAgain(message);
+                        break;
                     case CHAT_ALL:
                         onReceiveChatAll(message);
                         break;
@@ -480,7 +488,6 @@ public class SocketHandler {
         } else if (status.equals("success")) {
             RunClient.closeScene(RunClient.SceneName.INGAME);
             RunClient.openScene(RunClient.SceneName.MAINMENU);
-
             // get list room again
             listRoom();
         }
@@ -797,5 +804,45 @@ public class SocketHandler {
         LeaveRoomMessage msg = new LeaveRoomMessage();
         msg.setType(StreamData.Type.LEAVE_WAITING_ROOM);
         sendObject(msg);
+    }
+
+    public void invitePlayAgain() {
+       Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+        sendObject(msg);
+    }
+    private void onReceivePlayAgian() {
+         RunClient.inGameScene.dialogInvitePlayAgian();
+         
+    }
+
+    public void refusePlayAgain() {
+        Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
+        sendObject(msg);
+    }
+
+    private void onReceiveRefusePlayAgain() {
+       RunClient.inGameScene.dialogRefusePlayAgain();
+    }
+
+    public void aceptPlayAgain() {
+        Message msg = new Message(StreamData.Type.ACCEPT_PALY_AGAIN);
+        sendObject(msg);
+    }
+
+    private void onReceiveStatGameAgain(Object message) {
+      DataRoomMessage msg = (DataRoomMessage) message;
+        String status = msg.getStatus();
+        if (status.equals("success")) {
+            
+            // player
+            PlayerInGame p1 = msg.getPlayer1();
+            PlayerInGame p2 = msg.getPlayer2();
+            RunClient.inGameScene.setPlayerInGame(p1, p2);
+            RunClient.inGameScene.setBoard(msg.getSudokuBoard());
+            msg.printBoard();
+            // timer data
+            int matchTimerLimit = Sudoku.MATCH_TIME_LIMIT;
+            RunClient.inGameScene.startGame(matchTimerLimit);
+        }
     }
 }

@@ -422,6 +422,7 @@ public class MainMenu extends javax.swing.JFrame {
 
         tpChatServer.addTab("Danh sách phòng", jPanel5);
 
+        txtChatAllOutput.setEditable(false);
         txtChatAllOutput.setColumns(20);
         txtChatAllOutput.setRows(5);
         jScrollPane3.setViewportView(txtChatAllOutput);

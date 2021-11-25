@@ -5,7 +5,7 @@
  */
 package server.DAO.DAOClass;
 
-import shared.model.GameMatch;
+import shared.model.RoomInDB;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,26 +18,26 @@ import java.util.logging.Logger;
  *
  * @author duynn
  */
-public class GameMatchDAO {
+public class RoomDAO {
 
     MysqlConnector connector;
 
-    public GameMatchDAO() {
+    public RoomDAO() {
 
     }
 
     public ArrayList readDB() {
-        ArrayList<GameMatch> result = new ArrayList<>();
+        ArrayList<RoomInDB> result = new ArrayList<>();
         connector = new MysqlConnector();
 
         try {
-            String sql = "SELECT * FROM gamematch;";
+            String sql = "SELECT * FROM room;";
             PreparedStatement stm = connector.getConnection().prepareStatement(sql);
             ResultSet rs = connector.sqlQry(stm);
 
             if (rs != null) {
                 while (rs.next()) {
-                    GameMatch g = new GameMatch(
+                    RoomInDB g = new RoomInDB(
                             rs.getInt("ID"),
                             rs.getInt("PlayerID1"),
                             rs.getInt("PlayerID2"),
@@ -58,12 +58,12 @@ public class GameMatchDAO {
         return result;
     }
 
-    public boolean add(GameMatch m) {
+    public boolean add(RoomInDB m) {
         boolean result = false;
         connector = new MysqlConnector();
 
         try {
-            String sql = "INSERT INTO GameMatch(PlayerID1,PlayerID2,WinnerID,StartedTime) "
+            String sql = "INSERT INTO room(PlayerID1,PlayerID2,WinnerID,StartedTime) "
                     + "VALUES(?,?,?,?)";
             PreparedStatement stm = connector.getConnection().prepareStatement(sql);
             stm.setInt(1, m.getPlayerID1());
@@ -73,7 +73,7 @@ public class GameMatchDAO {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -81,12 +81,12 @@ public class GameMatchDAO {
         return result;
     }
 
-    public boolean update(GameMatch m) {
+    public boolean update(RoomInDB m) {
         boolean result = false;
         connector = new MysqlConnector();
 
         try {
-            String sql = "UPDATE GameMatch SET "
+            String sql = "UPDATE room SET "
                     + "PlayerID1=?,"
                     + "PlayerID2=?,"
                     + "WinnerID=?,"
@@ -102,7 +102,7 @@ public class GameMatchDAO {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -115,14 +115,14 @@ public class GameMatchDAO {
         connector = new MysqlConnector();
 
         try {
-            String qry = "DELETE FROM GameMatch WHERE ID=?";
+            String qry = "DELETE FROM room WHERE ID=?";
 
             PreparedStatement stm = connector.getConnection().prepareStatement(qry);
             stm.setInt(1, id);
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }

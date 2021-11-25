@@ -8,12 +8,10 @@ package server.DAO.DAOClass;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import shared.model.GameData;
-import shared.model.GameMatch;
 
 /**
  *
@@ -87,7 +85,7 @@ public class GameDataDAO {
             stm.setString(1, s);
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -108,7 +106,7 @@ public class GameDataDAO {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }
@@ -128,7 +126,7 @@ public class GameDataDAO {
 
             result = connector.sqlUpdate(stm);
         } catch (SQLException ex) {
-            Logger.getLogger(GameMatchDAO.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(RoomDAO.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             connector.closeConnection();
         }

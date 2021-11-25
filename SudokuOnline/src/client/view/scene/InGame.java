@@ -10,6 +10,7 @@ import shared.model.ChatItem;
 import shared.constant.Avatar;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -92,15 +93,13 @@ public class InGame extends javax.swing.JFrame {
         } else {
             lbAvatar2.setIcon(new ImageIcon(Avatar.PATH + p2.getAvatar()));
         }
-
-        // reset turn
-//        lbActive1.setVisible(false);
-//        lbActive2.setVisible(false);
     }
 
     public void setWin(String winEmail) {
-        // pause timer
-        matchTimer.pause();
+//        if (matchTimer != null) {
+//            matchTimer.pause();
+//            matchTimer.cancel();
+//        }
 
         // tie
         if (winEmail == null) {
@@ -117,33 +116,21 @@ public class InGame extends javax.swing.JFrame {
             addChat(new ChatItem("[]", "KẾT QUẢ", "Bạn đã thắng"));
             JOptionPane.showMessageDialog(this, "Chúc mừng. Bạn đã chiến thắng.", "Chiến thắng", JOptionPane.INFORMATION_MESSAGE);
 
-        } else if (myEmail.equals(player1.getEmail()) || myEmail.equals(player2.getEmail())) {
+        } else {
             // nếu mình là 1 trong 2 người chơi, mà winEmail ko phải mình => thua
             addChat(new ChatItem("[]", "KẾT QUẢ", "Bạn đã thua"));
             JOptionPane.showMessageDialog(this, "Rất tiếc. Bạn đã thua cuộc.", "Thua cuộc", JOptionPane.INFORMATION_MESSAGE);
-
-        } else {
-            // còn lại là viewers
-            String nameId = "";
-            if (player1.getEmail().equals(winEmail)) {
-                nameId = player1.getNameId();
-            } else {
-                nameId = player2.getNameId();
-            }
-            addChat(new ChatItem("[]", "KẾT QUẢ", "Người chơi " + nameId + " đã thắng"));
-            JOptionPane.showMessageDialog(this, "Người chơi " + nameId + " đã thắng", "Kết quả", JOptionPane.INFORMATION_MESSAGE);
         }
-
-        // thoát phòng sau khi thua 
-        // TODO sau này sẽ cho tạo ván mới, hiện tại cho thoát để tránh lỗi
-        // RunClient.socketHandler.leaveRoom();
     }
 
     public void startGame(int matchTimeLimit) {
         matchTimer = new CountDownTimer(matchTimeLimit);
         matchTimer.setTimerCallBack(// end match callback
                 (Callable) () -> {
-                    endGameTimeout();
+                    
+                    if (matchTimer != null) {
+                        endGameTimeout();
+                    }
                     return null;
                 },
                 // tick match callback
@@ -157,15 +144,22 @@ public class InGame extends javax.swing.JFrame {
         );
     }
 
-    public void endGameTimeout() {
-        matchTimer.pause();
-        JOptionPane.showConfirmDialog(rootPane, "Hết thời gian");
-        int time = matchTimer.getCurrentTick();
-        SubmitMessage msg = new SubmitMessage();
-        msg.setType(StreamData.Type.SUBMIT);
-        msg.setSubmit(sudokuGame.getSubmit());
-        msg.setCurrentTick(time);
-        RunClient.socketHandler.sendObject(msg);
+    public void endGameTimeout() throws InterruptedException {
+        if (matchTimer != null) {
+            btnSubmit.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "Hết thời gian");
+            System.out.println("Timeout");
+            matchTimer.pause();
+            int time = matchTimer.getCurrentTick();
+         //   matchTimer.cancel();
+           // matchTimer = null;
+            SubmitMessage msg = new SubmitMessage();
+            msg.setType(StreamData.Type.SUBMIT);
+            msg.setSubmit(sudokuGame.getSubmit());
+            msg.setCurrentTick(time);
+            RunClient.socketHandler.sendObject(msg);
+        }
+//        TimeUnit.SECONDS.sleep(10);
     }
 
     public void lockSubmit() {
@@ -182,10 +176,11 @@ public class InGame extends javax.swing.JFrame {
 
 //    @Override
 //    public void dispose() {
-//       // matchTimer.cancel();
-//        this.dispose();
+//        if (matchTimer != null) {
+//            matchTimer.cancel();
+//        }
+//        dispose();
 //    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -228,6 +223,11 @@ public class InGame extends javax.swing.JFrame {
         btnNewGame.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnNewGame.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_new_file_24px.png"))); // NOI18N
         btnNewGame.setText("Ván mới");
+        btnNewGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNewGameActionPerformed(evt);
+            }
+        });
 
         btnUndo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_undo_24px.png"))); // NOI18N
@@ -507,6 +507,8 @@ public class InGame extends javax.swing.JFrame {
         msg.setSubmit(sudokuGame.getSubmit());
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
+        matchTimer.cancel();
+      //  matchTimer = null;
     }//GEN-LAST:event_btnSubmitActionPerformed
 
     private void btnSendMessageMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMessageMouseClicked
@@ -522,13 +524,18 @@ public class InGame extends javax.swing.JFrame {
     private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
         // TODO add your handling code here:
         ChatItem chatItem = new ChatItem(
-                CustomDateTimeFormatter.getCurrentTimeFormatted(), 
-                RunClient.socketHandler.getLoginEmail(), 
+                CustomDateTimeFormatter.getCurrentTimeFormatted(),
+                RunClient.socketHandler.getLoginEmail(),
                 txtChatInput.getText());
         ChatMessage msg = new ChatMessage(chatItem);
         RunClient.socketHandler.sendObject(msg);
         txtChatInput.setText("");
     }//GEN-LAST:event_btnSendMessageActionPerformed
+
+    private void btnNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewGameActionPerformed
+        // TODO add your handling code here:
+        RunClient.socketHandler.invitePlayAgain();
+    }//GEN-LAST:event_btnNewGameActionPerformed
     public int[][] getBoard() {
         return board;
     }
@@ -608,4 +615,19 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JTextField txtChatInput;
     private javax.swing.JTextArea txtChatOutput;
     // End of variables declaration//GEN-END:variables
+
+    public void dialogInvitePlayAgian() {
+        if (JOptionPane.showConfirmDialog(this,
+                "Đối thủ muốn mời bạn chơi tiếp?", "Warning",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            RunClient.socketHandler.aceptPlayAgain();
+        } else {
+            RunClient.socketHandler.refusePlayAgain();
+        }
+    }
+
+    public void dialogRefusePlayAgain() {
+        JOptionPane.showMessageDialog(this, "Đối thủ từ chối chơi lại với bạn");
+    }
 }

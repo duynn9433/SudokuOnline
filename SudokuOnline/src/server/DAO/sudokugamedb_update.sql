@@ -44,34 +44,6 @@ INSERT INTO `gamedata` VALUES (563,'12347859669752184348563972185194637237618295
 UNLOCK TABLES;
 
 --
--- Table structure for table `gamematch`
---
-
-DROP TABLE IF EXISTS `gamematch`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `gamematch` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `PlayerID1` int NOT NULL,
-  `PlayerID2` int NOT NULL,
-  `WinnerID` int DEFAULT NULL,
-  `StartedTime` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `ID_UNIQUE` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gamematch`
---
-
-LOCK TABLES `gamematch` WRITE;
-/*!40000 ALTER TABLE `gamematch` DISABLE KEYS */;
-INSERT INTO `gamematch` VALUES (1,1,2,1,'2020-11-23T17:22:06.081'),(2,2,3,2,'2020-11-23T17:22:06.081');
-/*!40000 ALTER TABLE `gamematch` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `player`
 --
 
@@ -94,7 +66,7 @@ CREATE TABLE `player` (
   PRIMARY KEY (`ID`),
   UNIQUE KEY `UNIQUE` (`Email`) USING BTREE,
   UNIQUE KEY `ID_UNIQUE` (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,8 +75,40 @@ CREATE TABLE `player` (
 
 LOCK TABLES `player` WRITE;
 /*!40000 ALTER TABLE `player` DISABLE KEYS */;
-INSERT INTO `player` VALUES (1,'1@gmail.com','123456','icons8_circled_user_male_skin_type_7_96px.png','1','Nam',2000,106,3,2,1,0),(2,'2@gmail.com','123456','icons8_circled_user_male_skin_type_7_96px.png','2','Nam',2000,203,3,1,2,0),(3,'3@gmail.com','123456','icons8_circled_user_male_skin_type_7_96px.png','3','Nam',2000,203,0,0,0,0);
+INSERT INTO `player` VALUES (17,'1@gmail.com','123456','icons8_circled_user_male_skin_type_7_96px.png','duynn1','Nam',2000,10,5,3,1,0),(18,'2@gmail.com','123456','icons8_circled_user_male_skin_type_7_96px.png','dnn2','Nam',2000,4,5,1,3,0);
 /*!40000 ALTER TABLE `player` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `room`
+--
+
+DROP TABLE IF EXISTS `room`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `room` (
+  `ID` int NOT NULL AUTO_INCREMENT,
+  `PlayerID1` int NOT NULL,
+  `PlayerID2` int NOT NULL,
+  `WinnerID` int DEFAULT NULL,
+  `StartedTime` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `ID_UNIQUE` (`ID`),
+  KEY `fk_room_player_idx` (`PlayerID1`),
+  KEY `fk_room_player1_idx` (`PlayerID2`),
+  CONSTRAINT `fk_room_player` FOREIGN KEY (`PlayerID1`) REFERENCES `player` (`ID`),
+  CONSTRAINT `fk_room_player1` FOREIGN KEY (`PlayerID2`) REFERENCES `player` (`ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `room`
+--
+
+LOCK TABLES `room` WRITE;
+/*!40000 ALTER TABLE `room` DISABLE KEYS */;
+INSERT INTO `room` VALUES (35,17,18,17,'2021-11-25T21:42:12.277'),(36,17,18,17,'2021-11-25T21:42:12.277'),(37,17,18,17,'2021-11-25T21:42:12.277'),(38,17,18,18,'2021-11-25T21:43:57.794'),(39,17,18,0,'2021-11-25T21:43:57.794');
+/*!40000 ALTER TABLE `room` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -116,4 +120,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-11-25 11:26:31
+-- Dump completed on 2021-11-25 21:45:14

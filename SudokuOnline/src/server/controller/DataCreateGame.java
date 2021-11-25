@@ -12,7 +12,17 @@ import server.DAO.DAOClass.GameDataDAO;
  * @author duynn
  */
 public class DataCreateGame {
+    private static int LV=0;
+    private static int an[] = {0, 45, 52};
 
+    public static int getLV() {
+        return LV;
+    }
+
+    public static void setLV(int LV) {
+        DataCreateGame.LV = LV;
+    }
+    
     public static String getRandomData() {
         String s = new GameDataDAO().getRandom().getData();
         return s;
@@ -26,8 +36,7 @@ public class DataCreateGame {
         int temp[] = new int[81];
         int x[] = new int[81];
         int y[] = new int[81];
-        int an[] = {0, 45, 52};
-        int LV = 0;
+
         int N = 0;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {

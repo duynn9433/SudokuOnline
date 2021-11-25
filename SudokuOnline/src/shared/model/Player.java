@@ -79,7 +79,7 @@ public class Player implements Serializable{
     }
     public float calWinRate(){
         if(matchCount==0) return 0;
-        return (float)(winCount/matchCount)*100;
+        return (float)(winCount*100/matchCount);
     }
 
     public float calculateWinRate() {
