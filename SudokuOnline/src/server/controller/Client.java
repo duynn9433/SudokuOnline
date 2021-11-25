@@ -537,7 +537,13 @@ public class Client implements Runnable {
             sendObject(send);
             return;
         }
-
+        if (joinedRoom.gameStarted == true) {
+            Player p1 = loginPlayer;
+            p1.setMatchCount(p1.getMatchCount() + 1);
+            p1.setLoseCount(p1.getLoseCount() + 1);
+            p1.setScore(p1.getScore() - 1);
+            new PlayerController().update(p1);
+        }
         // nếu là người chơi thì đóng room luôn
         //            joinedRoom.close("Người chơi " + this.loginPlayer.getNameId() + " đã thoát phòng.");
         joinedRoom.leaveRoom(this);
@@ -558,13 +564,6 @@ public class Client implements Runnable {
         LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
-        if (joinedRoom.gameStarted == true) {
-            Player p1 = loginPlayer;
-            p1.setMatchCount(p1.getMatchCount() + 1);
-            p1.setLoseCount(p1.getLoseCount() + 1);
-            p1.setScore(p1.getScore() - 1);
-            new PlayerController().update(p1);
-        }
 
     }
 
@@ -735,6 +734,7 @@ public class Client implements Runnable {
             return;
         }
         if (joinedRoom.getClient1() == null || joinedRoom.getClient2() == null) {
+            joinedRoom.gameStarted = false;
             //chien thang +3diem
             Player p1 = loginPlayer;
             p1.setMatchCount(p1.getMatchCount() + 1);

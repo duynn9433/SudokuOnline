@@ -480,7 +480,6 @@ public class SocketHandler {
         } else if (status.equals("success")) {
             RunClient.closeScene(RunClient.SceneName.INGAME);
             RunClient.openScene(RunClient.SceneName.MAINMENU);
-
             // get list room again
             listRoom();
         }

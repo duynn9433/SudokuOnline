@@ -158,14 +158,17 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void endGameTimeout() {
+        System.out.println("Timeout");
         matchTimer.pause();
         JOptionPane.showConfirmDialog(rootPane, "Hết thời gian");
         int time = matchTimer.getCurrentTick();
+        matchTimer.cancel();
         SubmitMessage msg = new SubmitMessage();
         msg.setType(StreamData.Type.SUBMIT);
         msg.setSubmit(sudokuGame.getSubmit());
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
+        
     }
 
     public void lockSubmit() {
@@ -180,11 +183,13 @@ public class InGame extends javax.swing.JFrame {
         txtChatOutput.append(c.toString() + "\n");
     }
 
-//    @Override
-//    public void dispose() {
-//       // matchTimer.cancel();
-//        this.dispose();
-//    }
+    @Override
+    public void dispose() {
+        if(!matchTimer.isCancel()){
+            matchTimer.cancel();
+        }
+        this.dispose();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.

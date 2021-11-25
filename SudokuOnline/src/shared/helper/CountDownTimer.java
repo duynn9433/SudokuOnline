@@ -125,4 +125,7 @@ public class CountDownTimer {
         this.timer = timer;
     }
 
+    public boolean isCancel(){
+        return executor.isShutdown();
+    }
 }
