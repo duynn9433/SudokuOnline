@@ -615,6 +615,7 @@ public class InGame extends javax.swing.JFrame {
                 "Đối thủ muốn mời bạn chơi tiếp?", "Warning",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+            RunClient.socketHandler.aceptPlayAgain();
         } else {
             RunClient.socketHandler.refusePlayAgain();
         }

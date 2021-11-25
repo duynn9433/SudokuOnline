@@ -51,7 +51,7 @@ public class StreamData {
         PLAY_AGAIN, // mời chơi lại
         REFUSE_PLAY_AGAIN,//từ chối chơi lại
         ACCEPT_PALY_AGAIN,//đồng ý chơi lại
-        
+        START_GAME_AGAIN,
         // profile
         GET_PROFILE, // chức năng xem hồ sơ cá nhân / email user muốn xem thông tin / dữ liệu user
         EDIT_PROFILE, // chức năng chỉnh thông tin cá nhân / thông tin cá nhân mới / success hoặc failed
