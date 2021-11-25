@@ -14,6 +14,7 @@ import server.DAO.controller.GameMatchController;
 import shared.model.GameMatch;
 import shared.constant.StreamData;
 import shared.message.ChatMessage;
+import shared.message.Message;
 
 /**
  *
@@ -168,6 +169,28 @@ public class Room {
     @Override
     public String toString() {
         return "Room{" + "id=" + id + ", sudoku1=" + sudoku1 + ", sudoku2=" + sudoku2 + ", client1=" + client1 + ", client2=" + client2 + ", gameStarted=" + gameStarted + ", startedTime=" + startedTime + '}';
+    }
+
+   void invitePlayAgain(String idInviter) {
+        if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
+            Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+            client1.sendObject(msg);
+        }
+        if(!client2.getLoginPlayer().getNameId().equals(idInviter)){
+            Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+            client2.sendObject(msg);
+        }
+    }
+
+    void refusePlayAgian(String idInviter) {
+         if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
+            Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
+            client1.sendObject(msg);
+        }
+        if(!client2.getLoginPlayer().getNameId().equals(idInviter)){
+            Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
+            client2.sendObject(msg);
+        }
     }
 
     

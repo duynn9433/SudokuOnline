@@ -132,6 +132,13 @@ public class Client implements Runnable {
                         onReceiveChatAll(message);
                         break;
 
+                    case PLAY_AGAIN:
+                        onReceicePlayAgian();
+                        break;
+                      
+                    case REFUSE_PLAY_AGAIN:
+                        onReceiveRefusePlayAgain();
+                        break;
                     case CHAT_WAITING_ROOM:
                         onReceiveChatWaitingRoom(message);
                         break;
@@ -1022,6 +1029,14 @@ public class Client implements Runnable {
         ArrayList<Player> listPlayer = new PlayerController().getList();
         GetListRankMessage data = new GetListRankMessage(listPlayer, StreamData.Type.GET_LIST_RANK);
         sendObject(data);
+    }
+
+    private void onReceicePlayAgian() {
+         joinedRoom.invitePlayAgain(this.loginPlayer.getNameId());
+    }
+
+    private void onReceiveRefusePlayAgain() {
+        joinedRoom.refusePlayAgian(this.loginPlayer.getNameId());
     }
 
 }
