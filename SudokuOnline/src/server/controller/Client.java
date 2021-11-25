@@ -303,6 +303,7 @@ public class Client implements Runnable {
                 JoinRoomMessage send = this.joinRoom(room);
                 joinedRoom.getClient1().setcCompetitor(joinedRoom.getClient2());
                 joinedRoom.getClient2().setcCompetitor(joinedRoom.getClient1());
+                send.setStatus("success");
                 send.setType(StreamData.Type.CREATE_ROOM);
                 sendObject(send);
             } else {

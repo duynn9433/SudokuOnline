@@ -65,7 +65,7 @@ public class CountDownTimer {
             public void run() {
                 if (!isPaused) {
                     currentTick--;
-
+                    System.out.println(currentTick);
                     // sau tickInterval giây, sẽ gọi 1 lần tick-callback
                     if (tickCallback != null && (timeLimit - currentTick) % tickInterval == 0) {
                         try {

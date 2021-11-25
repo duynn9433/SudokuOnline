@@ -26,7 +26,6 @@ public class WaitingRoom extends javax.swing.JFrame {
         initComponents();
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
@@ -64,7 +63,7 @@ public class WaitingRoom extends javax.swing.JFrame {
         btnServerSend = new javax.swing.JButton();
         txtServerChatInput = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         btnReady.setText("Sẵn sàng");
         btnReady.addActionListener(new java.awt.event.ActionListener() {
