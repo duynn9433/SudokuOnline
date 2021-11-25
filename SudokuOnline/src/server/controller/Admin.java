@@ -10,9 +10,9 @@ import server.RunServer;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.DAO.controller.GameMatchController;
+import server.DAO.controller.RoomController;
 import server.DAO.controller.PlayerController;
-import shared.model.GameMatch;
+import shared.model.RoomInDB;
 import shared.model.Player;
 
 /**
@@ -21,7 +21,7 @@ import shared.model.Player;
  */
 public class Admin implements Runnable {
 
-    GameMatchController gameMatchBus;
+    RoomController gameMatchBus;
     PlayerController playerBus;
 
     @Override
@@ -96,20 +96,20 @@ public class Admin implements Runnable {
     }
 
 //    // Get the match with the shortest play time
-//    public GameMatch getShortestMatch() {
-//        gameMatchBus = new GameMatchController();
-//        GameMatch shortestMatch = null;
+//    public RoomInDB getShortestMatch() {
+//        gameMatchBus = new RoomController();
+//        RoomInDB shortestMatch = null;
 //        int min = gameMatchBus.getList().get(0).getTotalMove();
-//        for (GameMatch m : gameMatchBus.getList()) {
+//        for (RoomInDB m : gameMatchBus.getList()) {
 //            if (m.getPlayTime() < min) {
 //                min = m.getPlayTime();
-//                shortestMatch = new GameMatch(m);
+//                shortestMatch = new RoomInDB(m);
 //            }
 //        }
 //        return shortestMatch;
 //    }
 
-    private void showShortestMatch(GameMatch m) {
+    private void showShortestMatch(RoomInDB m) {
         playerBus = new PlayerController();
         Player p1 = new Player(playerBus.getById(m.getPlayerID1()));
         Player p2 = new Player(playerBus.getById(m.getPlayerID2()));
@@ -132,9 +132,9 @@ public class Admin implements Runnable {
 
     // Get Game match with provide id
     private void showGameMatchDetails(String id) {
-        gameMatchBus = new GameMatchController();
+        gameMatchBus = new RoomController();
         playerBus = new PlayerController();
-        GameMatch m = gameMatchBus.getById(Integer.parseInt(id));
+        RoomInDB m = gameMatchBus.getById(Integer.parseInt(id));
         System.out.println("Match id: " + m.getId());
         System.out.println("    + Player 1: " + playerBus.getById(m.getPlayerID1()).getName());
         System.out.println("    + Player 2: " + playerBus.getById(m.getPlayerID2()).getName());

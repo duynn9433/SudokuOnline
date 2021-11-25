@@ -5,29 +5,29 @@
  */
 package server.DAO.controller;
 
-import server.DAO.DAOClass.GameMatchDAO;
-import shared.model.GameMatch;
+import server.DAO.DAOClass.RoomDAO;
+import shared.model.RoomInDB;
 import java.util.ArrayList;
 
 /**
  *
  * @author duynn
  */
-public class GameMatchController {
+public class RoomController {
 
-    ArrayList<GameMatch> listGameMatch = new ArrayList<>();
-    GameMatchDAO gameMatchDAO = new GameMatchDAO();
+    ArrayList<RoomInDB> listGameMatch = new ArrayList<>();
+    RoomDAO roomDAO = new RoomDAO();
 
-    public GameMatchController() {
+    public RoomController() {
         readDB();
     }
 
     public void readDB() {
-        listGameMatch = gameMatchDAO.readDB();
+        listGameMatch = roomDAO.readDB();
     }
 
-    public boolean add(GameMatch g) {
-        boolean status = gameMatchDAO.add(g);
+    public boolean add(RoomInDB g) {
+        boolean status = roomDAO.add(g);
 
         if (status == true) {
             listGameMatch.add(g);
@@ -37,7 +37,7 @@ public class GameMatchController {
     }
 
     public boolean delete(int id) {
-        boolean status = gameMatchDAO.delete(id);
+        boolean status = roomDAO.delete(id);
 
         if (status == true) {
             for (int i = (listGameMatch.size() - 1); i >= 0; i--) {
@@ -50,20 +50,20 @@ public class GameMatchController {
         return status;
     }
 
-    public boolean update(GameMatch g) {
-        boolean status = gameMatchDAO.update(g);
+    public boolean update(RoomInDB g) {
+        boolean status = roomDAO.update(g);
 
         if (status == true) {
             listGameMatch.forEach((gm) -> {
-                gm = new GameMatch(g);
+                gm = new RoomInDB(g);
             });
         }
 
         return status;
     }
 
-    public GameMatch getById(int id) {
-        for (GameMatch g : listGameMatch) {
+    public RoomInDB getById(int id) {
+        for (RoomInDB g : listGameMatch) {
             if (g.getId() == id) {
                 return g;
             }
@@ -75,7 +75,7 @@ public class GameMatchController {
     public int calculateTotalMatch(int playerId) {
         int result = 0;
 
-        for (GameMatch m : listGameMatch) {
+        for (RoomInDB m : listGameMatch) {
             if (m.getPlayerID1() == playerId || m.getPlayerID2() == playerId) {
                 result++;
             }
@@ -86,7 +86,7 @@ public class GameMatchController {
     public int calculateWinCount(int playerId) {
         int result = 0;
 
-        for (GameMatch m : listGameMatch) {
+        for (RoomInDB m : listGameMatch) {
             if (m.getWinnerID() == playerId) {
                 result++;
             }
@@ -98,7 +98,7 @@ public class GameMatchController {
         int longest = 0;
         int current = 0;
 
-        for (GameMatch m : listGameMatch) {
+        for (RoomInDB m : listGameMatch) {
             if (m.getPlayerID1() == playerId || m.getPlayerID2() == playerId) {
                 if (m.getWinnerID() == playerId) {
                     current++;
@@ -118,7 +118,7 @@ public class GameMatchController {
         return (float) (100.00 * (calculateWinCount(playerId) / calculateTotalMatch(playerId)));
     }
 
-    public ArrayList<GameMatch> getList() {
+    public ArrayList<RoomInDB> getList() {
         return listGameMatch;
     }
 }

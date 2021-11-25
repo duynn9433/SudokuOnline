@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import server.DAO.controller.GameMatchController;
+import server.DAO.controller.RoomController;
 import server.RunServer;
 import server.DAO.controller.PlayerController;
 import shared.model.Player;
@@ -20,7 +20,7 @@ import shared.constant.*;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
 import shared.model.ChatItem;
-import shared.model.GameMatch;
+import shared.model.RoomInDB;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
 
@@ -842,8 +842,7 @@ public class Client implements Runnable {
             sendObject(send1);
             cCompetitor.sendObject(send1);
             //TODO luu game match
-            new GameMatchController().add(
-                    new GameMatch(0, joinedRoom.getClient1().getLoginPlayer().getId(),
+            new RoomController().add(new RoomInDB(0, joinedRoom.getClient1().getLoginPlayer().getId(),
                             joinedRoom.getClient2().getLoginPlayer().getId(),
                             getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));
