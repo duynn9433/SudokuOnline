@@ -51,7 +51,7 @@ public class RunServer {
             );
 
             // admin
-            executor.execute(new Admin());
+//            executor.execute(new Admin());
 
             // server main loop - listen to client's connection
             while (!isShutDown) {

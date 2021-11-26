@@ -56,10 +56,10 @@ public class SocketHandler {
             System.out.println(s);
             // obtaining input and output streams
 //            dis = new DataInputStream(s.getInputStream());
-            System.out.println("dis:" + dis);
-//            dos = new DataOutputStream(s.getOutputStream());
-            System.out.println("dos:" + dos);
-            System.out.println("init ois oos");
+//            System.out.println("dis:" + dis);
+//           dos = new DataOutputStream(s.getOutputStream());
+//            System.out.println("dos:" + dos);
+//            System.out.println("init ois oos");
             try {
                 oos = new ObjectOutputStream(s.getOutputStream());
                 System.out.println("oos:" + oos);

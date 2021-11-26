@@ -124,6 +124,7 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void startGame(int matchTimeLimit) {
+        btnSubmit.setEnabled(true);
         matchTimer = new CountDownTimer(matchTimeLimit);
         matchTimer.setTimerCallBack(// end match callback
                 (Callable) () -> {
