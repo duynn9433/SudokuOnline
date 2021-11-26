@@ -193,7 +193,6 @@ public class InGame extends javax.swing.JFrame {
         plRightContainer = new javax.swing.JPanel();
         plToolContainer = new javax.swing.JPanel();
         btnNewGame = new javax.swing.JButton();
-        btnUndo = new javax.swing.JButton();
         btnLeaveRoom = new javax.swing.JButton();
         plPlayerContainer = new javax.swing.JPanel();
         plPlayer = new javax.swing.JPanel();
@@ -229,10 +228,6 @@ public class InGame extends javax.swing.JFrame {
             }
         });
 
-        btnUndo.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
-        btnUndo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_undo_24px.png"))); // NOI18N
-        btnUndo.setText("Đánh lại");
-
         btnLeaveRoom.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         btnLeaveRoom.setIcon(new javax.swing.ImageIcon(getClass().getResource("/client/view/asset/icons8_exit_sign_24px.png"))); // NOI18N
         btnLeaveRoom.setText("Thoát phòng");
@@ -246,23 +241,21 @@ public class InGame extends javax.swing.JFrame {
         plToolContainer.setLayout(plToolContainerLayout);
         plToolContainerLayout.setHorizontalGroup(
             plToolContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, plToolContainerLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(plToolContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+            .addGroup(plToolContainerLayout.createSequentialGroup()
+                .addGroup(plToolContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(plToolContainerLayout.createSequentialGroup()
-                        .addComponent(btnNewGame)
-                        .addGap(6, 6, 6)
-                        .addComponent(btnUndo))
-                    .addComponent(btnLeaveRoom))
-                .addGap(42, 42, 42))
+                        .addGap(100, 100, 100)
+                        .addComponent(btnNewGame))
+                    .addGroup(plToolContainerLayout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(btnLeaveRoom)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         plToolContainerLayout.setVerticalGroup(
             plToolContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, plToolContainerLayout.createSequentialGroup()
                 .addContainerGap(14, Short.MAX_VALUE)
-                .addGroup(plToolContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNewGame)
-                    .addComponent(btnUndo))
+                .addComponent(btnNewGame)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnLeaveRoom)
                 .addGap(18, 18, 18))
@@ -595,7 +588,6 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JButton btnNewGame;
     private javax.swing.JButton btnSendMessage;
     private javax.swing.JButton btnSubmit;
-    private javax.swing.JButton btnUndo;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane3;
