@@ -336,7 +336,7 @@ public class InGame extends javax.swing.JFrame {
         plTimer.setBorder(javax.swing.BorderFactory.createTitledBorder("Thời gian"));
 
         pgbMatchTimer.setValue(100);
-        pgbMatchTimer.setString("Đang đợi nước đi đầu tiên..");
+        pgbMatchTimer.setString("");
         pgbMatchTimer.setStringPainted(true);
 
         javax.swing.GroupLayout plTimerLayout = new javax.swing.GroupLayout(plTimer);
