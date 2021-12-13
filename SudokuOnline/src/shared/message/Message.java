@@ -15,7 +15,35 @@ import shared.constant.StreamData.Type;
 public class Message implements Serializable{
     public static final long serialVersionUID = 1L;
     protected Type type;
+    protected String msg;
+    protected String status;
+    protected String codeMsg;
 
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getCodeMsg() {
+        return codeMsg;
+    }
+
+    public void setCodeMsg(String codeMsg) {
+        this.codeMsg = codeMsg;
+    }
+
+    
     public Type getType() {
         return type;
     }
