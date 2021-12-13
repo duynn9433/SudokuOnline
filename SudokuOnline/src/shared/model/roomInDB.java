@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * @author duynn
  */
 public class RoomInDB implements Serializable{
-
+    int test;
     int id;
     int playerID1;
     int playerID2;
