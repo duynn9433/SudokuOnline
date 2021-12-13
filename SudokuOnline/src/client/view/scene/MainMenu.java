@@ -15,7 +15,7 @@ import shared.constant.StreamData;
 import shared.helper.CountDownTimer;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.ChatMessage;
-import shared.message.JoinRoomMessage;
+//import shared.message.JoinRoomMessage;
 import shared.message.Message;
 import shared.model.ChatItem;
 
@@ -639,8 +639,9 @@ public class MainMenu extends javax.swing.JFrame {
             //lay dc room id
             String roomID = tbListRoom.getValueAt(tbListRoom.getSelectedRow(), 0).toString();
             //gưi mes xin vao phong
-            JoinRoomMessage send = new JoinRoomMessage();
-            send.setIdRoom(roomID);
+            Message send = new Message();
+//            JoinRoomMessage send = new JoinRoomMessage();
+            send.setMsg(roomID);
             RunClient.socketHandler.sendObject(send);
         }
  

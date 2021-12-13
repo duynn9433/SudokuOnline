@@ -300,7 +300,7 @@ public class SocketHandler {
 
     private void onReceiveLogout(Object message) {
         // xóa email login
-        LogoutMessage msg = (LogoutMessage) message;
+        Message msg = (Message) message;
         this.loginEmail = null;
 
         // chuyển scene
@@ -340,10 +340,11 @@ public class SocketHandler {
     }
 
     private void onReceiveCreateRoom(Object message) {
-        JoinRoomMessage msg = (JoinRoomMessage) message;
+        Message msg = (Message) message;
+//        JoinRoomMessage msg = (JoinRoomMessage) message;
         String status = msg.getStatus();
         if (status.equals("success")) {
-            String roomId = msg.getIdRoom();
+            String roomId = msg.getMsg();
 
             // save room id
             this.roomId = roomId;
@@ -362,8 +363,9 @@ public class SocketHandler {
     }
 
     private void onReceiveJoinRoom(Object message) {
-        JoinRoomMessage msg = (JoinRoomMessage) message;
-        String roomId = msg.getIdRoom();
+        Message msg = (Message) message;
+//        JoinRoomMessage msg = (JoinRoomMessage) message;
+        String roomId = msg.getMsg();
 
         // save room id
         this.roomId = roomId;
@@ -380,7 +382,8 @@ public class SocketHandler {
 
     // pair match
     private void onReceiveFindMatch(Object message) {
-        FindMatchMessage msg = (FindMatchMessage) message;
+        Message msg = (Message) message;
+//        FindMatchMessage msg = (FindMatchMessage) message;
         String status = msg.getStatus();
 
         // check status
@@ -394,7 +397,8 @@ public class SocketHandler {
     }
 
     private void onReceiveCancelFindMatch(Object message) {
-        FindMatchMessage msg = (FindMatchMessage) message;
+        Message msg = (Message) message;
+//        FindMatchMessage msg = (FindMatchMessage) message;
         String status = msg.getStatus();
 
         // check status
@@ -417,7 +421,8 @@ public class SocketHandler {
     }
 
     private void onReceiveResultPairMatch(Object message) {
-        ResultPairMatchMessage msg = (ResultPairMatchMessage) message;
+        Message msg = (Message) message;
+//        ResultPairMatchMessage msg = (ResultPairMatchMessage) message;
         System.out.println("ResultPM:" + msg.toString());
         String status = msg.getStatus();
 
@@ -476,7 +481,8 @@ public class SocketHandler {
     }
 
     private void onReceiveLeaveRoom(Object message) {
-        LeaveRoomMessage msg = (LeaveRoomMessage) message;
+        Message msg = (Message) message;
+//        LeaveRoomMessage msg = (LeaveRoomMessage) message;
         String status = msg.getStatus();
         System.out.println("status leave room:" + status);
 
@@ -493,7 +499,8 @@ public class SocketHandler {
     }
 
     private void onReceiveLeaveWaitingRoom(Object message) {
-        LeaveRoomMessage msg = (LeaveRoomMessage) message;
+        Message msg = (Message) message;
+//        LeaveRoomMessage msg = (LeaveRoomMessage) message;
         String status = msg.getStatus();
         System.out.println("status leave room:" + status);
 
@@ -611,7 +618,8 @@ public class SocketHandler {
     }
 
     private void onReceiveLockSubmit(Object message) {
-        LockSubmitMessage msg = (LockSubmitMessage) message;
+        Message msg = (Message) message;
+//        LockSubmitMessage msg = (LockSubmitMessage) message;
         String status = msg.getStatus();
         if (status.equals("success")) {
             RunClient.inGameScene.lockSubmit();
@@ -645,7 +653,7 @@ public class SocketHandler {
 
     public void logout() {
         // prepare data
-        LogoutMessage data = new LogoutMessage(StreamData.Type.LOGOUT);
+        Message data = new Message(StreamData.Type.LOGOUT);
 
         // send data
         sendObject(data);
@@ -658,13 +666,15 @@ public class SocketHandler {
 
     // pair match
     public void findMatch() {
-        FindMatchMessage msg = new FindMatchMessage();
+        Message msg = new Message();
+//        FindMatchMessage msg = new FindMatchMessage();
         msg.setType(StreamData.Type.FIND_MATCH);
         sendObject(msg);
     }
 
     public void cancelFindMatch() {
-        FindMatchMessage msg = new FindMatchMessage();
+//        FindMatchMessage msg = new FindMatchMessage();
+        Message msg = new Message();
         msg.setType(StreamData.Type.CANCEL_FIND_MATCH);
         sendObject(msg);
     }
@@ -800,7 +810,8 @@ public class SocketHandler {
     }
 
     public void leaveWaitingRoom() {
-        LeaveRoomMessage msg = new LeaveRoomMessage();
+        Message msg = new Message();
+//        LeaveRoomMessage msg = new LeaveRoomMessage();
         msg.setType(StreamData.Type.LEAVE_WAITING_ROOM);
         sendObject(msg);
     }

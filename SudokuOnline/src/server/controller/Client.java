@@ -260,7 +260,8 @@ public class Client implements Runnable {
         this.loginPlayer = null;
         this.findingMatch = false;
 
-        LogoutMessage msg = (LogoutMessage) message;
+//        LogoutMessage msg = (LogoutMessage) message;
+        Message msg = (Message) message;
         msg.setStatus("success");
         msg.setType(StreamData.Type.LOGOUT);
         // TODO leave room
@@ -298,32 +299,37 @@ public class Client implements Runnable {
 
     private void onReceiveCreateRoom() {
         Room newRoom = RunServer.roomManager.createRoom();
-        JoinRoomMessage msg = this.joinRoom(newRoom);
+        Message msg = this.joinRoom(newRoom);
+//        JoinRoomMessage msg = this.joinRoom(newRoom);
         msg.setType(StreamData.Type.CREATE_ROOM);
         sendObject(msg);
 
     }
 
     private void onReceiveJoinRoom(Object message) {
-        JoinRoomMessage msg = (JoinRoomMessage) message;
-        String roomID = msg.getIdRoom();
+//        JoinRoomMessage msg = (JoinRoomMessage) message;
+        Message msg = (Message) message;
+        String roomID = msg.getMsg();
         Room room = RunServer.roomManager.find(roomID);
         if (room != null) {
             if (!room.isFull()) {
-                JoinRoomMessage send = this.joinRoom(room);
+                Message send = this.joinRoom(room);
+//                JoinRoomMessage send = this.joinRoom(room);
                 joinedRoom.getClient1().setcCompetitor(joinedRoom.getClient2());
                 joinedRoom.getClient2().setcCompetitor(joinedRoom.getClient1());
                 send.setType(StreamData.Type.CREATE_ROOM);
                 sendObject(send);
             } else {
-                JoinRoomMessage send = new JoinRoomMessage();
+                Message send = new Message();
+//                JoinRoomMessage send = new JoinRoomMessage();
                 send.setType(StreamData.Type.CREATE_ROOM);
                 send.setStatus("failed");
                 send.setCodeMsg("Phòng đã đầy");
                 sendObject(send);
             }
         } else {
-            JoinRoomMessage send = new JoinRoomMessage();
+//            JoinRoomMessage send = new JoinRoomMessage();
+            Message send = new Message();
             send.setType(StreamData.Type.CREATE_ROOM);
             send.setStatus("failed");
             send.setCodeMsg("Phòng không tồn tại");
@@ -334,14 +340,16 @@ public class Client implements Runnable {
 
     // pair match
     private void onReceiveFindMatch(Object message) {
-        FindMatchMessage msg = (FindMatchMessage) message;
+        Message msg = (Message) message;
+//        FindMatchMessage msg = (FindMatchMessage) message;
         // nếu đang trong phòng rồi thì báo lỗi ngay
-        FindMatchMessage sendMsg = new FindMatchMessage();
+//        FindMatchMessage sendMsg = new FindMatchMessage();
+        Message sendMsg = new Message();
         if (this.joinedRoom != null) {
             sendMsg.setType(StreamData.Type.FIND_MATCH);
             sendMsg.setStatus("failed");
             sendMsg.setCodeMsg(Code.ALREADY_INROOM);
-            sendMsg.setIdRoom(this.joinedRoom.getId());
+            sendMsg.setMsg(this.joinedRoom.getId());
             sendObject(sendMsg);
             return;
         }
@@ -382,12 +390,14 @@ public class Client implements Runnable {
     }
 
     private void onReceiveCancelFindMatch(Object message) {
-        FindMatchMessage msg = (FindMatchMessage) message;
+        Message msg = (Message) message;
+//        FindMatchMessage msg = (FindMatchMessage) message;
         // gỡ cờ đang tìm phòng
         this.findingMatch = false;
 
         // báo cho client để tắt giao diện đang tìm phòng
-        FindMatchMessage send = new FindMatchMessage();
+        Message send = new Message();
+//        FindMatchMessage send = new FindMatchMessage();
         send.setType(StreamData.Type.CANCEL_FIND_MATCH);
         send.setStatus("success");
         sendObject(send);
@@ -404,7 +414,8 @@ public class Client implements Runnable {
         // get competitor
         if (cCompetitor == null) {
             System.out.println("null");
-            ResultPairMatchMessage send = new ResultPairMatchMessage();
+            Message send = new Message();
+//            ResultPairMatchMessage send = new ResultPairMatchMessage();
             send.setType(StreamData.Type.RESULT_PAIR_MATCH);
             send.setStatus("failed");
             send.setCodeMsg(Code.COMPETITOR_LEAVE);
@@ -420,13 +431,15 @@ public class Client implements Runnable {
             new PlayerController().update(this.loginPlayer);
 
             // send data
-            ResultPairMatchMessage send1 = new ResultPairMatchMessage();
+            Message send1 = new Message();
+//            ResultPairMatchMessage send1 = new ResultPairMatchMessage();
             send1.setType(StreamData.Type.RESULT_PAIR_MATCH);
             send1.setStatus("failed");
             send1.setCodeMsg(Code.YOU_CHOOSE_NO);
             this.sendObject(send1);
 
-            ResultPairMatchMessage send2 = new ResultPairMatchMessage();
+            Message send2 = new Message();
+//            ResultPairMatchMessage send2 = new ResultPairMatchMessage();
             send2.setType(StreamData.Type.RESULT_PAIR_MATCH);
             send2.setStatus("failed");
             send2.setCodeMsg(Code.COMPETITOR_CHOOSE_NO);
@@ -439,12 +452,14 @@ public class Client implements Runnable {
 
         // if both say yes
         if (requestResult.equals("yes") && cCompetitor.acceptPairMatchStatus.equals("yes")) {
-            ResultPairMatchMessage send = new ResultPairMatchMessage();
+            Message send = new Message();
+//            ResultPairMatchMessage send = new ResultPairMatchMessage();
             send.setType(StreamData.Type.RESULT_PAIR_MATCH);
             send.setStatus("success");
             System.out.println("result1:" + send.toString());
             this.sendObject(send);
-            ResultPairMatchMessage send0 = new ResultPairMatchMessage();
+            Message send0 = new Message();
+//            ResultPairMatchMessage send0 = new ResultPairMatchMessage();
             send0.setType(StreamData.Type.RESULT_PAIR_MATCH);
             send0.setStatus("success");
             System.out.println("result2:" + send0.toString());
@@ -461,8 +476,10 @@ public class Client implements Runnable {
             newRoom.getSudoku2().setAnswer(temp);
             newRoom.getSudoku2().setBoard(DataCreateGame.createBoard(temp));
             // join room
-            JoinRoomMessage send1 = this.joinRoom(newRoom);
-            JoinRoomMessage send2 = cCompetitor.joinRoom(newRoom);
+            Message send1 = this.joinRoom(newRoom);
+            Message send2 = cCompetitor.joinRoom(newRoom);
+//            JoinRoomMessage send1 = this.joinRoom(newRoom);
+//            JoinRoomMessage send2 = cCompetitor.joinRoom(newRoom);
             System.out.println("JoinRoomMsg1:" + send1);
             System.out.println("JoinRoomMsg1:" + send2);
             System.out.println("Room(receivedRequestPairMatch) after:" + newRoom.toString());
@@ -540,7 +557,8 @@ public class Client implements Runnable {
     private void onReceiveLeaveRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
-            LeaveRoomMessage send = new LeaveRoomMessage();
+            Message send = new Message(StreamData.Type.LEAVE_ROOM);
+//            LeaveRoomMessage send = new LeaveRoomMessage();
             send.setStatus("failed");
             send.setCodeMsg(Code.CANT_LEAVE_ROOM);
             System.out.println("LeaveMsg:" + send);
@@ -571,7 +589,8 @@ public class Client implements Runnable {
         System.out.println("2");
         // TODO if this client is player -> close room
         // send result
-        LeaveRoomMessage send = new LeaveRoomMessage();
+        Message send = new Message(StreamData.Type.LEAVE_ROOM);
+//        LeaveRoomMessage send = new LeaveRoomMessage();
         send.setStatus("success");
         sendObject(send);
 
@@ -580,7 +599,9 @@ public class Client implements Runnable {
     private void onReceiveLeaveWaitingRoom() {
         System.out.println("joinedRoom:" + joinedRoom);
         if (joinedRoom == null) {
-            LeaveRoomMessage send = new LeaveRoomMessage();
+            Message send = new Message();
+            send.setType(StreamData.Type.LEAVE_ROOM);
+//            LeaveRoomMessage send = new LeaveRoomMessage();
             send.setStatus("failed");
             send.setCodeMsg(Code.CANT_LEAVE_ROOM);
             System.out.println("LeaveMsg:" + send);
@@ -605,7 +626,8 @@ public class Client implements Runnable {
         System.out.println("2");
         // TODO if this client is player -> close room
         // send result
-        LeaveRoomMessage send = new LeaveRoomMessage();
+        Message send = new Message();
+//        LeaveRoomMessage send = new LeaveRoomMessage();
         send.setType(StreamData.Type.LEAVE_WAITING_ROOM);
         send.setStatus("success");
         sendObject(send);
@@ -769,14 +791,18 @@ public class Client implements Runnable {
             joinedRoom.getSudoku1().setSubmitTime(msg.getCurrentTick());
             isPlayer1 = true;
             //gui da nhan kq 
-            LockSubmitMessage send = new LockSubmitMessage();
+//            LockSubmitMessage send = new LockSubmitMessage();
+            Message send = new Message(StreamData.Type.LOCK_SUBMIT);
+            send.setStatus("success");
             sendObject(send);
         } else {
             joinedRoom.getSudoku2().setIsSubmit(true);
             joinedRoom.getSudoku2().setBoard(msg.getSubmit());
             joinedRoom.getSudoku2().setSubmitTime(msg.getCurrentTick());
             //gui da nhan kq 
-            LockSubmitMessage send = new LockSubmitMessage();
+//            LockSubmitMessage send = new LockSubmitMessage();
+            Message send = new Message(StreamData.Type.LOCK_SUBMIT);
+            send.setStatus("success");
             sendObject(send);
         }
 
@@ -940,7 +966,8 @@ public class Client implements Runnable {
     public JoinRoomMessage joinRoom(String id) {
         Room found = RunServer.roomManager.find(id);
 
-        JoinRoomMessage msg = new JoinRoomMessage();
+        Message msg = new Message();
+//        JoinRoomMessage msg = new JoinRoomMessage();
         // không tìm thấy phòng cần join ?
         if (found == null) {
             msg.setStatus("failed");
@@ -951,13 +978,14 @@ public class Client implements Runnable {
         return joinRoom(found);
     }
 
-    public JoinRoomMessage joinRoom(Room room) {
-        JoinRoomMessage msg = new JoinRoomMessage();
+    public Message joinRoom(Room room) {
+        Message msg = new Message(StreamData.Type.JOIN_ROOM);
+//        JoinRoomMessage msg = new JoinRoomMessage();
         // đang trong phòng rồi ?
         if (this.joinedRoom != null) {
             msg.setStatus("failed");
             msg.setCodeMsg(Code.ALREADY_INROOM);
-            msg.setIdRoom(this.joinedRoom.getId());
+            msg.setMsg(this.joinedRoom.getId());
             return msg;
         }
 
@@ -971,7 +999,7 @@ public class Client implements Runnable {
 //                            "SERVER", loginPlayer.getNameId()));
 //            this.joinedRoom.broadcast(sendChat);
             msg.setStatus("success");
-            msg.setIdRoom(room.getId());
+            msg.setMsg(room.getId());
             return msg;
         }
 
