@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import server.RunServer;
 import server.DAO.controller.RoomController;
-import shared.model.RoomInDB;
+import shared.model.RoomInDatabase;
 import shared.constant.StreamData;
 import shared.message.ChatMessage;
 import shared.message.Message;

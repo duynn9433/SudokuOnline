@@ -20,7 +20,7 @@ import shared.constant.*;
 import shared.helper.CustomDateTimeFormatter;
 import shared.message.*;
 import shared.model.ChatItem;
-import shared.model.RoomInDB;
+import shared.model.RoomInDatabase;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
 
@@ -842,7 +842,7 @@ public class Client implements Runnable {
             sendObject(send1);
             cCompetitor.sendObject(send1);
             //TODO luu game match
-            new RoomController().add(new RoomInDB(0, joinedRoom.getClient1().getLoginPlayer().getId(),
+            new RoomController().add(new RoomInDatabase(0, joinedRoom.getClient1().getLoginPlayer().getId(),
                             joinedRoom.getClient2().getLoginPlayer().getId(),
                             getWinnerID(isPlayer1Win, isPlayer2Win),
                             joinedRoom.getStartedTime()));

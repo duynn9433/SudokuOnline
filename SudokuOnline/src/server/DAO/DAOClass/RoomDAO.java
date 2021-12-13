@@ -5,7 +5,7 @@
  */
 package server.DAO.DAOClass;
 
-import shared.model.RoomInDB;
+import shared.model.RoomInDatabase;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class RoomDAO {
     }
 
     public ArrayList readDB() {
-        ArrayList<RoomInDB> result = new ArrayList<>();
+        ArrayList<RoomInDatabase> result = new ArrayList<>();
         connector = new MysqlConnector();
 
         try {
@@ -37,7 +37,7 @@ public class RoomDAO {
 
             if (rs != null) {
                 while (rs.next()) {
-                    RoomInDB g = new RoomInDB(
+                    RoomInDatabase g = new RoomInDatabase(
                             rs.getInt("ID"),
                             rs.getInt("PlayerID1"),
                             rs.getInt("PlayerID2"),
@@ -58,7 +58,7 @@ public class RoomDAO {
         return result;
     }
 
-    public boolean add(RoomInDB m) {
+    public boolean add(RoomInDatabase m) {
         boolean result = false;
         connector = new MysqlConnector();
 
@@ -81,7 +81,7 @@ public class RoomDAO {
         return result;
     }
 
-    public boolean update(RoomInDB m) {
+    public boolean update(RoomInDatabase m) {
         boolean result = false;
         connector = new MysqlConnector();
 

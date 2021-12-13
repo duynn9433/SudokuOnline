@@ -6,7 +6,7 @@
 package server.DAO.controller;
 
 import server.DAO.DAOClass.RoomDAO;
-import shared.model.RoomInDB;
+import shared.model.RoomInDatabase;
 import java.util.ArrayList;
 
 /**
@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public class RoomController {
 
-    ArrayList<RoomInDB> listGameMatch = new ArrayList<>();
+    ArrayList<RoomInDatabase> listGameMatch = new ArrayList<>();
     RoomDAO roomDAO = new RoomDAO();
 
     public RoomController() {
@@ -26,7 +26,7 @@ public class RoomController {
         listGameMatch = roomDAO.readDB();
     }
 
-    public boolean add(RoomInDB g) {
+    public boolean add(RoomInDatabase g) {
         boolean status = roomDAO.add(g);
 
         if (status == true) {
@@ -50,20 +50,20 @@ public class RoomController {
         return status;
     }
 
-    public boolean update(RoomInDB g) {
+    public boolean update(RoomInDatabase g) {
         boolean status = roomDAO.update(g);
 
         if (status == true) {
             listGameMatch.forEach((gm) -> {
-                gm = new RoomInDB(g);
+                gm = new RoomInDatabase(g);
             });
         }
 
         return status;
     }
 
-    public RoomInDB getById(int id) {
-        for (RoomInDB g : listGameMatch) {
+    public RoomInDatabase getById(int id) {
+        for (RoomInDatabase g : listGameMatch) {
             if (g.getId() == id) {
                 return g;
             }
@@ -75,7 +75,7 @@ public class RoomController {
     public int calculateTotalMatch(int playerId) {
         int result = 0;
 
-        for (RoomInDB m : listGameMatch) {
+        for (RoomInDatabase m : listGameMatch) {
             if (m.getPlayerID1() == playerId || m.getPlayerID2() == playerId) {
                 result++;
             }
@@ -86,7 +86,7 @@ public class RoomController {
     public int calculateWinCount(int playerId) {
         int result = 0;
 
-        for (RoomInDB m : listGameMatch) {
+        for (RoomInDatabase m : listGameMatch) {
             if (m.getWinnerID() == playerId) {
                 result++;
             }
@@ -98,7 +98,7 @@ public class RoomController {
         int longest = 0;
         int current = 0;
 
-        for (RoomInDB m : listGameMatch) {
+        for (RoomInDatabase m : listGameMatch) {
             if (m.getPlayerID1() == playerId || m.getPlayerID2() == playerId) {
                 if (m.getWinnerID() == playerId) {
                     current++;
@@ -118,7 +118,7 @@ public class RoomController {
         return (float) (100.00 * (calculateWinCount(playerId) / calculateTotalMatch(playerId)));
     }
 
-    public ArrayList<RoomInDB> getList() {
+    public ArrayList<RoomInDatabase> getList() {
         return listGameMatch;
     }
 }

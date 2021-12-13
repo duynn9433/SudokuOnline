@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import server.DAO.controller.RoomController;
 import server.DAO.controller.PlayerController;
-import shared.model.RoomInDB;
+import shared.model.RoomInDatabase;
 import shared.model.Player;
 
 /**

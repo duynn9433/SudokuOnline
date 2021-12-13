@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  *
  * @author duynn
  */
-public class RoomInDB implements Serializable{
+public class RoomInDatabase implements Serializable{
     int test;
     int id;
     int playerID1;
@@ -20,7 +20,7 @@ public class RoomInDB implements Serializable{
     int winnerID;
     LocalDateTime startedTime;
 
-    public RoomInDB(int id, int playerID1, int playerID2, int winnerID, LocalDateTime startedTime) {
+    public RoomInDatabase(int id, int playerID1, int playerID2, int winnerID, LocalDateTime startedTime) {
         this.id = id;
         this.playerID1 = playerID1;
         this.playerID2 = playerID2;
@@ -28,7 +28,7 @@ public class RoomInDB implements Serializable{
         this.startedTime = startedTime;
     }
 
-    public RoomInDB(RoomInDB g) {
+    public RoomInDatabase(RoomInDatabase g) {
         this.id = g.id;
         this.playerID1 = g.playerID1;
         this.playerID2 = g.playerID2;
