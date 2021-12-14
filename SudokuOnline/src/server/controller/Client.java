@@ -963,7 +963,7 @@ public class Client implements Runnable {
     }
 
     // room handlers
-    public JoinRoomMessage joinRoom(String id) {
+    public Message joinRoom(String id) {
         Room found = RunServer.roomManager.find(id);
 
         Message msg = new Message();

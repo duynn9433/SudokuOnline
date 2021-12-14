@@ -16,7 +16,8 @@ import shared.helper.CountDownTimer;
 public class Sudoku implements Serializable{
 
     public static final int ROW = 9, COL = 9;
-    public static final int MATCH_TIME_LIMIT = 30 * 60;
+    public static final int MATCH_TIME_LIMIT = 10;
+//    public static final int MATCH_TIME_LIMIT = 30 * 60;
 
     int[][] board;
     String answer;

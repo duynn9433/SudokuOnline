@@ -40,14 +40,15 @@ public class InGame extends javax.swing.JFrame {
     JButton btnOnBoard[][];
     CountDownTimer matchTimer;
     SudokuGame sudokuGame;
-
+    
+    boolean isSubmit;
     /**
      * Creates new form InGame
      */
     public InGame() {
         initComponents();
         this.setLocationRelativeTo(null);
-
+        isSubmit = false;
         // board
         // plBoardContainer.setLayout(new GridLayout(ROW, COLUMN));
         //initBoard();
@@ -124,12 +125,13 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void startGame(int matchTimeLimit) {
+        isSubmit = false;
         btnSubmit.setEnabled(true);
         matchTimer = new CountDownTimer(matchTimeLimit);
         matchTimer.setTimerCallBack(// end match callback
                 (Callable) () -> {
                     
-                    if (matchTimer != null) {
+                    if (matchTimer != null && isSubmit == false) {
                         endGameTimeout();
                     }
                     return null;
@@ -146,7 +148,8 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void endGameTimeout() throws InterruptedException {
-        if (matchTimer != null) {
+        if (matchTimer != null && isSubmit == false) {
+            isSubmit = true;
             btnSubmit.setEnabled(false);
             JOptionPane.showMessageDialog(this, "Hết thời gian");
             System.out.println("Timeout");
@@ -164,6 +167,7 @@ public class InGame extends javax.swing.JFrame {
     }
 
     public void lockSubmit() {
+        isSubmit = true;
         btnSubmit.setEnabled(false);
     }
 
@@ -494,6 +498,7 @@ public class InGame extends javax.swing.JFrame {
 
     private void btnSubmitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSubmitActionPerformed
         // TODO add your handling code here:
+        isSubmit = true;
         matchTimer.pause();
         int time = matchTimer.getCurrentTick();
         SubmitMessage msg = new SubmitMessage();
