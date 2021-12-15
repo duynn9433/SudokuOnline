@@ -244,16 +244,17 @@ public class Client implements Runnable {
 
     private void onReceiveSignup(Object message) {
         // get data from received
-        SignupMessage msg = (SignupMessage) message;
-        String email = msg.getEmail();
-        String password = msg.getPassword();
-        String avatar = msg.getAvatar();
-        String name = msg.getName();
-        String gender = msg.getGender();
-        int yearOfBirth = msg.getYearOfBirth();
+//        SignupMessage msg = (SignupMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
+        String email = msg.getPlayer().getEmail();
+        String password = msg.getPlayer().getPassword();
+        String avatar = msg.getPlayer().getAvatar();
+        String name = msg.getPlayer().getName();
+        String gender = msg.getPlayer().getGender();
+        int yearOfBirth = msg.getPlayer().getYearOfBirth();
 
         // sign up
-        SignupMessage result = new PlayerController().signup(email, password, avatar, name, gender, yearOfBirth);
+        PlayerMessage result = new PlayerController().signup(email, password, avatar, name, gender, yearOfBirth);
 
         // send data
         result.setType(StreamData.Type.SIGNUP);

@@ -280,7 +280,7 @@ public class SocketHandler {
 
     private void onReceiveSignup(Object message) {
         // get status from data
-        SignupMessage msg = (SignupMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
         String status = msg.getStatus();
 
         // turn off loading
@@ -638,7 +638,6 @@ public class SocketHandler {
 
     public void login(String email, String password) {
         // prepare data
-//        LoginMessage data = new LoginMessage(StreamData.Type.LOGIN, email, password);
         PlayerMessage data = new PlayerMessage();
         data.setType(StreamData.Type.LOGIN);
         Player p = new Player();
@@ -653,7 +652,17 @@ public class SocketHandler {
 
     public void signup(String email, String password, String name, String gender, int yearOfBirth, String avatar) {
         // prepare data
-        SignupMessage data = new SignupMessage(StreamData.Type.SIGNUP, email, password, name, gender, yearOfBirth, avatar);
+//        SignupMessage data = new SignupMessage(StreamData.Type.SIGNUP, email, password, name, gender, yearOfBirth, avatar);
+        PlayerMessage data = new PlayerMessage();
+        Player p = new Player();
+        p.setEmail(email);
+        p.setPassword(password);
+        p.setName(name);
+        p.setGender(gender);
+        p.setYearOfBirth(yearOfBirth);
+        p.setAvatar(avatar);
+        data.setPlayer(p);
+        data.setType(StreamData.Type.SIGNUP);
         // send data
         sendObject(data);
     }
@@ -674,13 +683,11 @@ public class SocketHandler {
     // pair match
     public void findMatch() {
         Message msg = new Message();
-//        FindMatchMessage msg = new FindMatchMessage();
         msg.setType(StreamData.Type.FIND_MATCH);
         sendObject(msg);
     }
 
     public void cancelFindMatch() {
-//        FindMatchMessage msg = new FindMatchMessage();
         Message msg = new Message();
         msg.setType(StreamData.Type.CANCEL_FIND_MATCH);
         sendObject(msg);
@@ -724,16 +731,10 @@ public class SocketHandler {
         msg.setNewPassword(newPassword);
         msg.setType(StreamData.Type.CHANGE_PASSWORD);
 
-        // prepare data
-//        String data = StreamData.Type.CHANGE_PASSWORD.name() + ";" + oldPassword + ";" + newPassword;
-        // send data
-//        sendData(data);
         sendObject(msg);
     }
 
     public void getProfile(String email) {
-     //   SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
-    //    sendObject(data);
         Message msg = new Message(StreamData.Type.GET_PROFILE);
         msg.setCodeMsg(email);
         sendObject(msg);
@@ -741,23 +742,6 @@ public class SocketHandler {
 
     public void editProfile(String newEmail, String name, String avatar, String yearOfBirth, String gender) {
         // prepare data
-      /*  EditProfileMessage msg = new EditProfileMessage();
-        msg.setEmail(newEmail);
-        msg.setName(name);
-        msg.setAvatar(avatar);
-        msg.setYearOfBirth(yearOfBirth);
-        msg.setGender(gender);
-        msg.setType(StreamData.Type.EDIT_PROFILE);*/
-//        String data = StreamData.Type.EDIT_PROFILE + ";"
-//                + newEmail + ";"
-//                + name + ";"
-//                + avatar + ";"
-//                + yearOfBirth + ";"
-//                + gender;
-
-        // send data
-//        sendData(data);
-
         PlayerMessage msg = new PlayerMessage(StreamData.Type.EDIT_PROFILE);
         Player p = new Player();
         p.setEmail(newEmail);
@@ -821,7 +805,6 @@ public class SocketHandler {
 
     public void leaveWaitingRoom() {
         Message msg = new Message();
-//        LeaveRoomMessage msg = new LeaveRoomMessage();
         msg.setType(StreamData.Type.LEAVE_WAITING_ROOM);
         sendObject(msg);
     }

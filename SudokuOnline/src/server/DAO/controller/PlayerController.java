@@ -13,7 +13,7 @@ import shared.constant.StreamData;
 import shared.message.ChangePasswordMessage;
 //import shared.message.LoginMessage;
 import shared.message.PlayerMessage;
-import shared.message.SignupMessage;
+//import shared.message.SignupMessage;
 
 /**
  *
@@ -149,10 +149,10 @@ public class PlayerController {
         return msg;
     }
 
-    public SignupMessage signup(String email, String password, String avatar, String name, String gender, int yearOfBirth) {
+    public PlayerMessage signup(String email, String password, String avatar, String name, String gender, int yearOfBirth) {
 
         // check email 
-        SignupMessage msg = new SignupMessage();
+        PlayerMessage msg = new PlayerMessage();
         Player p = getByEmail(email);
         if (p != null) {
             msg.setStatus("failed");
@@ -171,11 +171,13 @@ public class PlayerController {
 
 //        return "success";
         msg.setStatus("success");
-        msg.setEmail(email);
-        msg.setAvatar(avatar);
-        msg.setName(name);
-        msg.setGender(gender);
-        msg.setYearOfBirth(yearOfBirth);
+        Player p1 = new Player();
+        p1.setEmail(email);
+        p1.setAvatar(avatar);
+        p1.setName(name);
+        p1.setGender(gender);
+        p1.setYearOfBirth(yearOfBirth);
+        msg.setPlayer(p1);
         return msg;
     }
 
