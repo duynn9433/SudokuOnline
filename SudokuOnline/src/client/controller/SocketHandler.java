@@ -562,7 +562,7 @@ public class SocketHandler {
 
     // profile
     private void onReceiveGetProfile(Object message) {
-        GetProfileMessage p = (GetProfileMessage) message;
+        PlayerMessage p =  (PlayerMessage) message;
 
         // turn off loading
         RunClient.profileScene.setLoading(false);
@@ -573,7 +573,8 @@ public class SocketHandler {
     }
 
     private void onReceivedEditProfile(Object message) {
-        EditProfileMessage msg = (EditProfileMessage) message;
+     //   EditProfileMessage msg = (EditProfileMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
         String status = msg.getStatus();
         // turn off loading
         RunClient.profileScene.setProfileSaveLoading(false);
@@ -586,7 +587,7 @@ public class SocketHandler {
             JOptionPane.showMessageDialog(RunClient.profileScene, "Đổi thông tin thành công", "Thành công", JOptionPane.INFORMATION_MESSAGE);
 
             // lưu lại email
-            this.loginEmail = msg.getEmail();
+            this.loginEmail = msg.getPlayer().getEmail();
 
             // load lại thông tin cá nhân mới - có thể ko cần! nhưng cứ load lại cho chắc
             getProfile(this.loginEmail);
@@ -725,28 +726,22 @@ public class SocketHandler {
     }
 
     public void getProfile(String email) {
-        // prepare data
-        /*  ProfileMessage msg = new ProfileMessage();
-        msg.setType(StreamData.Type.GET_PROFILE);
-        msg.setEmail(email);
-//        String data = StreamData.Type.GET_PROFILE.name() + ";" + email;
-
-        // send data
-//        sendData(data);
-          sendObject(msg);*/
-        SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
-        sendObject(data);
+     //   SendEmailMessage data = new SendEmailMessage(email, StreamData.Type.GET_PROFILE);
+    //    sendObject(data);
+        Message msg = new Message(StreamData.Type.GET_PROFILE);
+        msg.setCodeMsg(email);
+        sendObject(msg);
     }
 
     public void editProfile(String newEmail, String name, String avatar, String yearOfBirth, String gender) {
         // prepare data
-        EditProfileMessage msg = new EditProfileMessage();
+      /*  EditProfileMessage msg = new EditProfileMessage();
         msg.setEmail(newEmail);
         msg.setName(name);
         msg.setAvatar(avatar);
         msg.setYearOfBirth(yearOfBirth);
         msg.setGender(gender);
-        msg.setType(StreamData.Type.EDIT_PROFILE);
+        msg.setType(StreamData.Type.EDIT_PROFILE);*/
 //        String data = StreamData.Type.EDIT_PROFILE + ";"
 //                + newEmail + ";"
 //                + name + ";"
@@ -756,17 +751,20 @@ public class SocketHandler {
 
         // send data
 //        sendData(data);
+
+        PlayerMessage msg = new PlayerMessage(StreamData.Type.EDIT_PROFILE);
+        Player p = new Player();
+        p.setEmail(newEmail);
+        p.setName(name);
+        p.setAvatar(avatar);
+        p.setYearOfBirth(Integer.parseInt(yearOfBirth));
+        p.setGender(gender);
+        msg.setPlayer(p);
         sendObject(msg);
     }
 
     // send data
     public void sendObject(Object object) {
-        Message msg = (Message) object;
-        if(msg.getType()==StreamData.Type.SUBMIT){
-            SubmitMessage msg2 = (SubmitMessage) object;
-            System.out.println("sendO:");msg2.printSubmit();
-        }
-        
         try {
             oos.writeObject(object);
         } catch (IOException ex) {

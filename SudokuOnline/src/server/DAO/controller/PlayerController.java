@@ -13,6 +13,7 @@ import shared.constant.StreamData;
 import shared.message.ChangePasswordMessage;
 import shared.message.EditProfileMessage;
 import shared.message.LoginMessage;
+import shared.message.PlayerMessage;
 import shared.message.SignupMessage;
 
 /**
@@ -179,9 +180,10 @@ public class PlayerController {
         return msg;
     }
 
-    public EditProfileMessage editProfile(String email, String newEmail, String name, String avatar, int yearOfBirth, String gender) {
+    public PlayerMessage editProfile(String email, String newEmail, String name, String avatar, int yearOfBirth, String gender) {
         // check trung email
-        EditProfileMessage msg = new EditProfileMessage();
+      //  EditProfileMessage msg = new EditProfileMessage();
+        PlayerMessage msg = new PlayerMessage();
         if (!newEmail.equals(email) && getByEmail(newEmail) != null) {
             msg.setStatus("failed");
             msg.setCodeMsg(Code.EMAIL_EXISTED);
@@ -214,7 +216,7 @@ public class PlayerController {
         }
 
         msg.setStatus("success");
-        msg.setEmail(newEmail);
+        msg.setPlayer(p);
         return msg;
     }
 }
