@@ -30,7 +30,11 @@ public class Room {
     boolean gameStarted = false;
 
     public LocalDateTime startedTime;
-
+    public void resetRoom(){
+        sudoku1 = new Sudoku();
+        sudoku2 = new Sudoku();
+        gameStarted = false;
+    }
     public Room(String id) {
         // room id
         this.id = id;
@@ -172,6 +176,7 @@ public class Room {
     }
 
    void invitePlayAgain(String idInviter) {
+        gameStarted = false;
         if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
             Message msg = new Message(StreamData.Type.PLAY_AGAIN);
             client1.sendObject(msg);
@@ -183,7 +188,8 @@ public class Room {
     }
 
     void refusePlayAgian(String idInviter) {
-         if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
+        gameStarted = false;
+        if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
             Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
             client1.sendObject(msg);
         }

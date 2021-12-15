@@ -23,6 +23,7 @@ import shared.model.ChatItem;
 import shared.model.RoomInDatabase;
 import shared.model.PlayerInGame;
 import shared.model.ProfileData;
+import shared.model.Sudoku;
 
 /**
  *
@@ -880,9 +881,9 @@ public class Client implements Runnable {
             cCompetitor.sendObject(send1);
             //TODO luu game match
             new RoomController().add(new RoomInDatabase(0, joinedRoom.getClient1().getLoginPlayer().getId(),
-                            joinedRoom.getClient2().getLoginPlayer().getId(),
-                            getWinnerID(isPlayer1Win, isPlayer2Win),
-                            joinedRoom.getStartedTime()));
+                    joinedRoom.getClient2().getLoginPlayer().getId(),
+                    getWinnerID(isPlayer1Win, isPlayer2Win),
+                    joinedRoom.getStartedTime()));
             return;
         }
     }
@@ -944,6 +945,7 @@ public class Client implements Runnable {
     // send data fucntions
     public String sendObject(Object object) {
         try {
+            oos.reset();
             oos.writeObject(object);
             return "success";
         } catch (IOException ex) {
@@ -1087,46 +1089,48 @@ public class Client implements Runnable {
     }
 
     private void onReceiveAceptPlayAgian() {
-                   // joinedRoom.getClient1().setIsReady(false);
-                   // joinedRoom.getClient2().setIsReady(false);
-                    String s = DataCreateGame.getRandomData();
-                    joinedRoom.getSudoku1().setAnswer(s);
-                    joinedRoom.getSudoku1().setBoard(DataCreateGame.createBoard(s));
-                    s = DataCreateGame.getRandomData();
-                    joinedRoom.getSudoku2().setAnswer(s);
-                    joinedRoom.getSudoku2().setBoard(DataCreateGame.createBoard(s));
-                     joinedRoom.getSudoku1().setIsSubmit(false);
-                      joinedRoom.getSudoku2().setIsSubmit(false);
-                    //gui de
-                    DataRoomMessage sendRoom = new DataRoomMessage();
-                    sendRoom.setType(StreamData.Type.START_GAME_AGAIN);
-                    sendRoom.setStatus("success");
-                    sendRoom.setIdRoom(joinedRoom.getId());
-                    sendRoom.setPlayer1(joinedRoom.getClient1().getLoginPlayer().toPlayerInGame());
-                    sendRoom.setPlayer2(joinedRoom.getClient2().getLoginPlayer().toPlayerInGame());
+        // joinedRoom.getClient1().setIsReady(false);
+        // joinedRoom.getClient2().setIsReady(false);
+        joinedRoom.setSudoku1(new Sudoku());
+        joinedRoom.setSudoku2(new Sudoku());
+        String s = DataCreateGame.getRandomData();
+        joinedRoom.getSudoku1().setAnswer(s);
+        joinedRoom.getSudoku1().setBoard(DataCreateGame.createBoard(s));
+        s = DataCreateGame.getRandomData();
+        joinedRoom.getSudoku2().setAnswer(s);
+        joinedRoom.getSudoku2().setBoard(DataCreateGame.createBoard(s));
+        joinedRoom.getSudoku1().setIsSubmit(false);
+        joinedRoom.getSudoku2().setIsSubmit(false);
+        //gui de
+        DataRoomMessage sendRoom = new DataRoomMessage();
+        sendRoom.setType(StreamData.Type.START_GAME_AGAIN);
+        sendRoom.setStatus("success");
+        sendRoom.setIdRoom(joinedRoom.getId());
+        sendRoom.setPlayer1(joinedRoom.getClient1().getLoginPlayer().toPlayerInGame());
+        sendRoom.setPlayer2(joinedRoom.getClient2().getLoginPlayer().toPlayerInGame());
 
-                    boolean amIPlayer1 = false;
-                    if (joinedRoom.getClient1().getLoginPlayer().getEmail().equals(loginPlayer.getEmail())) {
-                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
-                        System.out.println("sudoku:");
-                        sendRoom.printBoard();
-                        amIPlayer1 = true;
-                        sendObject(sendRoom);
-                    } else {
-                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
-                        System.out.println("sudoku:");
-                        sendRoom.printBoard();
-                        sendObject(sendRoom);
-                    }
-                    //gui de cho doi thu
-                    if (amIPlayer1) {
-                        sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
-                        cCompetitor.sendObject(sendRoom);
-                    } else {
-                        sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
-                        cCompetitor.sendObject(sendRoom);
-                    }
-                    joinedRoom.startGame();
+        boolean amIPlayer1 = false;
+        if (joinedRoom.getClient1().getLoginPlayer().getEmail().equals(loginPlayer.getEmail())) {
+            sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+            System.out.println("sudoku:");
+            sendRoom.printBoard();
+            amIPlayer1 = true;
+            sendObject(sendRoom);
+        } else {
+            sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+            System.out.println("sudoku:");
+            sendRoom.printBoard();
+            sendObject(sendRoom);
+        }
+        //gui de cho doi thu
+        if (amIPlayer1) {
+            sendRoom.setSudokuBoard(joinedRoom.getSudoku2().getBoard());
+            cCompetitor.sendObject(sendRoom);
+        } else {
+            sendRoom.setSudokuBoard(joinedRoom.getSudoku1().getBoard());
+            cCompetitor.sendObject(sendRoom);
+        }
+        joinedRoom.startGame();
     }
 
 }

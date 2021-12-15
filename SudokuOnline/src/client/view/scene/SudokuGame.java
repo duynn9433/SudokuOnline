@@ -31,8 +31,8 @@ import javax.swing.Timer;
 public class SudokuGame extends javax.swing.JPanel {
     int I, J;  
     JButton bt[][] = new JButton[9][10];
-    int[][] submit = new int[9][10];
-    int board[][];
+    Integer[][] submit = new Integer[9][10];
+    Integer board[][];
     /**
      * Creates new form NewJPanel
      */
@@ -159,19 +159,19 @@ public class SudokuGame extends javax.swing.JPanel {
         return;
     }
 
-    public int[][] getSubmit() {
+    public Integer[][] getSubmit() {
         return submit;
     }
 
-    public void setSubmit(int[][] submit) {
+    public void setSubmit(Integer[][] submit) {
         this.submit = submit;
     }
 
-    public int[][] getBoard() {
+    public Integer[][] getBoard() {
         return board;
     }
 
-    public void setBoard(int[][] board) {
+    public void setBoard(Integer[][] board) {
         this.board = board;
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {

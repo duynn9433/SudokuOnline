@@ -21,7 +21,7 @@ public class DataRoomMessage extends Message{
     private String status;
     private String codeMsg;
     
-    private int[][] sudokuBoard;
+    private Integer[][] sudokuBoard;
     private int currentTick;
     
     private PlayerInGame player1;
@@ -39,11 +39,11 @@ public class DataRoomMessage extends Message{
         return player1;
     }
 
-    public int[][] getSudokuBoard() {
+    public Integer[][] getSudokuBoard() {
         return sudokuBoard;
     }
 
-    public void setSudokuBoard(int[][] sudokuBoard) {
+    public void setSudokuBoard(Integer[][] sudokuBoard) {
         this.sudokuBoard = sudokuBoard;
     }
 
