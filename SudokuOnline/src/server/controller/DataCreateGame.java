@@ -28,11 +28,11 @@ public class DataCreateGame {
         return s;
     }
 
-    public static int[][] createBoard(String data) {
+    public static Integer[][] createBoard(String data) {
         String str = data;
         int[][] a = new int[9][10];
         int[][] A = new int[9][10];
-        int[][] aa = new int[9][10];
+        Integer[][] aa = new Integer[9][10];
         int temp[] = new int[81];
         int x[] = new int[81];
         int y[] = new int[81];

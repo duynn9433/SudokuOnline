@@ -766,6 +766,7 @@ public class SocketHandler {
     // send data
     public void sendObject(Object object) {
         try {
+            oos.reset();
             oos.writeObject(object);
         } catch (IOException ex) {
             Logger.getLogger(SocketHandler.class.getName()).log(Level.SEVERE, null, ex);

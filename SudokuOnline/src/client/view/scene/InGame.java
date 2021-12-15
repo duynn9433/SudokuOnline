@@ -35,7 +35,7 @@ public class InGame extends javax.swing.JFrame {
     PlayerInGame player1;
     PlayerInGame player2;
 
-    int[][] board;
+    Integer[][] board;
 
     JButton btnOnBoard[][];
     CountDownTimer matchTimer;
@@ -536,11 +536,11 @@ public class InGame extends javax.swing.JFrame {
         // TODO add your handling code here:
         RunClient.socketHandler.invitePlayAgain();
     }//GEN-LAST:event_btnNewGameActionPerformed
-    public int[][] getBoard() {
+    public Integer[][] getBoard() {
         return board;
     }
 
-    public void setBoard(int[][] board) {
+    public void setBoard(Integer[][] board) {
         this.board = board;
         sudokuGame.setBoard(board);
         startGame(Sudoku.MATCH_TIME_LIMIT);

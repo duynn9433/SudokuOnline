@@ -5,13 +5,15 @@
  */
 package shared.message;
 
+import java.io.Serializable;
+
 /**
  *
  * @author duynn
  */
-public class SubmitMessage extends Message{
+public class SubmitMessage extends Message implements Serializable{
     public static final long serialVersionUID = 8L;
-    private int[][] submit;
+    private Integer[][] submit;
     private String status;
     private String result;//win / lose/ draw
     int currentTick;
@@ -35,11 +37,11 @@ public class SubmitMessage extends Message{
             System.out.println("");
         }
     }
-    public int[][] getSubmit() {
+    public Integer[][] getSubmit() {
         return submit;
     }
 
-    public void setSubmit(int[][] submit) {
+    public void setSubmit(Integer[][] submit) {
         this.submit = submit;
     }
 

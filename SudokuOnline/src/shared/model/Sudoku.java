@@ -19,7 +19,7 @@ public class Sudoku implements Serializable{
     public static final int MATCH_TIME_LIMIT = 10;
 //    public static final int MATCH_TIME_LIMIT = 30 * 60;
 
-    int[][] board;
+    Integer[][] board;
     String answer;
     boolean isSubmit;
     CountDownTimer matchTimer;
@@ -41,11 +41,11 @@ public class Sudoku implements Serializable{
     }
 
     
-    public int[][] getBoard() {
+    public Integer[][] getBoard() {
         return board;
     }
 
-    public void setBoard(int[][] board) {
+    public void setBoard(Integer[][] board) {
         this.board = board;
     }
 
