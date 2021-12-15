@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;
 import shared.message.ChangePasswordMessage;
-import shared.message.EditProfileMessage;
-import shared.message.LoginMessage;
+//import shared.message.LoginMessage;
 import shared.message.PlayerMessage;
 import shared.message.SignupMessage;
 
@@ -91,9 +90,9 @@ public class PlayerController {
         return listPlayer;
     }
 
-    public LoginMessage checkLogin(String email, String password) {
+    public PlayerMessage checkLogin(String email, String password) {
         // check email
-        LoginMessage msg = new LoginMessage();
+        PlayerMessage msg = new PlayerMessage();
         Player p = getByEmail(email);
         if (p == null) {
             msg.setStatus("failed");
@@ -116,7 +115,7 @@ public class PlayerController {
         }
 
         msg.setStatus("success");
-        msg.setEmail(email);
+        msg.setMsg(email);
         return msg;
     }
 

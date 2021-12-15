@@ -213,20 +213,25 @@ public class Client implements Runnable {
     }
 
     private void onReceiveLogin(Object message) {
-        LoginMessage msg = (LoginMessage) message;
+//        LoginMessage msg = (LoginMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
         // get email / password from data
-        String email = msg.getEmail();
-        String password = msg.getPassword();
+        String email = msg.getPlayer().getEmail();
+        String password = msg.getPlayer().getPassword();
 
         // check đã được đăng nhập ở nơi khác
         if (RunServer.clientManager.find(email) != null) {
-//            sendObject(new LoginMessage(StreamData.Type.LOGIN, "failed", Code.ACCOUNT_LOGEDIN));
-            sendObject(new LoginMessage("failed", Code.ACCOUNT_LOGEDIN, StreamData.Type.LOGIN));
+//            sendObject(new PlayerMessage("failed", Code.ACCOUNT_LOGEDIN, StreamData.Type.LOGIN));
+            PlayerMessage temp = new PlayerMessage();
+            temp.setStatus("failed");
+            temp.setCodeMsg(Code.ACCOUNT_LOGEDIN);
+            temp.setType(StreamData.Type.LOGIN);
+            sendObject(temp);
             return;
         }
 
         // check login
-        LoginMessage result = new PlayerController().checkLogin(email, password);
+        PlayerMessage result = new PlayerController().checkLogin(email, password);
 
         if (result.getStatus().equals("success")) {
             // set login email
@@ -707,14 +712,14 @@ public class Client implements Runnable {
 
     // profile
     private void onReceiveGetProfile(Object message) {
-        /*  SendEmailMessage msg = (SendEmailMessage) message;
+      /*  SendEmailMessage msg = (SendEmailMessage) message;
         Player p = new PlayerController().getByEmail(msg.getEmail());
         GetProfileMessage data = new GetProfileMessage(p, StreamData.Type.GET_PROFILE);
         sendObject(data);*/
-        Message msg = (Message) message;
-        Player p = new PlayerController().getByEmail(msg.getCodeMsg());
-        PlayerMessage data = new PlayerMessage(StreamData.Type.GET_PROFILE);
-        data.setPlayer(p);
+      Message msg = (Message) message;
+      Player p = new PlayerController().getByEmail(msg.getCodeMsg());
+      PlayerMessage data = new PlayerMessage(StreamData.Type.GET_PROFILE);
+      data.setPlayer(p);
         sendObject(data);
     }
 
@@ -722,7 +727,7 @@ public class Client implements Runnable {
         PlayerMessage msg = (PlayerMessage) message;
         try {
             // get data from received
-
+            
             String newEmail = msg.getPlayer().getEmail();
             String name = msg.getPlayer().getName();
             String avatar = msg.getPlayer().getAvatar();
@@ -771,7 +776,6 @@ public class Client implements Runnable {
         }
 
         SubmitMessage msg = (SubmitMessage) message;
-        msg.printSubmit();
         boolean isPlayer1 = false;
         if (joinedRoom.getClient1() == null && joinedRoom.getClient2() == null) {
             return;

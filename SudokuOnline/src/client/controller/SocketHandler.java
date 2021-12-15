@@ -253,7 +253,7 @@ public class SocketHandler {
     }
 
     private void onReceiveLogin(Object message) {
-        LoginMessage msg = (LoginMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
         // get status from data
         String status = msg.getStatus();
 
@@ -267,7 +267,7 @@ public class SocketHandler {
 
         } else if (status.equals("success")) {
             // lưu email login
-            this.loginEmail = msg.getEmail();
+            this.loginEmail = msg.getMsg();
 
             // chuyển scene
             RunClient.closeScene(RunClient.SceneName.LOGIN);
@@ -638,7 +638,13 @@ public class SocketHandler {
 
     public void login(String email, String password) {
         // prepare data
-        LoginMessage data = new LoginMessage(StreamData.Type.LOGIN, email, password);
+//        LoginMessage data = new LoginMessage(StreamData.Type.LOGIN, email, password);
+        PlayerMessage data = new PlayerMessage();
+        data.setType(StreamData.Type.LOGIN);
+        Player p = new Player();
+        p.setEmail(email);
+        p.setPassword(password);
+        data.setPlayer(p);
 
         // send data
         sendObject(data);
