@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import shared.constant.Code;
 import shared.constant.StreamData;
 import shared.message.ChangePasswordMessage;
-import shared.message.EditProfileMessage;
 //import shared.message.LoginMessage;
 import shared.message.PlayerMessage;
 import shared.message.SignupMessage;
