@@ -15,6 +15,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import shared.constant.Avatar;
 import shared.message.GetProfileMessage;
+import shared.message.PlayerMessage;
 import shared.message.ProfileMessage;
 
 /**
@@ -85,7 +86,7 @@ public class Profile extends javax.swing.JFrame {
         RunClient.socketHandler.getProfile(email);
     }
 
-    public void setProfileData(GetProfileMessage p) {
+    public void setProfileData(PlayerMessage p) {
 
         // save current profile
         currentProfile.setEmail(p.getPlayer().getEmail());

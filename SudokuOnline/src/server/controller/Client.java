@@ -706,25 +706,30 @@ public class Client implements Runnable {
 
     // profile
     private void onReceiveGetProfile(Object message) {
-        SendEmailMessage msg = (SendEmailMessage) message;
+      /*  SendEmailMessage msg = (SendEmailMessage) message;
         Player p = new PlayerController().getByEmail(msg.getEmail());
         GetProfileMessage data = new GetProfileMessage(p, StreamData.Type.GET_PROFILE);
+        sendObject(data);*/
+      Message msg = (Message) message;
+      Player p = new PlayerController().getByEmail(msg.getCodeMsg());
+      PlayerMessage data = new PlayerMessage(StreamData.Type.GET_PROFILE);
+      data.setPlayer(p);
         sendObject(data);
     }
 
     private void onReceiveEditProfile(Object message) {
-        EditProfileMessage msg = (EditProfileMessage) message;
+        PlayerMessage msg = (PlayerMessage) message;
         try {
             // get data from received
-
-            String newEmail = msg.getEmail();
-            String name = msg.getName();
-            String avatar = msg.getAvatar();
-            int yearOfBirth = Integer.parseInt(msg.getYearOfBirth());
-            String gender = msg.getGender();
+            
+            String newEmail = msg.getPlayer().getEmail();
+            String name = msg.getPlayer().getName();
+            String avatar = msg.getPlayer().getAvatar();
+            int yearOfBirth = msg.getPlayer().getYearOfBirth();
+            String gender = msg.getPlayer().getGender();
 
             // edit profile
-            EditProfileMessage result = new PlayerController().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
+            PlayerMessage result = new PlayerController().editProfile(loginPlayer.getEmail(), newEmail, name, avatar, yearOfBirth, gender);
 
             // lưu lại newEmail vào Client nếu cập nhật thành công
             String status = result.getStatus();
@@ -1084,6 +1089,8 @@ public class Client implements Runnable {
                     s = DataCreateGame.getRandomData();
                     joinedRoom.getSudoku2().setAnswer(s);
                     joinedRoom.getSudoku2().setBoard(DataCreateGame.createBoard(s));
+                     joinedRoom.getSudoku1().setIsSubmit(false);
+                      joinedRoom.getSudoku2().setIsSubmit(false);
                     //gui de
                     DataRoomMessage sendRoom = new DataRoomMessage();
                     sendRoom.setType(StreamData.Type.START_GAME_AGAIN);
