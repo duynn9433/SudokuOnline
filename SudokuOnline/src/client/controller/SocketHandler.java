@@ -761,6 +761,12 @@ public class SocketHandler {
 
     // send data
     public void sendObject(Object object) {
+        Message msg = (Message) object;
+        if(msg.getType()==StreamData.Type.SUBMIT){
+            SubmitMessage msg2 = (SubmitMessage) object;
+            System.out.println("sendO:");msg2.printSubmit();
+        }
+        
         try {
             oos.writeObject(object);
         } catch (IOException ex) {

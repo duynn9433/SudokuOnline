@@ -26,7 +26,15 @@ public class SubmitMessage extends Message{
     
     public SubmitMessage() {
     }
-
+    
+    public void printSubmit(){
+        for(int i=0;i<submit.length;i++){
+            for(int j=0;j<submit[i].length;j++){
+                System.out.print(submit[i][j]+ " ");
+            }
+            System.out.println("");
+        }
+    }
     public int[][] getSubmit() {
         return submit;
     }

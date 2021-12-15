@@ -765,6 +765,7 @@ public class Client implements Runnable {
         }
 
         SubmitMessage msg = (SubmitMessage) message;
+        msg.printSubmit();
         boolean isPlayer1 = false;
         if (joinedRoom.getClient1() == null && joinedRoom.getClient2() == null) {
             return;

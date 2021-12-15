@@ -504,6 +504,7 @@ public class InGame extends javax.swing.JFrame {
         SubmitMessage msg = new SubmitMessage();
         msg.setType(StreamData.Type.SUBMIT);
         msg.setSubmit(sudokuGame.getSubmit());
+        msg.printSubmit();
         msg.setCurrentTick(time);
         RunClient.socketHandler.sendObject(msg);
         matchTimer.cancel();
