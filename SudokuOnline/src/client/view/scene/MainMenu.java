@@ -640,6 +640,7 @@ public class MainMenu extends javax.swing.JFrame {
             String roomID = tbListRoom.getValueAt(tbListRoom.getSelectedRow(), 0).toString();
             //gưi mes xin vao phong
             Message send = new Message();
+            send.setType(StreamData.Type.JOIN_ROOM);
 //            JoinRoomMessage send = new JoinRoomMessage();
             send.setMsg(roomID);
             RunClient.socketHandler.sendObject(send);

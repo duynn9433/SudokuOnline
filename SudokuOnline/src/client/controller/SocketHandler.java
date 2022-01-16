@@ -163,7 +163,7 @@ public class SocketHandler {
                         onReceiveChatRoom(message);
                         break;
                     case PLAY_AGAIN:
-                        onReceivePlayAgian();
+                        onReceivePlayAgian(message);
                         break;
                     case REFUSE_PLAY_AGAIN:
                         onReceiveRefusePlayAgain();
@@ -814,8 +814,15 @@ public class SocketHandler {
        Message msg = new Message(StreamData.Type.PLAY_AGAIN);
         sendObject(msg);
     }
-    private void onReceivePlayAgian() {
-         RunClient.inGameScene.dialogInvitePlayAgian();
+    private void onReceivePlayAgian(Object message) {
+        Message msg = (Message) message;
+        String stt = msg.getStatus();
+        if(stt.equals("failed")) {
+            JOptionPane.showMessageDialog(RunClient.inGameScene, "Đối thủ đã thoát khỏi phòng");
+        }
+        else if (stt.equals("success")) {
+            RunClient.inGameScene.dialogInvitePlayAgian();
+        }
          
     }
 

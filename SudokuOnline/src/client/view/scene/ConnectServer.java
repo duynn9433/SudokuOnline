@@ -178,7 +178,7 @@ public class ConnectServer extends javax.swing.JFrame {
 //        this.dispose();
 //        RunClient.openScene(RunClient.SceneName.LOGIN);
 
-        // khi kết nối thành công sẽ đợi tạo kết nối bảo mật (gửi nhận AES key)
+
         setLoading(true, "Đang kết nối..");
     }
 

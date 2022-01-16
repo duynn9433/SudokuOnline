@@ -584,14 +584,6 @@ public class Client implements Runnable {
         joinedRoom.leaveRoom(this);
         System.out.println("1");
 
-        // broadcast to all clients in room
-//        String data = CustomDateTimeFormatter.getCurrentTimeFormatted() + ";"
-//                + "SERVER" + ";"
-//                + loginPlayer.getNameId() + " đã thoát";
-//
-//        joinedRoom.broadcast(StreamData.Type.CHAT_ROOM + ";" + data);
-        // delete refernce to room
-//        joinedRoom.removeClient(this);
         joinedRoom = null;
         System.out.println("2");
         // TODO if this client is player -> close room

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import shared.model.Sudoku;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import javax.swing.JOptionPane;
 import server.RunServer;
 import server.DAO.controller.RoomController;
 import shared.model.RoomInDatabase;
@@ -30,11 +31,13 @@ public class Room {
     boolean gameStarted = false;
 
     public LocalDateTime startedTime;
-    public void resetRoom(){
+
+    public void resetRoom() {
         sudoku1 = new Sudoku();
         sudoku2 = new Sudoku();
         gameStarted = false;
     }
+
     public Room(String id) {
         // room id
         this.id = id;
@@ -44,13 +47,13 @@ public class Room {
         sudoku2 = new Sudoku();
     }
 
-    public boolean isFull(){
-        if(client1!=null && client2!=null){
+    public boolean isFull() {
+        if (client1 != null && client2 != null) {
             return true;
         }
         return false;
     }
-    
+
     public LocalDateTime getStartedTime() {
         return startedTime;
     }
@@ -70,7 +73,7 @@ public class Room {
 
     // add/remove client
     public boolean addClient(Client c) {
-        if (client1==null || client2==null) {
+        if (client1 == null || client2 == null) {
             if (client1 == null) {
                 client1 = c;
             } else if (client2 == null) {
@@ -92,37 +95,38 @@ public class Room {
     // broadcast messages
     public void broadcast(Object message) {
         ChatMessage msg = (ChatMessage) message;
-        System.out.println("CHat1:"+msg);
-        if(client1 != null){
+        System.out.println("CHat1:" + msg);
+        if (client1 != null) {
             client1.sendObject(msg);
         }
-        
-        System.out.println("CHat2:"+msg);
-        if(client2 != null){
+
+        System.out.println("CHat2:" + msg);
+        if (client2 != null) {
             client2.sendObject(msg);
         }
-        
+
 //        clients.forEach((c) -> {
 //            c.sendData(msg);
 //        });
     }
 
-    public void leaveRoom(Client c){
-        if(c.equals(client1)){
-            client1=null;
-        }else if(c.equals(client2)){
-            client2=null;
+    public void leaveRoom(Client c) {
+        if (c.equals(client1)) {
+            client1 = null;
+        } else if (c.equals(client2)) {
+            client2 = null;
         }
-        if(client1 == null && client2==null){
+        if (client1 == null && client2 == null) {
             RunServer.roomManager.remove(this);
         }
     }
+
     public void close() {
         // remove reference
         client1.setJoinedRoom(null);
         client2.setJoinedRoom(null);
-        client1=null;
-        client2=null;
+        client1 = null;
+        client2 = null;
         // remove room
         RunServer.roomManager.remove(this);
     }
@@ -135,7 +139,6 @@ public class Room {
     public void setId(String id) {
         this.id = id;
     }
-
 
     public Sudoku getSudoku1() {
         return sudoku1;
@@ -153,7 +156,6 @@ public class Room {
         this.sudoku2 = sudoku2;
     }
 
-    
     public Client getClient1() {
         return client1;
     }
@@ -175,29 +177,43 @@ public class Room {
         return "Room{" + "id=" + id + ", sudoku1=" + sudoku1 + ", sudoku2=" + sudoku2 + ", client1=" + client1 + ", client2=" + client2 + ", gameStarted=" + gameStarted + ", startedTime=" + startedTime + '}';
     }
 
-   void invitePlayAgain(String idInviter) {
+    void invitePlayAgain(String idInviter) {
         gameStarted = false;
-        if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
+
+        if (client1 == null || client2 == null) {
             Message msg = new Message(StreamData.Type.PLAY_AGAIN);
-            client1.sendObject(msg);
+            msg.setStatus("failed");
+            if(client1 == null) {
+                client2.sendObject(msg);
+            }
+            else if (client2 == null) {
+                client1.sendObject(msg);
+            }
+        } else {
+            if (!client1.getLoginPlayer().getNameId().equals(idInviter)) {
+                Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+                msg.setStatus("success");
+                client1.sendObject(msg);
+            }
+            if (!client2.getLoginPlayer().getNameId().equals(idInviter)) {
+                Message msg = new Message(StreamData.Type.PLAY_AGAIN);
+                msg.setStatus("success");
+                client2.sendObject(msg);
+            }
         }
-        if(!client2.getLoginPlayer().getNameId().equals(idInviter)){
-            Message msg = new Message(StreamData.Type.PLAY_AGAIN);
-            client2.sendObject(msg);
-        }
+
     }
 
     void refusePlayAgian(String idInviter) {
         gameStarted = false;
-        if(!client1.getLoginPlayer().getNameId().equals(idInviter)){
+        if (!client1.getLoginPlayer().getNameId().equals(idInviter)) {
             Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
             client1.sendObject(msg);
         }
-        if(!client2.getLoginPlayer().getNameId().equals(idInviter)){
+        if (!client2.getLoginPlayer().getNameId().equals(idInviter)) {
             Message msg = new Message(StreamData.Type.REFUSE_PLAY_AGAIN);
             client2.sendObject(msg);
         }
     }
 
-    
 }

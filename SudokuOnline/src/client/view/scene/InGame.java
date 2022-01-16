@@ -614,7 +614,7 @@ public class InGame extends javax.swing.JFrame {
     private javax.swing.JTextField txtChatInput;
     private javax.swing.JTextArea txtChatOutput;
     // End of variables declaration//GEN-END:variables
-
+    
     public void dialogInvitePlayAgian() {
         if (JOptionPane.showConfirmDialog(this,
                 "Đối thủ muốn mời bạn chơi tiếp?", "Warning",
